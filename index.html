@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Quick Start - Leaflet</title>
+
+<!--	<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />-->
+	<link rel="stylesheet" href="leaflet/leaflet.css" />
+	<link rel="stylesheet" href="dist/LeafletStyleSheet.css" />
+	<script src="leaflet/leaflet.js"></script>
+	<script src="dist/PruneCluster.js"></script>
+	<script src="sources/traffic_accidents_date.js"></script>
+	<script src="sources/bike_accidents_lat_lon_date.js"></script>
+	<script src="sources/ped_accidents_lat_lon_date.js"></script>
+
+
+
+<!--	<link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />-->
+<!--    <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/MarkerCluster.css" />-->
+<!--    <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/MarkerCluster.Default.css" />-->
+
+<!--    <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js'></script>-->
+<!--    <script type='text/javascript' src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js'></script>-->
+<!--    <script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/leaflet.markercluster.js'></script>-->
+
+
+	<style>
+		html, body {
+			height: 100%;
+			margin: 0;
+		}
+		.leaflet-container {
+			height: 400px;
+			width: 600px;
+			max-width: 100%;
+			max-height: 100%;
+		}
+	</style>
+
+
+</head>
+<body>
+
+
+
+<div id="map" style="width: 100vw; height: 100vh;"></div>
+<script>
+
+	// various accident type layers
+	let traffic_accident_layer = L.layerGroup();
+	let bike_accident_layer = L.layerGroup();
+	let pedestrian_accident_layer = L.layerGroup();
+
+	//accident attributes layers
+	let year = L.layerGroup();
+	let month = L.layerGroup();
+	let day = L.layerGroup();
+
+	//another info layers
+	let air_quality = L.layerGroup();
+	let paid_parking = L.layerGroup();
+	let pedestrian_crossings = L.layerGroup();
+	let public_transport_stops = L.layerGroup();
+	let street_lights = L.layerGroup();
+	let street_slopes = L.layerGroup();
+
+
+    let traffic_accidents_cluster = new PruneClusterForLeaflet(160);
+    let bike_accidents_cluster = new PruneClusterForLeaflet(160);
+	let pedestrian_accidents_cluster = new PruneClusterForLeaflet(160);
+
+	traffic_accidents.forEach(value => {
+		marker = create_cluster_marker(value);
+		traffic_accidents_cluster.RegisterMarker(marker)}
+	);
+
+	bike_accidents.forEach(value => {
+		marker = create_cluster_marker(value);
+		bike_accidents_cluster.RegisterMarker(marker)}
+	);
+
+	pedestrian_accidents.forEach(value => {
+		marker = create_cluster_marker(value);
+		pedestrian_accidents_cluster.RegisterMarker(marker)}
+	);
+
+	function create_cluster_marker(value) {
+		return new PruneCluster.Marker(value.split(",")[0], value.split(",")[1]);
+	}
+
+	traffic_accident_layer.addLayer(traffic_accidents_cluster);
+	bike_accident_layer.addLayer(bike_accidents_cluster);
+	pedestrian_accident_layer.addLayer(pedestrian_accidents_cluster);
+
+	var tiles = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
+			maxZoom: 19,
+		attribution: 'OpenStreetMap'
+		});
+
+	var map = L.map('map', {
+		center: [49.196822238343486, 16.60474816825514],
+		zoom: 13,
+		layers: [tiles]
+	});
+
+	var base_layers = {"OpenStreetMap": tiles}
+	var overlays = {
+		"Traffic accidents": traffic_accident_layer,
+		"Bike accidents": bike_accident_layer,
+		"Pedestrian accidents": pedestrian_accident_layer,
+		""
+
+	}
+	var layerControl = L.control.layers(base_layers, overlays).addTo(map);
+
+
+	// create the control
+// var command = L.control({position: 'topright'});
+//
+// command.onAdd = function (map) {
+//     var div = L.DomUtil.create('div', 'command');
+//
+//     div.innerHTML = '<form><input id="command" type="checkbox"/>dopravni nehody</form>';
+//     return div;
+// };
+//
+// command.addTo(map);
+//
+// 	var baseMaps = {
+// 		"OpenStreetMaps": tiles,
+// 	}
+//
+// // add the event handler
+// function handleCommand() {
+//
+//    alert("Clicked, checked = " + this.checked);
+// }
+
+// document.getElementById ("command").addEventListener ("click", handleCommand, false);
+
+
+
+
+
+
+
+
+
+// alert(traffic_accident_marker_list.length);
+
+
+// var layerControl = L.control.layers(baseMaps, traffic_accident_layer).addTo(map);
+//
+// layerControl.addOverlay(traffic_accident_layer, "Traffic accidents");
+
+// for (coord in lat_lon) {
+// 	L.marker(coord.split(",")).addTo(map)
+// }
+// <!--	var div = L.DomUtil.create('div', 'info legend');-->
+// <!--	div.innerHTML = '<select><option>1</option><option>2</option><option>3</option></select>';-->
+// <!--	div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;-->
+// <!--	return div;-->
+//
+// <!--	var marker = L.marker([51.5, -0.09]).addTo(map)-->
+// <!--		.bindPopup('<b>Hello world!</b><br />I am a popup.').openPopup();-->
+//
+// <!--	var circle = L.circle([51.508, -0.11], {-->
+// <!--		color: 'red',-->
+// <!--		fillColor: '#f03',-->
+// <!--		fillOpacity: 0.5,-->
+// <!--		radius: 500-->
+// <!--	}).addTo(map).bindPopup('I am a circle.');-->
+//
+// <!--	var polygon = L.polygon([-->
+// <!--		[51.509, -0.08],-->
+// <!--		[51.503, -0.06],-->
+// <!--		[51.51, -0.047]-->
+// <!--	]).addTo(map).bindPopup('I am a polygon.');-->
+//
+//
+// <!--	var popup = L.popup()-->
+// <!--		.setLatLng([49, 16])-->
+// <!--		.setContent('I am a standalone popup.')-->
+// <!--		.openOn(map);-->
+//
+// 	function onMapClick(e) {
+// 		popup
+// 			.setLatLng(e.latlng)
+// 			.setContent('You clicked the map at ' + e.latlng.toString())
+// 			.openOn(map);
+// 	}
+
+	// map.on('click', onMapClick);
+
+</script>
+
+
+
+</body>
+</html>
