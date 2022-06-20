@@ -4,16 +4,21 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<title>Quick Start - Leaflet</title>
+	<title>Heute kommt ein Gewitter</title>
 
 <!--	<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />-->
 	<link rel="stylesheet" href="leaflet/leaflet.css" />
 	<link rel="stylesheet" href="dist/LeafletStyleSheet.css" />
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+   integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+   crossorigin=""/>
 	<script src="leaflet/leaflet.js"></script>
 	<script src="dist/PruneCluster.js"></script>
 	<script src="sources/traffic_accidents_date.js"></script>
 	<script src="sources/bike_accidents_lat_lon_date.js"></script>
 	<script src="sources/ped_accidents_lat_lon_date.js"></script>
+	<script src="sources/pub_trans_stops_lat_lon_name.js"></script>
+	<script src="sources/street_lights_lat_lon_date.js"></script>
 
 
 
@@ -54,17 +59,17 @@
 	let pedestrian_accident_layer = L.layerGroup();
 
 	//accident attributes layers
-	let year = L.layerGroup();
-	let month = L.layerGroup();
-	let day = L.layerGroup();
+	let year_layer = L.layerGroup();
+	let month_layer = L.layerGroup();
+	let day_layer = L.layerGroup();
 
 	//another info layers
-	let air_quality = L.layerGroup();
-	let paid_parking = L.layerGroup();
-	let pedestrian_crossings = L.layerGroup();
-	let public_transport_stops = L.layerGroup();
-	let street_lights = L.layerGroup();
-	let street_slopes = L.layerGroup();
+	let air_quality_layer = L.layerGroup();
+	let paid_parking_layer = L.layerGroup();
+	let pedestrian_crossings_layer = L.layerGroup();
+	let public_transport_stops_layer = L.layerGroup();
+	let street_lights_layer = L.layerGroup();
+	let street_slopes_layer = L.layerGroup();
 
 
     let traffic_accidents_cluster = new PruneClusterForLeaflet(160);
@@ -86,9 +91,36 @@
 		pedestrian_accidents_cluster.RegisterMarker(marker)}
 	);
 
+	public_transportation_stops.forEach(add_public_trans_stops);
+	street_lights.forEach(add_street_lights);
+
 	function create_cluster_marker(value) {
 		return new PruneCluster.Marker(value.split(",")[0], value.split(",")[1]);
 	}
+
+	function add_public_trans_stops(value) {
+		var circle = L.circle([value.split(",")[0], value.split(",")[1]], {
+		// color: '#800080',
+		stroke: false,
+		fillColor: '#800080',
+		fillOpacity: 0.5,
+		radius: 1.5,
+	}).addTo(public_transport_stops_layer).bindPopup(value.split(",")[2]);
+	}
+
+	function add_street_lights(value) {
+		var circle = L.circle([value.split(",")[0], value.split(",")[1]], {
+		// color: '#F8D609FF',
+		stroke: false,
+		fillColor: '#ffac00',
+		fillOpacity: 0.5,
+		radius: 1.5,
+	}).addTo(street_lights_layer);
+	}
+
+
+
+
 
 	traffic_accident_layer.addLayer(traffic_accidents_cluster);
 	bike_accident_layer.addLayer(bike_accidents_cluster);
@@ -110,8 +142,8 @@
 		"Traffic accidents": traffic_accident_layer,
 		"Bike accidents": bike_accident_layer,
 		"Pedestrian accidents": pedestrian_accident_layer,
-		""
-
+		"Public transport stops": public_transport_stops_layer,
+		"Street lights": street_lights_layer,
 	}
 	var layerControl = L.control.layers(base_layers, overlays).addTo(map);
 
