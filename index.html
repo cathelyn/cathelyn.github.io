@@ -21,16 +21,6 @@
 	<script src="sources/street_lights_lat_lon_date.js"></script>
 
 
-
-<!--	<link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />-->
-<!--    <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/MarkerCluster.css" />-->
-<!--    <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/MarkerCluster.Default.css" />-->
-
-<!--    <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js'></script>-->
-<!--    <script type='text/javascript' src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js'></script>-->
-<!--    <script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/leaflet.markercluster.js'></script>-->
-
-
 	<style>
 		html, body {
 			height: 100%;
@@ -49,12 +39,15 @@
 <body>
 
 
+<!--TODO: Use marker.filtered instead of removing markers from accident cluster -->
 
 <div id="map" style="width: 100vw; height: 100vh;"></div>
 <script>
 
+
 	// one main layer group
 	let accidents = L.layerGroup();
+
 
 	// various accident type layers
 	let traffic_accident_layer = L.layerGroup();
@@ -76,15 +69,90 @@
 
 
     let accidents_cluster = new PruneClusterForLeaflet(160);
-    // let traffic_accidents_cluster = new PruneClusterForLeaflet(160);
-    // let bike_accidents_cluster = new PruneClusterForLeaflet(160);
-	// let pedestrian_accidents_cluster = new PruneClusterForLeaflet(160);
 
+	// icons for separate categories
+	accidents_cluster.BuildLeafletClusterIcon = function(cluster) {
+        var e = new L.Icon.MarkerCluster();
+
+        e.stats = cluster.stats;
+        e.population = cluster.population;
+        return e;
+    };
+
+	var colors = ['rgba(255,75,0,0.6)', 'rgba(160,61,229,0.6)', 'rgba(3,170,234,0.6)'],
+			pi2 = Math.PI * 2;
+
+	L.Icon.MarkerCluster = L.Icon.extend({
+		options: {
+			iconSize: new L.Point(44, 44),
+			className: 'prunecluster leaflet-markercluster-icon'
+		},
+
+		createIcon: function () {
+			// based on L.Icon.Canvas from shramov/leaflet-plugins (BSD licence)
+			var e = document.createElement('canvas');
+			this._setIconStyles(e, 'icon');
+			var s = this.options.iconSize;
+			e.width = s.x;
+			e.height = s.y;
+			this.draw(e.getContext('2d'), s.x, s.y);
+			return e;
+		},
+
+		createShadow: function () {
+			return null;
+		},
+
+		draw: function(canvas, width, height) {
+			var start = 0;
+			for (var i = 0, l = colors.length; i < l; ++i) {
+
+				var size = this.stats[i] / this.population;
+
+
+				if (size > 0) {
+					canvas.beginPath();
+					canvas.moveTo(22, 22);
+					canvas.fillStyle = colors[i];
+					var from = start,
+							to = start + size * pi2;
+
+					if (to < from) {
+						from = start;
+					}
+					canvas.arc(22,22,22, from, to);
+
+					start = start + size*pi2;
+					canvas.lineTo(22,22);
+					canvas.fill();
+					canvas.closePath();
+				}
+
+			}
+
+			canvas.beginPath();
+			canvas.fillStyle = "rgba(255, 255, 255, 0)"; // TODO: Ask about this
+			var diameter = 13;
+			canvas.arc(22, 22, diameter, 0, Math.PI*2);
+			canvas.fill();
+			canvas.closePath();
+
+			canvas.fillStyle = '#000000';
+			canvas.textAlign = 'center';
+			canvas.textBaseline = 'middle';
+			canvas.font = 'bold 12px sans-serif';
+
+			canvas.fillText(this.population, 22, 22, 40);
+		}
+	});
 
 	// markers storage for quick adding - deleting
 	let traffic_accident_markers = []
 	let bike_accident_markers = []
 	let pedestrian_accident_markers = []
+	let traffic_category = 0
+	let bike_category = 1
+	let pedestrian_category = 2
 
 	function add_traffic_accidents() {
 		if (traffic_accident_markers.length > 0){
@@ -94,6 +162,7 @@
 			console.log("Building traffic_accidents_markers anew");
 			traffic_accidents.forEach(value => {
 				marker = create_cluster_marker(value);
+				marker.category = traffic_category;
 				traffic_accident_markers.push(marker)
 				accidents_cluster.RegisterMarker(marker)}
 			);
@@ -109,6 +178,8 @@
 			console.log("Building bike_accidents_markers anew");
 			bike_accidents.forEach(value => {
 				marker = create_cluster_marker(value);
+				marker.fillColor = colors[bike_category];
+				marker.category = bike_category;
 				bike_accident_markers.push(marker);
 				accidents_cluster.RegisterMarker(marker)}
 			);
@@ -124,6 +195,7 @@
 			console.log("Building pedestrian_accidents_markers anew");
 			pedestrian_accidents.forEach(value => {
 				marker = create_cluster_marker(value);
+				marker.category = pedestrian_category;
 				pedestrian_accident_markers.push(marker);
 				accidents_cluster.RegisterMarker(marker)}
 			);
@@ -145,11 +217,6 @@
 		accidents_cluster.RemoveMarkers(pedestrian_accident_markers);
 		accidents_cluster.ProcessView();
 	}
-
-	// //
-	// add_traffic_accidents();
-	// add_bike_accidents();
-	// add_pedestrian_accidents();
 
 	public_transportation_stops.forEach(add_public_trans_stops);
 	street_lights.forEach(add_street_lights);
@@ -186,9 +253,9 @@
 	// bike_accident_layer.addLayer(bike_accidents_cluster);
 	// pedestrian_accident_layer.addLayer(pedestrian_accidents_cluster);
 
-	var tiles = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
-			maxZoom: 19,
-		attribution: 'OpenStreetMap'
+	var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		maxZoom: 19,
+		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 		});
 
 	var map = L.map('map', {
