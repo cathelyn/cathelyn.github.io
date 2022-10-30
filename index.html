@@ -157,11 +157,13 @@
 	function add_traffic_accidents() {
 		if (traffic_accident_markers.length > 0){
 			console.log("Registering " + traffic_accident_markers.length + " markers");
-			accidents_cluster.RegisterMarkers(traffic_accident_markers);
+			traffic_accident_markers.map(marker => {marker.filtered = false})
+			// accidents_cluster.RegisterMarkers(traffic_accident_markers);
 		} else {
 			console.log("Building traffic_accidents_markers anew");
 			traffic_accidents.forEach(value => {
 				marker = create_cluster_marker(value);
+				marker.filtered = true;
 				marker.category = traffic_category;
 				traffic_accident_markers.push(marker)
 				accidents_cluster.RegisterMarker(marker)}
@@ -173,12 +175,14 @@
 	function add_bike_accidents() {
 		if (bike_accident_markers.length > 0){
 			console.log("Registering " + bike_accident_markers.length + " markers");
-			accidents_cluster.RegisterMarkers(bike_accident_markers);
+			bike_accident_markers.map(marker => {marker.filtered = false})
+			// accidents_cluster.RegisterMarkers(bike_accident_markers);
 		} else {
 			console.log("Building bike_accidents_markers anew");
 			bike_accidents.forEach(value => {
 				marker = create_cluster_marker(value);
 				marker.fillColor = colors[bike_category];
+				marker.filtered = true;
 				marker.category = bike_category;
 				bike_accident_markers.push(marker);
 				accidents_cluster.RegisterMarker(marker)}
@@ -190,12 +194,14 @@
 	function add_pedestrian_accidents() {
 		if (pedestrian_accident_markers.length > 0) {
 			console.log("Registering " + pedestrian_accident_markers.length + " markers");
-			accidents_cluster.RegisterMarkers(pedestrian_accident_markers);
+			pedestrian_accident_markers.map(marker => {marker.filtered = false})
+			// accidents_cluster.RegisterMarkers(pedestrian_accident_markers);
 		} else {
 			console.log("Building pedestrian_accidents_markers anew");
 			pedestrian_accidents.forEach(value => {
 				marker = create_cluster_marker(value);
 				marker.category = pedestrian_category;
+				marker.filtered = true;
 				pedestrian_accident_markers.push(marker);
 				accidents_cluster.RegisterMarker(marker)}
 			);
@@ -204,19 +210,28 @@
 	}
 
 	function remove_traffic_accidents() {
-		accidents_cluster.RemoveMarkers(traffic_accident_markers);
+		traffic_accident_markers.map(marker => {marker.filtered = true})
+		// accidents_cluster.RemoveMarkers(traffic_accident_markers);
 		accidents_cluster.ProcessView();
 	}
 
 	function remove_bike_accidents() {
-		accidents_cluster.RemoveMarkers(bike_accident_markers);
+		bike_accident_markers.map(marker => {marker.filtered = true})
+		// accidents_cluster.RemoveMarkers(bike_accident_markers);
 		accidents_cluster.ProcessView();
 	}
 
 	function remove_pedestrian_accidents() {
-		accidents_cluster.RemoveMarkers(pedestrian_accident_markers);
+		pedestrian_accident_markers.map(marker => {marker.filtered = true})
+		// accidents_cluster.RemoveMarkers(pedestrian_accident_markers);
 		accidents_cluster.ProcessView();
 	}
+
+
+	// init the clusters
+	add_traffic_accidents();
+	add_bike_accidents();
+	add_pedestrian_accidents();
 
 	public_transportation_stops.forEach(add_public_trans_stops);
 	street_lights.forEach(add_street_lights);
