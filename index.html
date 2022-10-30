@@ -53,6 +53,9 @@
 <div id="map" style="width: 100vw; height: 100vh;"></div>
 <script>
 
+	// one main layer group
+	let accidents = L.layerGroup();
+
 	// various accident type layers
 	let traffic_accident_layer = L.layerGroup();
 	let bike_accident_layer = L.layerGroup();
@@ -72,24 +75,81 @@
 	let street_slopes_layer = L.layerGroup();
 
 
-    let traffic_accidents_cluster = new PruneClusterForLeaflet(160);
-    let bike_accidents_cluster = new PruneClusterForLeaflet(160);
-	let pedestrian_accidents_cluster = new PruneClusterForLeaflet(160);
+    let accidents_cluster = new PruneClusterForLeaflet(160);
+    // let traffic_accidents_cluster = new PruneClusterForLeaflet(160);
+    // let bike_accidents_cluster = new PruneClusterForLeaflet(160);
+	// let pedestrian_accidents_cluster = new PruneClusterForLeaflet(160);
 
-	traffic_accidents.forEach(value => {
-		marker = create_cluster_marker(value);
-		traffic_accidents_cluster.RegisterMarker(marker)}
-	);
 
-	bike_accidents.forEach(value => {
-		marker = create_cluster_marker(value);
-		bike_accidents_cluster.RegisterMarker(marker)}
-	);
+	// markers storage for quick adding - deleting
+	let traffic_accident_markers = []
+	let bike_accident_markers = []
+	let pedestrian_accident_markers = []
 
-	pedestrian_accidents.forEach(value => {
-		marker = create_cluster_marker(value);
-		pedestrian_accidents_cluster.RegisterMarker(marker)}
-	);
+	function add_traffic_accidents() {
+		if (traffic_accident_markers.length > 0){
+			console.log("Registering " + traffic_accident_markers.length + " markers");
+			accidents_cluster.RegisterMarkers(traffic_accident_markers);
+		} else {
+			console.log("Building traffic_accidents_markers anew");
+			traffic_accidents.forEach(value => {
+				marker = create_cluster_marker(value);
+				traffic_accident_markers.push(marker)
+				accidents_cluster.RegisterMarker(marker)}
+			);
+		}
+		accidents_cluster.ProcessView();
+	}
+
+	function add_bike_accidents() {
+		if (bike_accident_markers.length > 0){
+			console.log("Registering " + bike_accident_markers.length + " markers");
+			accidents_cluster.RegisterMarkers(bike_accident_markers);
+		} else {
+			console.log("Building bike_accidents_markers anew");
+			bike_accidents.forEach(value => {
+				marker = create_cluster_marker(value);
+				bike_accident_markers.push(marker);
+				accidents_cluster.RegisterMarker(marker)}
+			);
+		}
+	accidents_cluster.ProcessView();
+	}
+
+	function add_pedestrian_accidents() {
+		if (pedestrian_accident_markers.length > 0) {
+			console.log("Registering " + pedestrian_accident_markers.length + " markers");
+			accidents_cluster.RegisterMarkers(pedestrian_accident_markers);
+		} else {
+			console.log("Building pedestrian_accidents_markers anew");
+			pedestrian_accidents.forEach(value => {
+				marker = create_cluster_marker(value);
+				pedestrian_accident_markers.push(marker);
+				accidents_cluster.RegisterMarker(marker)}
+			);
+		}
+	accidents_cluster.ProcessView();
+	}
+
+	function remove_traffic_accidents() {
+		accidents_cluster.RemoveMarkers(traffic_accident_markers);
+		accidents_cluster.ProcessView();
+	}
+
+	function remove_bike_accidents() {
+		accidents_cluster.RemoveMarkers(bike_accident_markers);
+		accidents_cluster.ProcessView();
+	}
+
+	function remove_pedestrian_accidents() {
+		accidents_cluster.RemoveMarkers(pedestrian_accident_markers);
+		accidents_cluster.ProcessView();
+	}
+
+	// //
+	// add_traffic_accidents();
+	// add_bike_accidents();
+	// add_pedestrian_accidents();
 
 	public_transportation_stops.forEach(add_public_trans_stops);
 	street_lights.forEach(add_street_lights);
@@ -121,10 +181,10 @@
 
 
 
-
-	traffic_accident_layer.addLayer(traffic_accidents_cluster);
-	bike_accident_layer.addLayer(bike_accidents_cluster);
-	pedestrian_accident_layer.addLayer(pedestrian_accidents_cluster);
+	accidents.addLayer(accidents_cluster);
+	// traffic_accident_layer.addLayer(traffic_accidents_cluster);
+	// bike_accident_layer.addLayer(bike_accidents_cluster);
+	// pedestrian_accident_layer.addLayer(pedestrian_accidents_cluster);
 
 	var tiles = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
 			maxZoom: 19,
@@ -139,11 +199,10 @@
 
 	var base_layers = {"OpenStreetMap": tiles}
 	var overlays = {
-		"Traffic accidents": traffic_accident_layer,
-		"Bike accidents": bike_accident_layer,
-		"Pedestrian accidents": pedestrian_accident_layer,
-		"Public transport stops": public_transport_stops_layer,
-		"Street lights": street_lights_layer,
+		"<span id='traffic_accidents'>Traffic accidents</span>": accidents,
+		"<span id='bike_accidents'>Bike accidents</span>": accidents,
+		"<span id='pedestrian_accidents'>Pedestrian accidents</span>": accidents,
+		"Street lights": street_lights_layer
 	}
 	var layerControl = L.control.layers(base_layers, overlays).addTo(map);
 
@@ -164,13 +223,39 @@
 // 		"OpenStreetMaps": tiles,
 // 	}
 //
-// // add the event handler
-// function handleCommand() {
-//
-//    alert("Clicked, checked = " + this.checked);
-// }
+// add the event handlers
+function toggle_traffic_accidents() {
+   if (this.checked) {
+	   console.log("Adding traffic accidents");
+	   add_traffic_accidents();
+   } else {
+	   console.log("Removing traffic accidents");
+	   remove_traffic_accidents();
+   }
+}
 
-// document.getElementById ("command").addEventListener ("click", handleCommand, false);
+function toggle_bike_accidents() {
+	if (this.checked) {
+		console.log("Adding bike accidents");
+		add_bike_accidents();
+	} else {
+		console.log("Removing bike accidents");
+		remove_bike_accidents();
+	}}
+
+function toggle_pedestrian_accidents() {
+	if (this.checked) {
+		console.log("Adding pedestrian accidents");
+		add_pedestrian_accidents();
+	} else {
+		console.log("Removing pedestrian accidents");
+		remove_pedestrian_accidents();
+	}}
+//
+
+document.getElementById("traffic_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggle_traffic_accidents, false);
+document.getElementById("bike_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggle_bike_accidents, false);
+document.getElementById("pedestrian_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggle_pedestrian_accidents, false);
 
 
 
