@@ -4,47 +4,85 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<title>Accident Data Visualization</title>
+	<title>Brno Accident Data Visualization</title>
+
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
 	<link rel="shortcut icon" type="image/png" href="docs/images/favicon.png" />
+	<link rel="stylesheet" href="css/style.css" />
 	<link rel="stylesheet" href="leaflet/leaflet.css" />
 	<link rel="stylesheet" href="dist/LeafletStyleSheet.css" />
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
-   integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
-   crossorigin=""/>
+	<link rel="stylesheet" href="css/leaflet-sidebar.css" />
+
+	<!--	Leaflet -->
 	<script src="leaflet/leaflet.js"></script>
+	<!--	Prune clustering-->
 	<script src="dist/PruneCluster.js"></script>
+	<!--	Leaflet sidebar-->
+	<script src="js/leaflet-sidebar.js"></script>
+
+
+	<!--	Data sources TODO: Find better way to store-->
 	<script src="sources/traffic_accidents_date.js"></script>
 	<script src="sources/bike_accidents_lat_lon_date.js"></script>
 	<script src="sources/ped_accidents_lat_lon_date.js"></script>
 	<script src="sources/pub_trans_stops_lat_lon_name.js"></script>
 	<script src="sources/street_lights_lat_lon_date.js"></script>
 
-
-	<style>
-		html, body {
-			height: 100%;
-			margin: 0;
-		}
-		.leaflet-container {
-			height: 400px;
-			width: 600px;
-			max-width: 100%;
-			max-height: 100%;
-		}
-	</style>
-
-
 </head>
 <body>
+
+<div id="sidebar" class="sidebar collapsed">
+	<!-- Nav tabs -->
+	<div class="sidebar-tabs">
+		<ul role="tablist">
+			<li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
+			<li class="disabled"><a href="#profile" role="tab"><i class="fa fa-user"></i></a></li>
+			<li ><a href="#filters" role="tab"><i class="fa fa-filter"></i></a></li>
+		</ul>
+
+		<ul role="tablist">
+			<li><a href="#settings" role="tab"><i class="fa fa-gear"></i></a></li>
+		</ul>
+	</div>
+
+	<!-- Tab panes -->
+	<div class="sidebar-content">
+		<div class="sidebar-pane" id="home">
+			<h1 class="sidebar-header">
+				Brno accident data visualization
+				<span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+			</h1>
+<!--			TODO: Decide what to do with this menu -->
+			This is a project.
+
+		</div>
+
+		<div class="sidebar-pane" id="profile">
+			<h1 class="sidebar-header">Profile<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+		</div>
+
+		<div class="sidebar-pane" id="filters">
+			<h1 class="sidebar-header">Filters<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+		</div>
+
+		<div class="sidebar-pane" id="settings">
+			<h1 class="sidebar-header">Settings<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+		</div>
+	</div>
+</div>
 
 
 <!--TODO: Use marker.filtered instead of removing markers from accident cluster -->
 
-<div id="map" style="width: 100vw; height: 100vh;"></div>
+<div id="map" class="sidebar-map" style="width: 100vw; height: 100vh;"></div>
+
+
+
+
 <script>
 
-// START LAYER SETUP
+	// START LAYER SETUP
 	// one main layer group
 	let accidents = L.layerGroup();
 	// main clustering layer
@@ -60,17 +98,17 @@
 	let street_slopes_layer = L.layerGroup();
 
 
-// END LAYER SETUP
+	// END LAYER SETUP
 
-// START ICON (MARKER) GENERATOR
+	// START ICON (MARKER) GENERATOR
 	// icons for separate categories
 	accidents_cluster.BuildLeafletClusterIcon = function(cluster) {
-        var e = new L.Icon.MarkerCluster();
+		var e = new L.Icon.MarkerCluster();
 
-        e.stats = cluster.stats;
-        e.population = cluster.population;
-        return e;
-    };
+		e.stats = cluster.stats;
+		e.population = cluster.population;
+		return e;
+	};
 
 	var colors = ['rgba(255,75,0,0.6)', 'rgba(160,61,229,0.6)', 'rgba(3,170,234,0.6)'],
 			pi2 = Math.PI * 2;
@@ -139,9 +177,9 @@
 		}
 	});
 
-// START ICON (MARKER) GENERATOR
+	// START ICON (MARKER) GENERATOR
 
-// START MARKER GENERATOR FROM DATA
+	// START MARKER GENERATOR FROM DATA
 
 	// markers storage for quick adding - deleting
 	let traffic_accident_markers = []
@@ -166,15 +204,15 @@
 		if (markers_array.length > 0){
 			console.log("Registering " + markers_array.length + " markers");
 			markers_array.map(marker => {marker.filtered = false})
-	} else {
-		console.log("Building markers anew");
-		dataset.forEach(value => {
-			marker = create_cluster_marker(value);
-			marker.date = create_date_from_YYYY_MM_DD(value);
-			marker.filtered = true;
-			marker.category = category;
-			markers_array.push(marker)
-			accidents_cluster.RegisterMarker(marker)}
+		} else {
+			console.log("Building markers anew");
+			dataset.forEach(value => {
+				marker = create_cluster_marker(value);
+				marker.date = create_date_from_YYYY_MM_DD(value);
+				marker.filtered = true;
+				marker.category = category;
+				markers_array.push(marker)
+				accidents_cluster.RegisterMarker(marker)}
 			);
 		}
 		accidents_cluster.ProcessView();
@@ -219,23 +257,23 @@
 
 	function add_public_trans_stops(value) {
 		var circle = L.circle([value.split(",")[0], value.split(",")[1]], {
-		// color: '#800080',
-		stroke: false,
-		fillColor: '#800080',
-		fillOpacity: 0.5,
-		radius: 1.5,
-	}).addTo(public_transport_stops_layer).bindPopup(value.split(",")[2]);
+			// color: '#800080',
+			stroke: false,
+			fillColor: '#800080',
+			fillOpacity: 0.5,
+			radius: 1.5,
+		}).addTo(public_transport_stops_layer).bindPopup(value.split(",")[2]);
 	}
 
 	function add_street_lights(value) {
 		// TODO: Make this faster (probably run in the bg on startup or use CircleMarker)
 		var circle = L.circle([value.split(",")[0], value.split(",")[1]], {
-		// color: '#F8D609FF',
-		stroke: false,
-		fillColor: '#ffac00',
-		fillOpacity: 0.5,
-		radius: 1.5,
-	}).addTo(street_lights_layer);
+			// color: '#F8D609FF',
+			stroke: false,
+			fillColor: '#ffac00',
+			fillOpacity: 0.5,
+			radius: 1.5,
+		}).addTo(street_lights_layer);
 	}
 
 	accidents.addLayer(accidents_cluster);
@@ -251,12 +289,13 @@
 
 	var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		maxZoom: 19,
-		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-		});
+		attribution: 'Katarína Bulková<br>&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+	});
 
 	var map = L.map('map', {
 		center: [49.196822238343486, 16.60474816825514],
 		zoom: 13,
+		zoomControl: false,
 		layers: [tiles]
 	});
 
@@ -271,99 +310,107 @@
 	}
 	var layerControl = L.control.layers(base_layers, overlays).addTo(map);
 
-// add the event handlers
-function toggle_traffic_accidents() {
-   if (this.checked) {
-	   console.log("Adding traffic accidents");
-	   add_traffic_accidents();
-   } else {
-	   console.log("Removing traffic accidents");
-		remove_marker_set(traffic_accident_markers);
-	   }
-}
+	L.control.zoom({
+		position: 'bottomright'
+	}).addTo(map)
 
-function toggle_bike_accidents() {
-	if (this.checked) {
-		console.log("Adding bike accidents");
-		add_bike_accidents();
-	} else {
-		console.log("Removing bike accidents");
-		remove_marker_set(bike_accident_markers);
-	}}
-
-function toggle_pedestrian_accidents() {
-	if (this.checked) {
-		console.log("Adding pedestrian accidents");
-		add_pedestrian_accidents();
-	} else {
-		console.log("Removing pedestrian accidents");
-		remove_marker_set(pedestrian_accident_markers);
-	}}
-
-// TODO: Experiment, remove
-// function toggle_year_filter() {
-// 	console.log("Filtering by year");
-// 	filter_by_year(2018, traffic_accident_markers);
-// }
-//
-
-document.getElementById("traffic_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggle_traffic_accidents, false);
-document.getElementById("bike_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggle_bike_accidents, false);
-document.getElementById("pedestrian_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggle_pedestrian_accidents, false);
-// TODO: experiment, remove
-// document.getElementById("2018").parentNode.parentNode.firstElementChild.addEventListener ("change", toggle_year_filter, false);
+	var sidebar = L.control.sidebar('sidebar').addTo(map);
 
 
 
+	// add the event handlers
+	function toggle_traffic_accidents() {
+		if (this.checked) {
+			console.log("Adding traffic accidents");
+			add_traffic_accidents();
+		} else {
+			console.log("Removing traffic accidents");
+			remove_marker_set(traffic_accident_markers);
+		}
+	}
+
+	function toggle_bike_accidents() {
+		if (this.checked) {
+			console.log("Adding bike accidents");
+			add_bike_accidents();
+		} else {
+			console.log("Removing bike accidents");
+			remove_marker_set(bike_accident_markers);
+		}}
+
+	function toggle_pedestrian_accidents() {
+		if (this.checked) {
+			console.log("Adding pedestrian accidents");
+			add_pedestrian_accidents();
+		} else {
+			console.log("Removing pedestrian accidents");
+			remove_marker_set(pedestrian_accident_markers);
+		}}
+
+	// TODO: Experiment, remove
+	// function toggle_year_filter() {
+	// 	console.log("Filtering by year");
+	// 	filter_by_year(2018, traffic_accident_markers);
+	// }
+	//
+
+	document.getElementById("traffic_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggle_traffic_accidents, false);
+	document.getElementById("bike_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggle_bike_accidents, false);
+	document.getElementById("pedestrian_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggle_pedestrian_accidents, false);
+	// TODO: experiment, remove
+	// document.getElementById("2018").parentNode.parentNode.firstElementChild.addEventListener ("change", toggle_year_filter, false);
 
 
 
 
 
 
-// alert(traffic_accident_marker_list.length);
 
 
-// var layerControl = L.control.layers(baseMaps, traffic_accident_layer).addTo(map);
-//
-// layerControl.addOverlay(traffic_accident_layer, "Traffic accidents");
 
-// for (coord in lat_lon) {
-// 	L.marker(coord.split(",")).addTo(map)
-// }
-// <!--	var div = L.DomUtil.create('div', 'info legend');-->
-// <!--	div.innerHTML = '<select><option>1</option><option>2</option><option>3</option></select>';-->
-// <!--	div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;-->
-// <!--	return div;-->
-//
-// <!--	var marker = L.marker([51.5, -0.09]).addTo(map)-->
-// <!--		.bindPopup('<b>Hello world!</b><br />I am a popup.').openPopup();-->
-//
-// <!--	var circle = L.circle([51.508, -0.11], {-->
-// <!--		color: 'red',-->
-// <!--		fillColor: '#f03',-->
-// <!--		fillOpacity: 0.5,-->
-// <!--		radius: 500-->
-// <!--	}).addTo(map).bindPopup('I am a circle.');-->
-//
-// <!--	var polygon = L.polygon([-->
-// <!--		[51.509, -0.08],-->
-// <!--		[51.503, -0.06],-->
-// <!--		[51.51, -0.047]-->
-// <!--	]).addTo(map).bindPopup('I am a polygon.');-->
-//
-//
-// <!--	var popup = L.popup()-->
-// <!--		.setLatLng([49, 16])-->
-// <!--		.setContent('I am a standalone popup.')-->
-// <!--		.openOn(map);-->
-//
-// 	function onMapClick(e) {
-// 		popup
-// 			.setLatLng(e.latlng)
-// 			.setContent('You clicked the map at ' + e.latlng.toString())
-// 			.openOn(map);
-// 	}
+	// alert(traffic_accident_marker_list.length);
+
+
+	// var layerControl = L.control.layers(baseMaps, traffic_accident_layer).addTo(map);
+	//
+	// layerControl.addOverlay(traffic_accident_layer, "Traffic accidents");
+
+	// for (coord in lat_lon) {
+	// 	L.marker(coord.split(",")).addTo(map)
+	// }
+	// <!--	var div = L.DomUtil.create('div', 'info legend');-->
+	// <!--	div.innerHTML = '<select><option>1</option><option>2</option><option>3</option></select>';-->
+	// <!--	div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;-->
+	// <!--	return div;-->
+	//
+	// <!--	var marker = L.marker([51.5, -0.09]).addTo(map)-->
+	// <!--		.bindPopup('<b>Hello world!</b><br />I am a popup.').openPopup();-->
+	//
+	// <!--	var circle = L.circle([51.508, -0.11], {-->
+	// <!--		color: 'red',-->
+	// <!--		fillColor: '#f03',-->
+	// <!--		fillOpacity: 0.5,-->
+	// <!--		radius: 500-->
+	// <!--	}).addTo(map).bindPopup('I am a circle.');-->
+	//
+	// <!--	var polygon = L.polygon([-->
+	// <!--		[51.509, -0.08],-->
+	// <!--		[51.503, -0.06],-->
+	// <!--		[51.51, -0.047]-->
+	// <!--	]).addTo(map).bindPopup('I am a polygon.');-->
+	//
+	//
+	// <!--	var popup = L.popup()-->
+	// <!--		.setLatLng([49, 16])-->
+	// <!--		.setContent('I am a standalone popup.')-->
+	// <!--		.openOn(map);-->
+	//
+	// 	function onMapClick(e) {
+	// 		popup
+	// 			.setLatLng(e.latlng)
+	// 			.setContent('You clicked the map at ' + e.latlng.toString())
+	// 			.openOn(map);
+	// 	}
 
 	// map.on('click', onMapClick);
 
