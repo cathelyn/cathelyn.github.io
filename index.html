@@ -23,9 +23,9 @@
 
 	<!--	Data sources TODO: Find better way to store-->
 
-	<script src="sources/bike_accidents_lat_lon_date.js"></script>
-	<script src="sources/traffic_accidents_date.js"></script>
-	<script src="sources/ped_accidents_lat_lon_date.js"></script>
+<!--	<script src="sources/bike_accidents_lat_lon_date.js"></script>-->
+<!--	<script src="sources/traffic_accidents_date.js"></script>-->
+<!--	<script src="sources/ped_accidents_lat_lon_date.js"></script>-->
 	<script src="sources/pub_trans_stops_lat_lon_name.js"></script>
 	<script src="sources/street_lights_lat_lon_date.js"></script>
 
@@ -77,8 +77,7 @@
 
 <div id="map" class="sidebar-map" style="width: 100vw; height: 100vh;"></div>
 
-
-<script>
+<script type="module">
 	// CONSTANTS
 	const categories_colors = ['rgba(255,75,0,0.6)', 'rgba(160,61,229,0.6)', 'rgba(3,170,234,0.6)'];
 	const pi2 = Math.PI * 2;
@@ -86,10 +85,13 @@
 	const traffic_category = 0
 	const bike_category = 1
 	const pedestrian_category = 2
-
-
 	// END CONSTANTS
 
+	// DATA
+	// ["sources/bike_accidents.js", "sources/bike_accidents.js", "sources/bike_accidents.js'"]
+	import {bike_accidents_json} from "./sources/bike_accidents.js";
+	import {traffic_accidents_json} from "./sources/traffic_accidents.js";
+	import {pedestrian_accidents_json} from "./sources/ped_accidents.js";
 	// START LAYER SETUP
 	// one main layer group
 	let accidents = L.layerGroup();
@@ -241,15 +243,15 @@
 	}
 
 	function add_traffic_accidents() {
-		add_accident(traffic_accidents, traffic_accident_markers, traffic_category);
+		add_accident(traffic_accidents_json, traffic_accident_markers, traffic_category);
 	}
 
 	function add_bike_accidents() {
-		add_accident(bike_accidents, bike_accident_markers, bike_category);
+		add_accident(bike_accidents_json, bike_accident_markers, bike_category);
 	}
 
 	function add_pedestrian_accidents() {
-		add_accident(pedestrian_accidents, pedestrian_accident_markers, pedestrian_category);
+		add_accident(pedestrian_accidents_json, pedestrian_accident_markers, pedestrian_category);
 	}
 
 	function remove_marker_set(marker_set) {
@@ -267,14 +269,15 @@
 
 	function create_cluster_marker(value) {
 		return new PruneCluster.Marker(
-				value.split(",")[0],
-				value.split(",")[1]);
+				value.point_y,
+				value.point_x
+		)
 	}
 
 	function create_date_from_YYYY_MM_DD(value) {
-		return new Date(value.split(",")[2].padStart(2, '0')
-				+ "-" + value.split(",")[3].padStart(2, '0')
-				+ "-" + value.split(",")[4].padStart(2, '0')
+		return new Date(value.year
+				+ "-" + value.month.toString().padStart(2, '0')
+				+ "-" + value.day.toString().padStart(2, '0')
 				+ "T00:00:00.000Z");
 	}
 
@@ -300,19 +303,27 @@
 	accidents.addLayer(accidents_cluster);
 
 
-	let tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	let OSM = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		maxZoom: 19,
 		attribution: 'Katarína Bulková<br>&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+	});
+
+	var CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+		subdomains: 'abcd',
+		maxZoom: 20
 	});
 
 	let map = L.map('map', {
 		center: [49.196822238343486, 16.60474816825514],
 		zoom: 13,
 		zoomControl: false,
-		layers: [tiles]
+		layers: [OSM]
 	});
 
-	const base_layers = {"OpenStreetMap": tiles}
+	const base_layers = {
+		"OpenStreetMap": OSM,
+		"Carto": CartoDB_Positron}
 	const overlays = {
 		"<span id='traffic_accidents'><i class='fa fa-map-marker red'></i> Traffic accidents</span>": accidents,
 		"<span id='bike_accidents'><i class='fa fa-map-marker violet'></i> Bike accidents</span>": accidents,
