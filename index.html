@@ -235,6 +235,7 @@
 				marker.data.icon = fontAwesomeMapMarkerIcon();
 				marker.data.icon.options.className = "MapMarkerIcon " + colour_class;
 
+				marker.data.popup = "<b>" + value.point_y + value.point_x + "</b>"; // TODO: make popup
 				markers_array.push(marker);
 				accidents_cluster.RegisterMarker(marker)}
 			);
