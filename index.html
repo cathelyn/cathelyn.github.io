@@ -4,9 +4,9 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<title>Heute kommt ein Gewitter</title>
+	<title>Accident Data Visualization</title>
 
-<!--	<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />-->
+	<link rel="shortcut icon" type="image/png" href="docs/images/favicon.png" />
 	<link rel="stylesheet" href="leaflet/leaflet.css" />
 	<link rel="stylesheet" href="dist/LeafletStyleSheet.css" />
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
@@ -44,20 +44,12 @@
 <div id="map" style="width: 100vw; height: 100vh;"></div>
 <script>
 
-
+// START LAYER SETUP
 	// one main layer group
 	let accidents = L.layerGroup();
+	// main clustering layer
+	let accidents_cluster = new PruneClusterForLeaflet(160);
 
-
-	// various accident type layers
-	let traffic_accident_layer = L.layerGroup();
-	let bike_accident_layer = L.layerGroup();
-	let pedestrian_accident_layer = L.layerGroup();
-
-	//accident attributes layers
-	let year_layer = L.layerGroup();
-	let month_layer = L.layerGroup();
-	let day_layer = L.layerGroup();
 
 	//another info layers
 	let air_quality_layer = L.layerGroup();
@@ -68,8 +60,9 @@
 	let street_slopes_layer = L.layerGroup();
 
 
-    let accidents_cluster = new PruneClusterForLeaflet(160);
+// END LAYER SETUP
 
+// START ICON (MARKER) GENERATOR
 	// icons for separate categories
 	accidents_cluster.BuildLeafletClusterIcon = function(cluster) {
         var e = new L.Icon.MarkerCluster();
@@ -146,87 +139,64 @@
 		}
 	});
 
+// START ICON (MARKER) GENERATOR
+
+// START MARKER GENERATOR FROM DATA
+
 	// markers storage for quick adding - deleting
 	let traffic_accident_markers = []
 	let bike_accident_markers = []
 	let pedestrian_accident_markers = []
+
+	// categories configuration
 	let traffic_category = 0
 	let bike_category = 1
 	let pedestrian_category = 2
 
-	function add_traffic_accidents() {
-		if (traffic_accident_markers.length > 0){
-			console.log("Registering " + traffic_accident_markers.length + " markers");
-			traffic_accident_markers.map(marker => {marker.filtered = false})
-			// accidents_cluster.RegisterMarkers(traffic_accident_markers);
-		} else {
-			console.log("Building traffic_accidents_markers anew");
-			traffic_accidents.forEach(value => {
-				marker = create_cluster_marker(value);
-				marker.filtered = true;
-				marker.category = traffic_category;
-				traffic_accident_markers.push(marker)
-				accidents_cluster.RegisterMarker(marker)}
+
+	function add_accident(dataset, markers_array, category)
+	/**
+	 * Create and add markers for the accidents based on the date in @param dataset. Created markers are also stored
+	 * in @param markers_array for further manipulation and filtering. Each marker is assigned a respective category.
+	 * @param dataset input data in js array format consisting of comma-separated lat,lon,YYYY,MM,DD values
+	 * @param markers_array js array for storing created markers
+	 * @param category representation of category for filtering/icon composition purposes
+	 */
+	{
+		if (markers_array.length > 0){
+			console.log("Registering " + markers_array.length + " markers");
+			markers_array.map(marker => {marker.filtered = false})
+	} else {
+		console.log("Building markers anew");
+		dataset.forEach(value => {
+			marker = create_cluster_marker(value);
+			marker.date = create_date_from_YYYY_MM_DD(value);
+			marker.filtered = true;
+			marker.category = category;
+			markers_array.push(marker)
+			accidents_cluster.RegisterMarker(marker)}
 			);
 		}
 		accidents_cluster.ProcessView();
+	}
+
+	function add_traffic_accidents() {
+		add_accident(traffic_accidents, traffic_accident_markers, traffic_category);
 	}
 
 	function add_bike_accidents() {
-		if (bike_accident_markers.length > 0){
-			console.log("Registering " + bike_accident_markers.length + " markers");
-			bike_accident_markers.map(marker => {marker.filtered = false})
-			// accidents_cluster.RegisterMarkers(bike_accident_markers);
-		} else {
-			console.log("Building bike_accidents_markers anew");
-			bike_accidents.forEach(value => {
-				marker = create_cluster_marker(value);
-				marker.fillColor = colors[bike_category];
-				marker.filtered = true;
-				marker.category = bike_category;
-				bike_accident_markers.push(marker);
-				accidents_cluster.RegisterMarker(marker)}
-			);
-		}
-	accidents_cluster.ProcessView();
+		add_accident(bike_accidents, bike_accident_markers, bike_category);
 	}
 
 	function add_pedestrian_accidents() {
-		if (pedestrian_accident_markers.length > 0) {
-			console.log("Registering " + pedestrian_accident_markers.length + " markers");
-			pedestrian_accident_markers.map(marker => {marker.filtered = false})
-			// accidents_cluster.RegisterMarkers(pedestrian_accident_markers);
-		} else {
-			console.log("Building pedestrian_accidents_markers anew");
-			pedestrian_accidents.forEach(value => {
-				marker = create_cluster_marker(value);
-				marker.category = pedestrian_category;
-				marker.filtered = true;
-				pedestrian_accident_markers.push(marker);
-				accidents_cluster.RegisterMarker(marker)}
-			);
-		}
-	accidents_cluster.ProcessView();
+		add_accident(pedestrian_accidents, pedestrian_accident_markers, pedestrian_category);
 	}
 
-	function remove_traffic_accidents() {
-		traffic_accident_markers.map(marker => {marker.filtered = true})
-		// accidents_cluster.RemoveMarkers(traffic_accident_markers);
-		accidents_cluster.ProcessView();
-	}
-
-	function remove_bike_accidents() {
-		bike_accident_markers.map(marker => {marker.filtered = true})
-		// accidents_cluster.RemoveMarkers(bike_accident_markers);
-		accidents_cluster.ProcessView();
-	}
-
-	function remove_pedestrian_accidents() {
-		pedestrian_accident_markers.map(marker => {marker.filtered = true})
+	function remove_marker_set(marker_set) {
+		marker_set.map(marker => {marker.filtered = true})
 		// accidents_cluster.RemoveMarkers(pedestrian_accident_markers);
 		accidents_cluster.ProcessView();
 	}
-
 
 	// init the clusters
 	add_traffic_accidents();
@@ -240,6 +210,13 @@
 		return new PruneCluster.Marker(value.split(",")[0], value.split(",")[1]);
 	}
 
+	function create_date_from_YYYY_MM_DD(value) {
+		return new Date(value.split(",")[2].padStart(2, '0')
+				+ "-" + value.split(",")[3].padStart(2, '0')
+				+ "-" + value.split(",")[4].padStart(2, '0')
+				+ "T00:00:00.000Z");
+	}
+
 	function add_public_trans_stops(value) {
 		var circle = L.circle([value.split(",")[0], value.split(",")[1]], {
 		// color: '#800080',
@@ -251,6 +228,7 @@
 	}
 
 	function add_street_lights(value) {
+		// TODO: Make this faster (probably run in the bg on startup or use CircleMarker)
 		var circle = L.circle([value.split(",")[0], value.split(",")[1]], {
 		// color: '#F8D609FF',
 		stroke: false,
@@ -260,13 +238,16 @@
 	}).addTo(street_lights_layer);
 	}
 
-
-
-
 	accidents.addLayer(accidents_cluster);
-	// traffic_accident_layer.addLayer(traffic_accidents_cluster);
-	// bike_accident_layer.addLayer(bike_accidents_cluster);
-	// pedestrian_accident_layer.addLayer(pedestrian_accidents_cluster);
+
+
+
+	// filtering functions
+	// function filter_by_year(year, marker_set) {
+	// 	remove_marker_set(marker_set);
+	// 	marker_set.filter(marker => marker.date.getFullYear().toString() === year).map(marker => {marker.filtered = false})
+	// }
+
 
 	var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		maxZoom: 19,
@@ -284,27 +265,12 @@
 		"<span id='traffic_accidents'>Traffic accidents</span>": accidents,
 		"<span id='bike_accidents'>Bike accidents</span>": accidents,
 		"<span id='pedestrian_accidents'>Pedestrian accidents</span>": accidents,
-		"Street lights": street_lights_layer
+		"Street lights": street_lights_layer,
+		// "<span id='2018'>2018</span>": accidents,
+
 	}
 	var layerControl = L.control.layers(base_layers, overlays).addTo(map);
 
-
-	// create the control
-// var command = L.control({position: 'topright'});
-//
-// command.onAdd = function (map) {
-//     var div = L.DomUtil.create('div', 'command');
-//
-//     div.innerHTML = '<form><input id="command" type="checkbox"/>dopravni nehody</form>';
-//     return div;
-// };
-//
-// command.addTo(map);
-//
-// 	var baseMaps = {
-// 		"OpenStreetMaps": tiles,
-// 	}
-//
 // add the event handlers
 function toggle_traffic_accidents() {
    if (this.checked) {
@@ -312,8 +278,8 @@ function toggle_traffic_accidents() {
 	   add_traffic_accidents();
    } else {
 	   console.log("Removing traffic accidents");
-	   remove_traffic_accidents();
-   }
+		remove_marker_set(traffic_accident_markers);
+	   }
 }
 
 function toggle_bike_accidents() {
@@ -322,7 +288,7 @@ function toggle_bike_accidents() {
 		add_bike_accidents();
 	} else {
 		console.log("Removing bike accidents");
-		remove_bike_accidents();
+		remove_marker_set(bike_accident_markers);
 	}}
 
 function toggle_pedestrian_accidents() {
@@ -331,13 +297,21 @@ function toggle_pedestrian_accidents() {
 		add_pedestrian_accidents();
 	} else {
 		console.log("Removing pedestrian accidents");
-		remove_pedestrian_accidents();
+		remove_marker_set(pedestrian_accident_markers);
 	}}
+
+// TODO: Experiment, remove
+// function toggle_year_filter() {
+// 	console.log("Filtering by year");
+// 	filter_by_year(2018, traffic_accident_markers);
+// }
 //
 
 document.getElementById("traffic_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggle_traffic_accidents, false);
 document.getElementById("bike_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggle_bike_accidents, false);
 document.getElementById("pedestrian_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggle_pedestrian_accidents, false);
+// TODO: experiment, remove
+// document.getElementById("2018").parentNode.parentNode.firstElementChild.addEventListener ("change", toggle_year_filter, false);
 
 
 
