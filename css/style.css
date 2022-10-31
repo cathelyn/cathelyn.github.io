@@ -8,3 +8,24 @@ html, body {
     max-width: 100%;
     max-height: 100%;
 }
+
+.mapMarkerIcon {
+    text-align: center;
+    line-height: 40px;
+}
+
+.red {
+    color: rgba(255,75,0,0.8);
+}
+
+.violet {
+    color: rgba(160,61,229,0.8);
+}
+
+.blue {
+    color: rgba(3,170,234,0.8);
+}
+
+.black {
+    color: black;
+}

@@ -53,7 +53,7 @@
 				Brno accident data visualization
 				<span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
 			</h1>
-<!--			TODO: Decide what to do with this menu -->
+			<!--			TODO: Decide what to do with this menu -->
 			This is a project.
 
 		</div>
@@ -177,6 +177,16 @@
 		}
 	});
 
+	function fontAwesomeMapMarkerIcon()
+	{
+		return new L.divIcon({
+					html: '<i class="fa fa-map-marker fa-2x"></i>',
+					iconSize: [40, 40],
+					className: "MapMarkerIcon",
+				}
+		)
+	}
+
 	// START ICON (MARKER) GENERATOR
 
 	// START MARKER GENERATOR FROM DATA
@@ -205,13 +215,30 @@
 			console.log("Registering " + markers_array.length + " markers");
 			markers_array.map(marker => {marker.filtered = false})
 		} else {
+
+			let colour_class = "black";
+			if (category === 0) {
+				colour_class = "red";
+			}
+			else if (category === 1) {
+				colour_class = "violet";
+			}
+			else if (category === 2) {
+				colour_class = "blue";
+			}
+
+
 			console.log("Building markers anew");
 			dataset.forEach(value => {
 				marker = create_cluster_marker(value);
 				marker.date = create_date_from_YYYY_MM_DD(value);
 				marker.filtered = true;
 				marker.category = category;
-				markers_array.push(marker)
+
+				marker.data.icon = fontAwesomeMapMarkerIcon();
+				marker.data.icon.options.className = "MapMarkerIcon " + colour_class;
+
+				markers_array.push(marker);
 				accidents_cluster.RegisterMarker(marker)}
 			);
 		}
@@ -301,9 +328,9 @@
 
 	var base_layers = {"OpenStreetMap": tiles}
 	var overlays = {
-		"<span id='traffic_accidents'>Traffic accidents</span>": accidents,
-		"<span id='bike_accidents'>Bike accidents</span>": accidents,
-		"<span id='pedestrian_accidents'>Pedestrian accidents</span>": accidents,
+		"<span id='traffic_accidents'><i class='fa fa-map-marker red'></i> Traffic accidents</span>": accidents,
+		"<span id='bike_accidents'><i class='fa fa-map-marker violet'></i> Bike accidents</span>": accidents,
+		"<span id='pedestrian_accidents'><i class='fa fa-map-marker blue'></i> Pedestrian accidents</span>": accidents,
 		"Street lights": street_lights_layer,
 		// "<span id='2018'>2018</span>": accidents,
 
