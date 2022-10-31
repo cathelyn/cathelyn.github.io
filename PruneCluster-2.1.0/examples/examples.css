@@ -1,4 +1,4 @@
-@import url('../dist/LeafletStyleSheet.css');
+@import url('../../css/LeafletStyleSheet.css');
 
 html, body, #map {
 	width:100%;

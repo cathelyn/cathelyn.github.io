@@ -11,20 +11,20 @@
 	<link rel="shortcut icon" type="image/png" href="docs/images/favicon.png" />
 	<link rel="stylesheet" href="css/style.css" />
 	<link rel="stylesheet" href="leaflet/leaflet.css" />
-	<link rel="stylesheet" href="dist/LeafletStyleSheet.css" />
+	<link rel="stylesheet" href="css/LeafletStyleSheet.css" />
 	<link rel="stylesheet" href="css/leaflet-sidebar.css" />
 
 	<!--	Leaflet -->
 	<script src="leaflet/leaflet.js"></script>
 	<!--	Prune clustering-->
-	<script src="dist/PruneCluster.js"></script>
+	<script src="js/PruneCluster.js"></script>
 	<!--	Leaflet sidebar-->
 	<script src="js/leaflet-sidebar.js"></script>
 
-
 	<!--	Data sources TODO: Find better way to store-->
-	<script src="sources/traffic_accidents_date.js"></script>
+
 	<script src="sources/bike_accidents_lat_lon_date.js"></script>
+	<script src="sources/traffic_accidents_date.js"></script>
 	<script src="sources/ped_accidents_lat_lon_date.js"></script>
 	<script src="sources/pub_trans_stops_lat_lon_name.js"></script>
 	<script src="sources/street_lights_lat_lon_date.js"></script>
@@ -78,9 +78,17 @@
 <div id="map" class="sidebar-map" style="width: 100vw; height: 100vh;"></div>
 
 
-
-
 <script>
+	// CONSTANTS
+	const categories_colors = ['rgba(255,75,0,0.6)', 'rgba(160,61,229,0.6)', 'rgba(3,170,234,0.6)'];
+	const pi2 = Math.PI * 2;
+	// categories configuration
+	const traffic_category = 0
+	const bike_category = 1
+	const pedestrian_category = 2
+
+
+	// END CONSTANTS
 
 	// START LAYER SETUP
 	// one main layer group
@@ -89,29 +97,22 @@
 	let accidents_cluster = new PruneClusterForLeaflet(160);
 
 
-	//another info layers
-	let air_quality_layer = L.layerGroup();
-	let paid_parking_layer = L.layerGroup();
+	// other info layers
 	let pedestrian_crossings_layer = L.layerGroup();
 	let public_transport_stops_layer = L.layerGroup();
 	let street_lights_layer = L.layerGroup();
 	let street_slopes_layer = L.layerGroup();
-
-
 	// END LAYER SETUP
 
 	// START ICON (MARKER) GENERATOR
 	// icons for separate categories
 	accidents_cluster.BuildLeafletClusterIcon = function(cluster) {
-		var e = new L.Icon.MarkerCluster();
+		let e = new L.Icon.MarkerCluster();
 
 		e.stats = cluster.stats;
 		e.population = cluster.population;
 		return e;
 	};
-
-	var colors = ['rgba(255,75,0,0.6)', 'rgba(160,61,229,0.6)', 'rgba(3,170,234,0.6)'],
-			pi2 = Math.PI * 2;
 
 	L.Icon.MarkerCluster = L.Icon.extend({
 		options: {
@@ -121,9 +122,9 @@
 
 		createIcon: function () {
 			// based on L.Icon.Canvas from shramov/leaflet-plugins (BSD licence)
-			var e = document.createElement('canvas');
+			let e = document.createElement('canvas');
 			this._setIconStyles(e, 'icon');
-			var s = this.options.iconSize;
+			let s = this.options.iconSize;
 			e.width = s.x;
 			e.height = s.y;
 			this.draw(e.getContext('2d'), s.x, s.y);
@@ -134,18 +135,18 @@
 			return null;
 		},
 
-		draw: function(canvas, width, height) {
-			var start = 0;
-			for (var i = 0, l = colors.length; i < l; ++i) {
+		draw: function(canvas) {
+			let start = 0;
+			for (let i = 0, l = categories_colors.length; i < l; ++i) {
 
-				var size = this.stats[i] / this.population;
+				let size = this.stats[i] / this.population;
 
 
 				if (size > 0) {
 					canvas.beginPath();
 					canvas.moveTo(22, 22);
-					canvas.fillStyle = colors[i];
-					var from = start,
+					canvas.fillStyle = categories_colors[i];
+					let from = start,
 							to = start + size * pi2;
 
 					if (to < from) {
@@ -163,7 +164,7 @@
 
 			canvas.beginPath();
 			canvas.fillStyle = "rgba(255, 255, 255, 0)"; // TODO: Ask about this
-			var diameter = 13;
+			let diameter = 13;
 			canvas.arc(22, 22, diameter, 0, Math.PI*2);
 			canvas.fill();
 			canvas.closePath();
@@ -187,7 +188,7 @@
 		)
 	}
 
-	// START ICON (MARKER) GENERATOR
+	// END ICON (MARKER) GENERATOR
 
 	// START MARKER GENERATOR FROM DATA
 
@@ -195,12 +196,6 @@
 	let traffic_accident_markers = []
 	let bike_accident_markers = []
 	let pedestrian_accident_markers = []
-
-	// categories configuration
-	let traffic_category = 0
-	let bike_category = 1
-	let pedestrian_category = 2
-
 
 	function add_accident(dataset, markers_array, category)
 	/**
@@ -230,7 +225,7 @@
 
 			console.log("Building markers anew");
 			dataset.forEach(value => {
-				marker = create_cluster_marker(value);
+				let marker = create_cluster_marker(value);
 				marker.date = create_date_from_YYYY_MM_DD(value);
 				marker.filtered = true;
 				marker.category = category;
@@ -259,7 +254,6 @@
 
 	function remove_marker_set(marker_set) {
 		marker_set.map(marker => {marker.filtered = true})
-		// accidents_cluster.RemoveMarkers(pedestrian_accident_markers);
 		accidents_cluster.ProcessView();
 	}
 
@@ -272,7 +266,9 @@
 	street_lights.forEach(add_street_lights);
 
 	function create_cluster_marker(value) {
-		return new PruneCluster.Marker(value.split(",")[0], value.split(",")[1]);
+		return new PruneCluster.Marker(
+				value.split(",")[0],
+				value.split(",")[1]);
 	}
 
 	function create_date_from_YYYY_MM_DD(value) {
@@ -283,8 +279,7 @@
 	}
 
 	function add_public_trans_stops(value) {
-		var circle = L.circle([value.split(",")[0], value.split(",")[1]], {
-			// color: '#800080',
+		L.circle([value.split(",")[0], value.split(",")[1]], {
 			stroke: false,
 			fillColor: '#800080',
 			fillOpacity: 0.5,
@@ -294,8 +289,7 @@
 
 	function add_street_lights(value) {
 		// TODO: Make this faster (probably run in the bg on startup or use CircleMarker)
-		var circle = L.circle([value.split(",")[0], value.split(",")[1]], {
-			// color: '#F8D609FF',
+		L.circle([value.split(",")[0], value.split(",")[1]], {
 			stroke: false,
 			fillColor: '#ffac00',
 			fillOpacity: 0.5,
@@ -306,42 +300,38 @@
 	accidents.addLayer(accidents_cluster);
 
 
-
-	// filtering functions
-	// function filter_by_year(year, marker_set) {
-	// 	remove_marker_set(marker_set);
-	// 	marker_set.filter(marker => marker.date.getFullYear().toString() === year).map(marker => {marker.filtered = false})
-	// }
-
-
-	var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	let tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		maxZoom: 19,
 		attribution: 'Katarína Bulková<br>&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 	});
 
-	var map = L.map('map', {
+	let map = L.map('map', {
 		center: [49.196822238343486, 16.60474816825514],
 		zoom: 13,
 		zoomControl: false,
 		layers: [tiles]
 	});
 
-	var base_layers = {"OpenStreetMap": tiles}
-	var overlays = {
+	const base_layers = {"OpenStreetMap": tiles}
+	const overlays = {
 		"<span id='traffic_accidents'><i class='fa fa-map-marker red'></i> Traffic accidents</span>": accidents,
 		"<span id='bike_accidents'><i class='fa fa-map-marker violet'></i> Bike accidents</span>": accidents,
 		"<span id='pedestrian_accidents'><i class='fa fa-map-marker blue'></i> Pedestrian accidents</span>": accidents,
 		"Street lights": street_lights_layer,
-		// "<span id='2018'>2018</span>": accidents,
+		"<i class='fa fa-bus'></i> Bus Stops": public_transport_stops_layer,
 
 	}
-	var layerControl = L.control.layers(base_layers, overlays).addTo(map);
 
+	// layer selector
+	L.control.layers(base_layers, overlays).addTo(map);
+
+	// zoom control
 	L.control.zoom({
 		position: 'bottomright'
 	}).addTo(map)
 
-	var sidebar = L.control.sidebar('sidebar').addTo(map);
+	// sidebar
+	L.control.sidebar('sidebar').addTo(map);
 
 
 
@@ -374,76 +364,10 @@
 			remove_marker_set(pedestrian_accident_markers);
 		}}
 
-	// TODO: Experiment, remove
-	// function toggle_year_filter() {
-	// 	console.log("Filtering by year");
-	// 	filter_by_year(2018, traffic_accident_markers);
-	// }
-	//
-
 	document.getElementById("traffic_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggle_traffic_accidents, false);
 	document.getElementById("bike_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggle_bike_accidents, false);
 	document.getElementById("pedestrian_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggle_pedestrian_accidents, false);
-	// TODO: experiment, remove
-	// document.getElementById("2018").parentNode.parentNode.firstElementChild.addEventListener ("change", toggle_year_filter, false);
-
-
-
-
-
-
-
-
-
-	// alert(traffic_accident_marker_list.length);
-
-
-	// var layerControl = L.control.layers(baseMaps, traffic_accident_layer).addTo(map);
-	//
-	// layerControl.addOverlay(traffic_accident_layer, "Traffic accidents");
-
-	// for (coord in lat_lon) {
-	// 	L.marker(coord.split(",")).addTo(map)
-	// }
-	// <!--	var div = L.DomUtil.create('div', 'info legend');-->
-	// <!--	div.innerHTML = '<select><option>1</option><option>2</option><option>3</option></select>';-->
-	// <!--	div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;-->
-	// <!--	return div;-->
-	//
-	// <!--	var marker = L.marker([51.5, -0.09]).addTo(map)-->
-	// <!--		.bindPopup('<b>Hello world!</b><br />I am a popup.').openPopup();-->
-	//
-	// <!--	var circle = L.circle([51.508, -0.11], {-->
-	// <!--		color: 'red',-->
-	// <!--		fillColor: '#f03',-->
-	// <!--		fillOpacity: 0.5,-->
-	// <!--		radius: 500-->
-	// <!--	}).addTo(map).bindPopup('I am a circle.');-->
-	//
-	// <!--	var polygon = L.polygon([-->
-	// <!--		[51.509, -0.08],-->
-	// <!--		[51.503, -0.06],-->
-	// <!--		[51.51, -0.047]-->
-	// <!--	]).addTo(map).bindPopup('I am a polygon.');-->
-	//
-	//
-	// <!--	var popup = L.popup()-->
-	// <!--		.setLatLng([49, 16])-->
-	// <!--		.setContent('I am a standalone popup.')-->
-	// <!--		.openOn(map);-->
-	//
-	// 	function onMapClick(e) {
-	// 		popup
-	// 			.setLatLng(e.latlng)
-	// 			.setContent('You clicked the map at ' + e.latlng.toString())
-	// 			.openOn(map);
-	// 	}
-
-	// map.on('click', onMapClick);
 
 </script>
-
-
-
 </body>
 </html>
