@@ -62,8 +62,45 @@
 			<h1 class="sidebar-header">Profile<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
 		</div>
 
+
+		<script type="application/javascript">
+			// filter selection
+			function filter_options() {
+				let output = document.getElementById('filter_options')
+
+				if (document.getElementById('cause').checked) {
+					output.innerHTML = "" +
+							"<form action='#'>" +
+							"<ul style='list-style-type: none;'>" +
+							"<li><input name='cause_option' type='checkbox' id='speed'><label for='speed'>Speed</label></li>" +
+							"<li><input name='cause_option' type='checkbox' id='technical'><label for=technical>Technical</label></li>" +
+							"<li><input name='cause_option' type='checkbox' id='giving_way'><label for=giving_way>Giving Way</label></li>" +
+							"<li><input name='cause_option' type='checkbox' id='others'><label for=others>Others</label></li>" +
+							"</ul>" +
+							"<input type='submit' value='Filter'> " +
+							"</form>"
+				}
+			}
+
+
+			// filtering by cause
+		</script>
+
 		<div class="sidebar-pane" id="filters">
 			<h1 class="sidebar-header">Filters<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+			<form>
+				<ul style="list-style-type: none;">
+					<li><input name="filter" type="radio" id="cause" onclick="filter_options()"><label for="cause">Cause</label></li>
+					<li><input name="filter" type="radio" id="weekday" onclick="filter_options()"><label for="weekday">Weekday</label></li>
+					<li><input name="filter" type="radio" id="surface" onclick="filter_options()"><label for="surface">Surface</label></li>
+					<li><input name="filter" type="radio" id="weather" onclick="filter_options()"><label for="weather">Weather</label></li>
+				</ul>
+			</form>
+			<div id="filter_options">
+
+
+			</div>
+
 		</div>
 
 		<div class="sidebar-pane" id="settings">
@@ -232,6 +269,8 @@
 				marker.filtered = true;
 				marker.category = category;
 
+				marker.data.tag =
+
 				marker.data.icon = fontAwesomeMapMarkerIcon();
 				marker.data.icon.options.className = "MapMarkerIcon " + colour_class;
 				var keys = Object.keys(value);
@@ -290,9 +329,9 @@
 	function add_public_trans_stops(value) {
 		L.circle([value.split(",")[0], value.split(",")[1]], {
 			stroke: false,
-			fillColor: '#800080',
-			fillOpacity: 0.5,
-			radius: 1.5,
+			fillColor: '#000000',
+			fillOpacity: 0.7,
+			radius: 2,
 		}).addTo(public_transport_stops_layer).bindPopup(value.split(",")[2]);
 	}
 
