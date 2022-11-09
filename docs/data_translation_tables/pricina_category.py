@@ -58,15 +58,15 @@ pricina_category = {
        'při přejíždění z jednoho jízdního pruhu do druhého': 'overtaking',
        'vyhýbání bez dostatečného bočního odstupu (vůle)': 'overtaking',
 
-# technical deffects
-       'defekt pneumatiky způsobený průrazem nebo náhlým únikem vzduchu': 'technical deffects',
-       'jiná technická závada (vztahuje se i na přípojná vozidla)': 'technical deffects',
-       'neúčinná nebo nefungující parkovací brzda': 'technical deffects',
-       'zablokování kol v důsledku mechanické závady vozidla (zadřený motor, převodovka, rozvodovka, spadlý řetěz apod.)': 'technical deffects',
-       'závada provozní brzdy': 'technical deffects',
-       'závada závěsu pro přívěs': 'technical deffects',
-       'závada řízení': 'technical deffects',
-       'upadnutí, ztráta kola vozidla (i rezervního)': 'technical deffects',
-       'samovolné rozjetí nezajištěného vozidla': 'technical deffects',
+# technical defects
+       'defekt pneumatiky způsobený průrazem nebo náhlým únikem vzduchu': 'technical defects',
+       'jiná technická závada (vztahuje se i na přípojná vozidla)': 'technical defects',
+       'neúčinná nebo nefungující parkovací brzda': 'technical defects',
+       'zablokování kol v důsledku mechanické závady vozidla (zadřený motor, převodovka, rozvodovka, spadlý řetěz apod.)': 'technical defects',
+       'závada provozní brzdy': 'technical defects',
+       'závada závěsu pro přívěs': 'technical defects',
+       'závada řízení': 'technical defects',
+       'upadnutí, ztráta kola vozidla (i rezervního)': 'technical defects',
+       'samovolné rozjetí nezajištěného vozidla': 'technical defects',
 
 }

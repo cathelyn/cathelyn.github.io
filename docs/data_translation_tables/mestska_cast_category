@@ -1,0 +1,12 @@
+mestska_cast_category = {
+'Brno-Bosonohy', 'Brno-sever', 'Brno-Ivanovice',
+       'Brno-Královo Pole', 'Brno-střed', 'Brno-Komín', 'Brno-jih',
+       'Brno-Nový Lískovec', 'Brno-Žabovřesky', 'Brno-Kníničky',
+       'Brno-Líšeň', 'Brno-Maloměřice a Obřany', 'Brno-Slatina',
+       'Brno-Tuřany', 'Brno-Bystrc', 'Brno-Židenice', 'Brno-Kohoutovice',
+       'Brno-Bohunice', 'Brno-Černovice', 'Brno-Medlánky',
+       'Brno-Řečkovice a Mokrá Hora', 'Brno-Vinohrady',
+       'Brno-Starý Lískovec', 'Brno-Chrlice', 'Brno-Jehnice',
+       'Brno-Jundrov', 'Brno-Útěchov', 'Brno-Ořešín', 'Brno-Žebětín',
+       'unknown'
+}

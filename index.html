@@ -6,13 +6,21 @@
 
 	<title>Brno Accident Data Visualization</title>
 
-	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	<!--	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">-->
+	<script src="https://kit.fontawesome.com/1f4d66b7c3.js" crossorigin="anonymous"></script>
 
 	<link rel="shortcut icon" type="image/png" href="docs/images/favicon.png" />
 	<link rel="stylesheet" href="css/style.css" />
 	<link rel="stylesheet" href="leaflet/leaflet.css" />
 	<link rel="stylesheet" href="css/LeafletStyleSheet.css" />
 	<link rel="stylesheet" href="css/leaflet-sidebar.css" />
+	<link rel="stylesheet" href="css/leaflet-tag-filter-button.css" />
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
 	<!--	Leaflet -->
 	<script src="leaflet/leaflet.js"></script>
@@ -20,25 +28,29 @@
 	<script src="js/PruneCluster.js"></script>
 	<!--	Leaflet sidebar-->
 	<script src="js/leaflet-sidebar.js"></script>
+	<!--	Filtering -->
+	<script src="js/leaflet-easy-button.js"></script>
+	<script src="js/leaflet-tag-filter-button.js"></script>
 
 	<!--	Data sources TODO: Find better way to store-->
 
-<!--	<script src="sources/bike_accidents_lat_lon_date.js"></script>-->
-<!--	<script src="sources/traffic_accidents_date.js"></script>-->
-<!--	<script src="sources/ped_accidents_lat_lon_date.js"></script>-->
+	<script src="sources/bike_accidents.js"></script>
+	<script src="sources/traffic_accidents.js"></script>
+	<script src="sources/ped_accidents.js"></script>
 	<script src="sources/pub_trans_stops_lat_lon_name.js"></script>
 	<script src="sources/street_lights_lat_lon_date.js"></script>
 
 </head>
 <body>
 
+<!-- SIDEBAR -->
 <div id="sidebar" class="sidebar collapsed">
 	<!-- Nav tabs -->
 	<div class="sidebar-tabs">
 		<ul role="tablist">
 			<li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
-			<li class="disabled"><a href="#profile" role="tab"><i class="fa fa-user"></i></a></li>
-			<li ><a href="#filters" role="tab"><i class="fa fa-filter"></i></a></li>
+			<li><a href="#dates" role="tab"><i class="fa-solid fa-calendar-days"></i></a></li>
+			<li ><a href="#filter" role="tab"><i class="fa fa-filter"></i></a></li>
 		</ul>
 
 		<ul role="tablist">
@@ -58,45 +70,29 @@
 
 		</div>
 
-		<div class="sidebar-pane" id="profile">
-			<h1 class="sidebar-header">Profile<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+		<div class="sidebar-pane" id="dates">
+			<h1 class="sidebar-header">Date selector<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+			<input type="text" name="dates" />
+			<script>
+				$('input[name="dates"]').daterangepicker({
+					opens: 'right',
+					startDate: "01/01/2010",
+					endDate: "12/31/2021",
+					showDropdowns: true,
+					minYear: 2010,
+					maxYear: 2021,
+				},
+				function(start, end, label) {
+					date_filter(start, end);
+				}
+				);
+			</script>
 		</div>
 
 
-		<script type="application/javascript">
-			// filter selection
-			function filter_options() {
-				let output = document.getElementById('filter_options')
-
-				if (document.getElementById('cause').checked) {
-					output.innerHTML = "" +
-							"<form action='#'>" +
-							"<ul style='list-style-type: none;'>" +
-							"<li><input name='cause_option' type='checkbox' id='speed'><label for='speed'>Speed</label></li>" +
-							"<li><input name='cause_option' type='checkbox' id='technical'><label for=technical>Technical</label></li>" +
-							"<li><input name='cause_option' type='checkbox' id='giving_way'><label for=giving_way>Giving Way</label></li>" +
-							"<li><input name='cause_option' type='checkbox' id='others'><label for=others>Others</label></li>" +
-							"</ul>" +
-							"<input type='submit' value='Filter'> " +
-							"</form>"
-				}
-			}
-
-
-			// filtering by cause
-		</script>
-
-		<div class="sidebar-pane" id="filters">
+		<div class="sidebar-pane" id="filter">
 			<h1 class="sidebar-header">Filters<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
-			<form>
-				<ul style="list-style-type: none;">
-					<li><input name="filter" type="radio" id="cause" onclick="filter_options()"><label for="cause">Cause</label></li>
-					<li><input name="filter" type="radio" id="weekday" onclick="filter_options()"><label for="weekday">Weekday</label></li>
-					<li><input name="filter" type="radio" id="surface" onclick="filter_options()"><label for="surface">Surface</label></li>
-					<li><input name="filter" type="radio" id="weather" onclick="filter_options()"><label for="weather">Weather</label></li>
-				</ul>
-			</form>
-			<div id="filter_options">
+			<div id="filters">
 
 
 			</div>
@@ -110,11 +106,9 @@
 </div>
 
 
-<!--TODO: Use marker.filtered instead of removing markers from accident cluster -->
-
 <div id="map" class="sidebar-map" style="width: 100vw; height: 100vh;"></div>
 
-<script type="module">
+<script>
 	// CONSTANTS
 	const categories_colors = ['rgba(255,75,0,0.6)', 'rgba(160,61,229,0.6)', 'rgba(3,170,234,0.6)'];
 	const pi2 = Math.PI * 2;
@@ -125,10 +119,6 @@
 	// END CONSTANTS
 
 	// DATA
-	// ["sources/bike_accidents.js", "sources/bike_accidents.js", "sources/bike_accidents.js'"]
-	import {bike_accidents_json} from "./sources/bike_accidents.js";
-	import {traffic_accidents_json} from "./sources/traffic_accidents.js";
-	import {pedestrian_accidents_json} from "./sources/ped_accidents.js";
 	// START LAYER SETUP
 	// one main layer group
 	let accidents = L.layerGroup();
@@ -142,6 +132,9 @@
 	let street_lights_layer = L.layerGroup();
 	let street_slopes_layer = L.layerGroup();
 	// END LAYER SETUP
+
+	// Filter categories definition
+	const categories = ['alcohol']
 
 	// START ICON (MARKER) GENERATOR
 	// icons for separate categories
@@ -265,11 +258,23 @@
 			console.log("Building markers anew");
 			dataset.forEach(value => {
 				let marker = create_cluster_marker(value);
-				marker.date = create_date_from_YYYY_MM_DD(value);
+				marker.date = new Date(value.datetime);
 				marker.filtered = true;
 				marker.category = category;
 
-				marker.data.tag =
+
+				marker.data.tags = [
+					value.collision_with,
+					value.cause,
+					value.alcohol,
+					value.caused_by,
+					value.road_condition,
+					value.weather,
+					value.visibility,
+					value.view_condition,
+					value.accident_place,
+					value.road_type
+				]
 
 				marker.data.icon = fontAwesomeMapMarkerIcon();
 				marker.data.icon.options.className = "MapMarkerIcon " + colour_class;
@@ -317,13 +322,6 @@
 				value.point_y,
 				value.point_x
 		)
-	}
-
-	function create_date_from_YYYY_MM_DD(value) {
-		return new Date(value.year
-				+ "-" + value.month.toString().padStart(2, '0')
-				+ "-" + value.day.toString().padStart(2, '0')
-				+ "T00:00:00.000Z");
 	}
 
 	function add_public_trans_stops(value) {
@@ -378,6 +376,7 @@
 
 	}
 
+
 	// layer selector
 	L.control.layers(base_layers, overlays).addTo(map);
 
@@ -389,9 +388,214 @@
 	// sidebar
 	L.control.sidebar('sidebar').addTo(map);
 
+	// filtering
+	let filter_categories = []
+
+	let collision_with_category =  L.control.tagFilterButton({
+		data: [
+			'crash',
+			'collision with a pedestrian',
+			'collision with an animal',
+			'collision with a moving non-rail vehicle',
+			'collision with a fixed obstacle',
+			'collision with tram',
+			'collision with train',
+			'collision with parked vehicle',
+			'other',
+		],
+		filterOnEveryClick: true,
+		icon: '<i class="fa-solid fa-car-burst"></i> Collision With'
+	}).addTo(map);
+	filter_categories.push(collision_with_category);
+
+	let cause = L.control.tagFilterButton({
+		data: [
+			'improper driving style',
+			'others',
+			'speed adjustment',
+			'violation of traffic signs or rules',
+			'giving way',
+			'overtaking',
+			'technical defects'
+		],
+		filterOnEveryClick: true,
+		icon: '<i class="fa fa-question"></i> Cause'
+	}).addTo(map);
+	filter_categories.push(cause);
+
+	let alcohol_category = L.control.tagFilterButton({
+		data: [
+			'DUI - blood alcohol content < 0,24‰',
+			'DUI - blood alcohol content < 0,5‰ & >= 0,24‰',
+			'DUI - blood alcohol content < 0,8‰ & >= 0,5‰',
+			'DUI - blood alcohol content < 1,0‰ & >= 0,8‰',
+			'DUI - blood alcohol content < 1,5‰ & >= 1,0‰',
+			'DUI - blood alcohol content >= 1,5‰ ',
+			'No',
+			'not tested',
+			'DUI - alcohol and drugs',
+			'DUI - drugs'
+		],
+		filterOnEveryClick: true,
+		icon: '<i class="fa fa-beer"></i> Alcohol'
+	}).addTo(map);
+	filter_categories.push(alcohol_category);
+
+	let caused_by_category = L.control.tagFilterButton({
+		data: [
+			'pedestrian',
+			'other',
+			'another road user',
+			'forest or domestic animal',
+			'vehicle technical defect',
+			'communication obstacle',
+			'motor vehicle driver',
+			'driver of a non-motor vehicle',
+		],
+		filterOnEveryClick: true,
+		icon: '<i class="fa-solid fa-person-circle-question"></i> Caused By'
+	}).addTo(map);
+	filter_categories.push(caused_by_category);
+
+	let road_condition_category = L.control.tagFilterButton({
+		data: [
+			'different state of the road surface at the time of accidents',
+			'mud on the road',
+			'ice on the road - untreated',
+			'ice on the road - treated',
+			'sudden change in road conditions (frost on the bridge, local frost)',
+			'wet surface',
+			'dry surface, clean',
+			'dry surface, dirty (sand, dust, leaves, gravel etc.)',
+			'continuous snow layer, slush',
+		],
+		filterOnEveryClick: true,
+		icon: '<i class="fa-solid fa-road-circle-exclamation"></i> Road Condition'
+	}).addTo(map);
+	filter_categories.push(road_condition_category);
+
+	let weather_conditions_category = L.control.tagFilterButton({
+		data: [
+			'rain',
+			'different difficult weather conditions',
+			'fog',
+			'beginning of the rain, light rain, drizzling etc.',
+			'normal weather conditions',
+			'gusting wind (side wind, whirlwind etc.)',
+			'snowfall',
+			'frost, icicles are formed',
+		],
+		filterOnEveryClick: true,
+		icon: '<i class="fa-solid fa-cloud"></i> Weather Condition'
+	}).addTo(map);
+	filter_categories.push(weather_conditions_category);
+
+	let visibility_category = L.control.tagFilterButton({
+		data: [
+			'at night - without public lighting, visibility unimpaired due to weather conditions',
+			'at night - without public lighting, visibility impaired due to weather conditions (fog, rain, snowfall etc.)',
+			'at night - with public lighting, visibility unimpaired due to weather conditions',
+			'at night - with public lighting, visibility impaired due to weather conditions (fog, rain, snowfall etc.)',
+			'during the day, visibility not impaired  weather conditions',
+			'during the day, reduced visibility (dawn, dusk)',
+			'during the day, poor visibility due to weather conditions (fog, snow, rain, etc.)',
+		],
+		filterOnEveryClick: true,
+		icon: '<i class="fa-solid fa-smog"></i> Visibility'
+	}).addTo(map);
+	filter_categories.push(visibility_category);
+
+	let view_condition_category = L.control.tagFilterButton({
+		data: [
+			'good view',
+			'bad view - other reason',
+			'view blocked by a stationary vehicle',
+			'bad view - due to surrounding construction (buildings, full railings, etc.)',
+			'bad view - due to the course of the road, or the longitudinal profile or routing (unclear top of the climb, road cut, etc.)',
+			'bad view - due to vegetation - temporary (grass, grain etc.)',
+			'bad view - due to vegetation - permanent (trees, bushes, etc.)',
+		],
+		filterOnEveryClick: true,
+		icon: '<i class="fa-solid fa-eye"></i> View Condition'
+	}).addTo(map);
+	filter_categories.push(view_condition_category);
+
+	let accident_place_category = L.control.tagFilterButton({
+		data: [
+			'bridge, overpass, underpass, tunnel',
+			'parking lot adjacent to the road',
+			'pedestrain crossing',
+			'near a pedestrian crossing (within 20 m)',
+			'exit from the parking lot, forest path, etc.',
+			'tram, bus, trolleybus stop with a boarding island',
+			'tram, bus, trolleybus stop without a boarding island',
+			'fuel pump',
+			'railway crossing not secured by barriers or light warning devices',
+			'railway crossing secured',
+			'none of the above',
+		],
+		filterOnEveryClick: true,
+		icon: '<i class="fa-solid fa-location-pin"></i> Location'
+	}).addTo(map);
+	filter_categories.push(accident_place_category);
+
+	let road_type_category = L.control.tagFilterButton({
+		name: 'Road type category',
+		data: [
+			'highway',
+			'local road',
+			'controlled road (in specific areas)',
+			'specific-purpose road - others(parking, rest areas, etc.)',
+			'specific-purpose road - field and forest roads, etc.',
+			'1st class roads',
+			'2nd class roads',
+			'3rd class roads',
+			'road junction (crossroad controlled in specific areas)',
+		],
+		filterOnEveryClick: true,
+		icon: '<i class="fa fa-road"></i> Road Type'
+	}).addTo(map);
+	filter_categories.push(road_type_category);
+
+	// enable Prunecluster filtering
+	filter_categories.forEach(cat => cat.enablePruneCluster(accidents_cluster));
+
+	// Add filter to the sidebar
+	function move_filter_icon_to_sidebar() {
+		console.log("Moving filter to the sidebar");
+		let filter_buttons = document.getElementsByClassName("leaflet-bar easy-button-container leaflet-control");
+		let button_container = filter_buttons[0].parentNode;
+		button_container.classList.remove('leaflet-top');
+		let sidebar_container = document.getElementById('filters');
+		sidebar_container.append(button_container);
+	}
+	move_filter_icon_to_sidebar();
+
+	// create date filter
+	function date_filter(start_date, end_date) {
+		traffic_accident_markers.map(marker => marker.filtered = true);
+		let traffic_matching = traffic_accident_markers.filter(marker => marker.date >= start_date && marker.date <= end_date)
+		console.log("Found " + traffic_matching.length + " matching entries in pedestrian_accidents")
+		traffic_matching.map(marker => marker.filtered = false);
+
+		bike_accident_markers.map(marker => marker.filtered = true);
+		let bike_matching = bike_accident_markers.filter(marker => marker.date >= start_date && marker.date <= end_date)
+		console.log("Found " + bike_matching.length + " matching entries in pedestrian_accidents")
+		bike_matching.map(marker => marker.filtered = false);
+
+		pedestrian_accident_markers.map(marker => marker.filtered = true);
+		let ped_matching = pedestrian_accident_markers.filter(marker => marker.date >= start_date && marker.date <= end_date)
+		console.log("Found " + ped_matching.length + " matching entries in pedestrian_accidents")
+		ped_matching.map(marker => marker.filtered = false);
+
+		accidents_cluster.ProcessView();
+}
 
 
-	// add the event handlers
+
+
+
+	// EVENT HANDLERS
 	function toggle_traffic_accidents() {
 		if (this.checked) {
 			console.log("Adding traffic accidents");
