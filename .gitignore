@@ -1,4 +1,5 @@
 *.zip
+*.ods
 .ipynb_checkpoints
 .idea
 .~lock*

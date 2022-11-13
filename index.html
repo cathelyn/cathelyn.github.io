@@ -17,10 +17,14 @@
 	<link rel="stylesheet" href="css/leaflet-tag-filter-button.css" />
 	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
+	<!-- CSS only -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
 
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
 
 	<!--	Leaflet -->
 	<script src="leaflet/leaflet.js"></script>
@@ -31,6 +35,10 @@
 	<!--	Filtering -->
 	<script src="js/leaflet-easy-button.js"></script>
 	<script src="js/leaflet-tag-filter-button.js"></script>
+	<!--	Leaflet Shapefile	-->
+	<script src="js/leaflet.shpfile.js"></script>
+	<script src="js/shp.js"></script>
+	<script src="js/catiline.js"></script>
 
 	<!--	Data sources TODO: Find better way to store-->
 
@@ -39,6 +47,11 @@
 	<script src="sources/ped_accidents.js"></script>
 	<script src="sources/pub_trans_stops_lat_lon_name.js"></script>
 	<script src="sources/street_lights_lat_lon_date.js"></script>
+
+	<!-- 	Bootstrap	-->
+	<!-- JavaScript Bundle with Popper -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+
 
 </head>
 <body>
@@ -72,21 +85,150 @@
 
 		<div class="sidebar-pane" id="dates">
 			<h1 class="sidebar-header">Date selector<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
-			<input type="text" name="dates" />
 			<script>
-				$('input[name="dates"]').daterangepicker({
-					opens: 'right',
-					startDate: "01/01/2010",
-					endDate: "12/31/2021",
-					showDropdowns: true,
-					minYear: 2010,
-					maxYear: 2021,
-				},
-				function(start, end, label) {
-					date_filter(start, end);
+				function activate_date_selector() {
+					let range_selector = document.getElementById('date_range_selector').checked;
+					if (range_selector) {
+						document.getElementById('custom_date_selector_form').childNodes.forEach(value => value.disabled = true);
+						document.getElementById('date_range_selector_form').childNodes.forEach(value => value.disabled = false);
+					} else {
+						document.getElementById('custom_date_selector_form').childNodes.forEach(value => value.disabled = false);
+						document.getElementById('date_range_selector_form').childNodes.forEach(value => value.disabled = true);
+					}
 				}
-				);
 			</script>
+			<div>
+				<form>
+					<input id="date_range_selector" type="radio" name="date_selector_method" checked onclick=activate_date_selector()>
+					<label for="date_range_selector">Date range</label><br>
+
+					<input id="custom_date_selector" type="radio" name="date_selector_method" onclick=activate_date_selector()>
+					<label for="custom_date_selector">Custom date selector</label>
+				</form>
+			</div>
+			<hr>
+			<div id="date_range_selector_form">
+				<label for="date_range"><h2>Date range</h2></label>
+
+				<input id="date_range" type="text" name="dates" />
+				<script>
+					$('input[name="dates"]').daterangepicker({
+								opens: 'right',
+								startDate: "01/01/2010",
+								endDate: "12/31/2021",
+								showDropdowns: true,
+								minYear: 2010,
+								maxYear: 2021,
+							},
+							function(start, end, label) {
+								DateRangeFilter(start, end);
+							}
+					);
+				</script>
+			</div>
+			<hr>
+			<div id="custom_date_selector_form">
+				<h2>Custom date selector</h2>
+				<fieldset disabled>
+					<label>
+						<input type="checkbox" name="fields">
+					</label>
+					<label for="year">Year:</label>
+					<select id="year" multiple>
+						<option value=2010>2010</option>
+						<option value=2011>2011</option>
+						<option value=2012>2012</option>
+						<option value=2013>2013</option>
+						<option value=2014>2014</option>
+						<option value=2015>2015</option>
+						<option value=2016>2016</option>
+						<option value=2017>2017</option>
+						<option value=2018>2018</option>
+						<option value=2019>2019</option>
+						<option value=2020>2020</option>
+						<option value=2021>2021</option>
+					</select>
+				</fieldset>
+				<fieldset disabled>
+					<label>
+						<input type="checkbox" name="fields">
+					</label>
+					<label for="month">Month of the year:</label>
+
+					<select id="month">
+						<option value=0>January</option>
+						<option value=1>February</option>
+						<option value=2>March</option>
+						<option value=3>April</option>
+						<option value=4>May</option>
+						<option value=5>June</option>
+						<option value=6>July</option>
+						<option value=7>August</option>
+						<option value=8>September</option>
+						<option value=9>October</option>
+						<option value=10>November</option>
+						<option value=11>December</option>
+					</select>
+				</fieldset>
+
+				<fieldset disabled>
+					<label>
+						<input type="checkbox" name="fields">
+					</label>
+					<label for="day">Day of the month:</label>
+
+					<select id="day" >
+						<option value=1>1</option>
+						<option value=2>2</option>
+						<option value=3>3</option>
+						<option value=4>4</option>
+						<option value=5>5</option>
+						<option value=6>6</option>
+						<option value=7>7</option>
+						<option value=8>8</option>
+						<option value=9>9</option>
+						<option value=10>10</option>
+						<option value=11>11</option>
+						<option value=12>12</option>
+						<option value=13>13</option>
+						<option value=14>14</option>
+						<option value=15>15</option>
+						<option value=16>16</option>
+						<option value=17>17</option>
+						<option value=18>18</option>
+						<option value=19>19</option>
+						<option value=20>20</option>
+						<option value=21>21</option>
+						<option value=22>22</option>
+						<option value=23>23</option>
+						<option value=24>24</option>
+						<option value=25>25</option>
+						<option value=26>26</option>
+						<option value=27>27</option>
+						<option value=28>28</option>
+						<option value=29>29</option>
+						<option value=30>30</option>
+						<option value=31>31</option>
+					</select>
+				</fieldset>
+				<fieldset disabled>
+					<label>
+						<input type="checkbox" name="fields">
+					</label>
+					<label for="weekday">Day of the week:</label>
+
+					<select id="weekday">
+						<option value=1>Monday</option>
+						<option value=2">Tuesday</option>
+						<option value=3">Wednesday</option>
+						<option value=4">Thursday</option>
+						<option value=5">Friday</option>
+						<option value=6">Saturday</option>
+						<option value=7>Sunday</option>
+					</select>
+				</fieldset>
+				<button type="submit" onclick="DateCustomSelect()">Filter</button>
+			</div>
 		</div>
 
 
@@ -110,35 +252,59 @@
 
 <script>
 	// CONSTANTS
-	const categories_colors = ['rgba(255,75,0,0.6)', 'rgba(160,61,229,0.6)', 'rgba(3,170,234,0.6)'];
+	const categoriesColors = ['rgba(255,75,0,0.6)', 'rgba(160,61,229,0.6)', 'rgba(3,170,234,0.6)'];
 	const pi2 = Math.PI * 2;
 	// categories configuration
-	const traffic_category = 0
-	const bike_category = 1
-	const pedestrian_category = 2
+	const trafficCategory = 0
+	const bikeCategory = 1
+	const pedestrianCategory = 2
 	// END CONSTANTS
 
 	// DATA
 	// START LAYER SETUP
-	// one main layer group
-	let accidents = L.layerGroup();
+
 	// main clustering layer
-	let accidents_cluster = new PruneClusterForLeaflet(160);
+	let accidentsCluster = new PruneClusterForLeaflet(160);
 
 
 	// other info layers
-	let pedestrian_crossings_layer = L.layerGroup();
-	let public_transport_stops_layer = L.layerGroup();
-	let street_lights_layer = L.layerGroup();
-	let street_slopes_layer = L.layerGroup();
-	// END LAYER SETUP
+	let pedestrianCrossingsLayer = L.layerGroup();
+	let publicTransportStopsLayer = L.layerGroup();
+	let streetLightsLayer = L.layerGroup();
 
-	// Filter categories definition
-	const categories = ['alcohol']
+	// cycling infrastructure
+	let cyclingInfraSourceFiles = {
+		'BicycleCrossing.shp.zip': L.layerGroup(),
+		'BikePath.shp.zip': L.layerGroup(),
+		'BikePathInTheOppositeDirection(Lane).shp.zip': L.layerGroup(),
+		'CyclistsRidingInTheOppositeDirection.shp.zip': L.layerGroup(),
+		'DedicatedBicycleLane.shp.zip': L.layerGroup(),
+		'EntryAllowedForCyclists.shp.zip': L.layerGroup(),
+		'MarkedCorridorForCyclists.shp.zip': L.layerGroup(),
+		'NoEntryForAllMotorVehicles.shp.zip': L.layerGroup(),
+		'Others.shp.zip': L.layerGroup(),
+		'PathForPedestriansAndCyclists(Separated).shp.zip': L.layerGroup(),
+		'PathForPedestriansAndCyclists(Unseparated).shp.zip': L.layerGroup(),
+		'PedestrianPathWithCyclistsAllowed.shp.zip': L.layerGroup(),
+		'ProhibitedEntryForCyclists.shp.zip': L.layerGroup(),
+		'ProtectiveLaneForCyclists.shp.zip': L.layerGroup(),
+		'ReservedLaneForTaxi_Bicycle_Bus.shp.zip': L.layerGroup(),
+		'TheSectionWasCanceled.shp.zip': L.layerGroup()
+	}
+
+	// street slopes
+	let streetSlopeSourceFiles = {
+		'Extreme.shp.zip': L.layerGroup(),
+		'Dangerous.shp.zip': L.layerGroup(),
+		'Medium.shp.zip': L.layerGroup(),
+		'Min.shp.zip': L.layerGroup()
+	}
+
+	// END LAYER SETUP
 
 	// START ICON (MARKER) GENERATOR
 	// icons for separate categories
-	accidents_cluster.BuildLeafletClusterIcon = function(cluster) {
+	accidentsCluster.BuildLeafletClusterIcon = function(cluster) {
 		let e = new L.Icon.MarkerCluster();
 
 		e.stats = cluster.stats;
@@ -169,7 +335,7 @@
 
 		draw: function(canvas) {
 			let start = 0;
-			for (let i = 0, l = categories_colors.length; i < l; ++i) {
+			for (let i = 0, l = categoriesColors.length; i < l; ++i) {
 
 				let size = this.stats[i] / this.population;
 
@@ -177,7 +343,7 @@
 				if (size > 0) {
 					canvas.beginPath();
 					canvas.moveTo(22, 22);
-					canvas.fillStyle = categories_colors[i];
+					canvas.fillStyle = categoriesColors[i];
 					let from = start,
 							to = start + size * pi2;
 
@@ -225,39 +391,42 @@
 	// START MARKER GENERATOR FROM DATA
 
 	// markers storage for quick adding - deleting
-	let traffic_accident_markers = []
-	let bike_accident_markers = []
-	let pedestrian_accident_markers = []
+	let trafficAccidentMarkers = [];
+	let bikeAccidentMarkers = [];
+	let pedestrianAccidentMarkers = [];
 
-	function add_accident(dataset, markers_array, category)
+	function addAccident(dataset, markersArray, category)
 	/**
 	 * Create and add markers for the accidents based on the date in @param dataset. Created markers are also stored
 	 * in @param markers_array for further manipulation and filtering. Each marker is assigned a respective category.
 	 * @param dataset input data in js array format consisting of comma-separated lat,lon,YYYY,MM,DD values
-	 * @param markers_array js array for storing created markers
+	 * @param markersArray js array for storing created markers
 	 * @param category representation of category for filtering/icon composition purposes
 	 */
 	{
-		if (markers_array.length > 0){
-			console.log("Registering " + markers_array.length + " markers");
-			markers_array.map(marker => {marker.filtered = false})
+		if (markersArray.length > 0){
+			console.log("Registering " + markersArray.length + " markers");
+			markersArray.map(marker => {marker.filtered = false})
 		} else {
 
-			let colour_class = "black";
+			let color = "black";
 			if (category === 0) {
-				colour_class = "red";
+				color = "red";
 			}
 			else if (category === 1) {
-				colour_class = "violet";
+				color = "violet";
 			}
 			else if (category === 2) {
-				colour_class = "blue";
+				color = "blue";
 			}
 
 
-			console.log("Building markers anew");
+			console.log("Building markers anew - category " + category);
 			dataset.forEach(value => {
-				let marker = create_cluster_marker(value);
+				let marker = new PruneCluster.Marker(
+						value.point_y,
+						value.point_x
+				);
 				marker.date = new Date(value.datetime);
 				marker.filtered = true;
 				marker.category = category;
@@ -277,73 +446,123 @@
 				]
 
 				marker.data.icon = fontAwesomeMapMarkerIcon();
-				marker.data.icon.options.className = "MapMarkerIcon " + colour_class;
-				var keys = Object.keys(value);
+				marker.data.icon.options.className = "MapMarkerIcon " + color;
+				let keys = Object.keys(value);
 				let info = "";
-				for (var i = 0; i < keys.length; i++) {
+				for (let i = 0; i < keys.length; i++) {
 					info += keys[i] + ": " + value[keys[i]] + "<br>"
 				}
 
-				marker.data.popup = "<b>" + info + "</b>"; // TODO: make popup
-				markers_array.push(marker);
-				accidents_cluster.RegisterMarker(marker)}
+				marker.data.popup = info; // TODO: make popup
+				marker.data.tooltip = "Number of people in the accident: " // TODO: Make tooltip
+				markersArray.push(marker);
+				accidentsCluster.RegisterMarker(marker)}
 			);
 		}
-		accidents_cluster.ProcessView();
+		accidentsCluster.ProcessView();
 	}
 
-	function add_traffic_accidents() {
-		add_accident(traffic_accidents_json, traffic_accident_markers, traffic_category);
+	function addTrafficAccidents() {
+		addAccident(traffic_accidents_json, trafficAccidentMarkers, trafficCategory);
 	}
 
-	function add_bike_accidents() {
-		add_accident(bike_accidents_json, bike_accident_markers, bike_category);
+	function addBikeAccidents() {
+		addAccident(bike_accidents_json, bikeAccidentMarkers, bikeCategory);
 	}
 
-	function add_pedestrian_accidents() {
-		add_accident(pedestrian_accidents_json, pedestrian_accident_markers, pedestrian_category);
+	function addPedestrianAccidents() {
+		addAccident(pedestrian_accidents_json, pedestrianAccidentMarkers, pedestrianCategory);
 	}
 
-	function remove_marker_set(marker_set) {
+	function removeMarkerSet(marker_set) {
 		marker_set.map(marker => {marker.filtered = true})
-		accidents_cluster.ProcessView();
+		accidentsCluster.ProcessView();
 	}
 
 	// init the clusters
-	add_traffic_accidents();
-	add_bike_accidents();
-	add_pedestrian_accidents();
+	addTrafficAccidents();
+	addBikeAccidents();
+	addPedestrianAccidents();
 
-	public_transportation_stops.forEach(add_public_trans_stops);
-	street_lights.forEach(add_street_lights);
+	public_transportation_stops.forEach(addPublicTransStops);
+	street_lights.forEach(addStreetLights);
+	addBikeInfrastructure();
+	addStreetSlopes();
+	addPedestrianCrossings();
 
-	function create_cluster_marker(value) {
-		return new PruneCluster.Marker(
-				value.point_y,
-				value.point_x
-		)
-	}
 
-	function add_public_trans_stops(value) {
+	function addPublicTransStops(value) {
 		L.circle([value.split(",")[0], value.split(",")[1]], {
 			stroke: false,
 			fillColor: '#000000',
 			fillOpacity: 0.7,
 			radius: 2,
-		}).addTo(public_transport_stops_layer).bindPopup(value.split(",")[2]);
+		}).addTo(publicTransportStopsLayer).bindPopup(value.split(",")[2]);
 	}
 
-	function add_street_lights(value) {
+	function addStreetLights(value) {
 		// TODO: Make this faster (probably run in the bg on startup or use CircleMarker)
 		L.circle([value.split(",")[0], value.split(",")[1]], {
 			stroke: false,
 			fillColor: '#ffac00',
 			fillOpacity: 0.5,
 			radius: 1.5,
-		}).addTo(street_lights_layer);
+		}).addTo(streetLightsLayer);
 	}
 
-	accidents.addLayer(accidents_cluster);
+	function addStreetSlopes() {
+		let colors = ['red', 'orange', 'blue', 'green']
+		for (let [pathname, layer_obj] of Object.entries(streetSlopeSourceFiles)){
+			let shp = new L.Shapefile('sources/shapefiles/street_slopes/' + pathname, {
+				onEachFeature: function(feature, layer) {
+					layer.bindPopup("Slope: " + Math.round(feature.properties['slope']) + "%");
+				},
+				style: function (feature) {
+					let selectedColor = colors[Object.keys(streetSlopeSourceFiles).indexOf(pathname)];
+					return {color: selectedColor, fillColor: selectedColor}
+				}
+			}).addTo(layer_obj);
+			shp.once("data:loaded", function() {
+				console.log("Finished loading " + pathname)
+			});
+		}
+	}
+
+	function addPedestrianCrossings() {
+		let shp = new L.Shapefile('sources/shapefiles/pedestrian_crossings/Pedestrian_crossings.zip', {
+			onEachFeature: function(feature, layer) {
+				layer.bindPopup(Object.keys(feature.properties).map(function(k) {
+					return k + ": " + feature.properties[k];
+				}).join("<br />"), {
+					maxHeight: 200
+				});
+			},
+			style: function (feature) {
+				return {color: 'black', fillColor: 'black'}
+			}
+		}).addTo(pedestrianCrossingsLayer);
+		shp.once("data:loaded", function() {
+			console.log("Finished loading sources/shapefiles/pedestrian_crossings/Pedestrian_crossings.zip")
+		});
+	}
+
+
+	function addBikeInfrastructure() {
+		for (let [pathname, layer_obj] of Object.entries(cyclingInfraSourceFiles)){
+			let shp = new L.Shapefile('sources/shapefiles/cycling_measures/' + pathname, {
+				onEachFeature: function(feature, layer) {
+					layer.bindPopup(Object.keys(feature.properties).map(function(k) {
+						return k + ": " + feature.properties[k];
+					}).join("<br />"), {
+						maxHeight: 200
+					});
+				}
+			}).addTo(layer_obj);
+			shp.once("data:loaded", function() {
+				console.log("Finished loading "+pathname)
+			});
+		}
+	}
 
 
 	let OSM = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -351,7 +570,7 @@
 		attribution: 'Katarína Bulková<br>&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 	});
 
-	var CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+	let CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
 		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
 		subdomains: 'abcd',
 		maxZoom: 20
@@ -367,18 +586,72 @@
 	const base_layers = {
 		"OpenStreetMap": OSM,
 		"Carto": CartoDB_Positron}
-	const overlays = {
-		"<span id='traffic_accidents'><i class='fa fa-map-marker red'></i> Traffic accidents</span>": accidents,
-		"<span id='bike_accidents'><i class='fa fa-map-marker violet'></i> Bike accidents</span>": accidents,
-		"<span id='pedestrian_accidents'><i class='fa fa-map-marker blue'></i> Pedestrian accidents</span>": accidents,
-		"Street lights": street_lights_layer,
-		"<i class='fa fa-bus'></i> Bus Stops": public_transport_stops_layer,
+	const overlays_sorted = {
+		"Accidents" : {
+			"<span id='traffic_accidents'><i class='fa fa-map-marker red'></i> Traffic accidents</span>": accidentsCluster,
+			"<span id='bike_accidents'><i class='fa fa-map-marker violet'></i> Bike accidents</span>": accidentsCluster,
+			"<span id='pedestrian_accidents'><i class='fa fa-map-marker blue'></i> Pedestrian accidents</span>": accidentsCluster,
+		}, "Architecture": {
+			"<i class='fa-regular fa-lightbulb'></i> Street lights": streetLightsLayer,
+			"<i class='fa-solid fa-bus'></i> Bus Stops": publicTransportStopsLayer,
+			"<i class='fa-solid fa-person-walking'></i> Pedestrian Crossings": pedestrianCrossingsLayer,
+		}, "Cycling infrastrucure": {
+			"<i class='fa-solid fa-bicycle'></i> Bicycle Crossing": cyclingInfraSourceFiles["BicycleCrossing.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Bicycle Path": cyclingInfraSourceFiles["BikePath.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Separate Line for Taxi, Bicycle, Bus": cyclingInfraSourceFiles["ReservedLaneForTaxi_Bicycle_Bus.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Bicycle Path in the Opposite direction (Lane)": cyclingInfraSourceFiles["BikePathInTheOppositeDirection(Lane).shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Cyclists riding in the opposite direction": cyclingInfraSourceFiles["CyclistsRidingInTheOppositeDirection.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Dedicated bicycle line": cyclingInfraSourceFiles["DedicatedBicycleLane.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Protective Line for Cyclists": cyclingInfraSourceFiles["ProtectiveLaneForCyclists.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Marked Corridor for Cyclists": cyclingInfraSourceFiles["MarkedCorridorForCyclists.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Entry Allowed for Cyclists": cyclingInfraSourceFiles["EntryAllowedForCyclists.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> No Entry for All Motor Vehicles": cyclingInfraSourceFiles["NoEntryForAllMotorVehicles.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Path for Pedestrians and Cyclists (Separated)": cyclingInfraSourceFiles["PathForPedestriansAndCyclists(Separated).shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Path for Pedestrians and Cyclists (Joint)": cyclingInfraSourceFiles["PathForPedestriansAndCyclists(Unseparated).shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Pedestrian Path with Cyclists Allowed": cyclingInfraSourceFiles["PedestrianPathWithCyclistsAllowed.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Prohibited Entry for Cyclists": cyclingInfraSourceFiles["ProhibitedEntryForCyclists.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Canceled sections": cyclingInfraSourceFiles["TheSectionWasCanceled.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Others": cyclingInfraSourceFiles["Others.shp.zip"],
+		}, "Street slopes": {
+			"<i class='fa-solid fa-arrow-up-right-dots'></i> Minimal (<5%)": streetSlopeSourceFiles["Min.shp.zip"],
+			"<i class='fa-solid fa-arrow-up-right-dots'></i> Medium (5%-10%)": streetSlopeSourceFiles["Medium.shp.zip"],
+			"<i class='fa-solid fa-arrow-up-right-dots'></i> Dangerous (10%-20%)": streetSlopeSourceFiles["Dangerous.shp.zip"],
+			"<i class='fa-solid fa-arrow-up-right-dots'></i> Extreme (>20%)": streetSlopeSourceFiles["Extreme.shp.zip"]
+		}
+	}
 
+	const overlays = {
+		"<span id='traffic_accidents'><i class='fa fa-map-marker red'></i> Traffic accidents</span>": accidentsCluster,
+		"<span id='bike_accidents'><i class='fa fa-map-marker violet'></i> Bike accidents</span>": accidentsCluster,
+		"<span id='pedestrian_accidents'><i class='fa fa-map-marker blue'></i> Pedestrian accidents</span>": accidentsCluster,
+		"<i class='fa-regular fa-lightbulb'></i> Street lights": streetLightsLayer,
+		"<i class='fa-solid fa-bus'></i> Bus Stops": publicTransportStopsLayer,
+		"<i class='fa-solid fa-person-walking'></i> Pedestrian Crossings": pedestrianCrossingsLayer,
+		"<i class='fa-solid fa-bicycle'></i> Bicycle Crossing": cyclingInfraSourceFiles["BicycleCrossing.shp.zip"],
+		"<i class='fa-solid fa-bicycle'></i> Bicycle Path": cyclingInfraSourceFiles["BikePath.shp.zip"],
+		"<i class='fa-solid fa-bicycle'></i> Separate Line for Taxi, Bicycle, Bus": cyclingInfraSourceFiles["ReservedLaneForTaxi_Bicycle_Bus.shp.zip"],
+		"<i class='fa-solid fa-bicycle'></i> Bicycle Path in the Opposite direction (Lane)": cyclingInfraSourceFiles["BikePathInTheOppositeDirection(Lane).shp.zip"],
+		"<i class='fa-solid fa-bicycle'></i> Cyclists riding in the opposite direction": cyclingInfraSourceFiles["CyclistsRidingInTheOppositeDirection.shp.zip"],
+		"<i class='fa-solid fa-bicycle'></i> Dedicated bicycle line": cyclingInfraSourceFiles["DedicatedBicycleLane.shp.zip"],
+		"<i class='fa-solid fa-bicycle'></i> Protective Line for Cyclists": cyclingInfraSourceFiles["ProtectiveLaneForCyclists.shp.zip"],
+		"<i class='fa-solid fa-bicycle'></i> Marked Corridor for Cyclists": cyclingInfraSourceFiles["MarkedCorridorForCyclists.shp.zip"],
+		"<i class='fa-solid fa-bicycle'></i> Entry Allowed for Cyclists": cyclingInfraSourceFiles["EntryAllowedForCyclists.shp.zip"],
+		"<i class='fa-solid fa-bicycle'></i> No Entry for All Motor Vehicles": cyclingInfraSourceFiles["NoEntryForAllMotorVehicles.shp.zip"],
+		"<i class='fa-solid fa-bicycle'></i> Path for Pedestrians and Cyclists (Separated)": cyclingInfraSourceFiles["PathForPedestriansAndCyclists(Separated).shp.zip"],
+		"<i class='fa-solid fa-bicycle'></i> Path for Pedestrians and Cyclists (Joint)": cyclingInfraSourceFiles["PathForPedestriansAndCyclists(Unseparated).shp.zip"],
+		"<i class='fa-solid fa-bicycle'></i> Pedestrian Path with Cyclists Allowed": cyclingInfraSourceFiles["PedestrianPathWithCyclistsAllowed.shp.zip"],
+		"<i class='fa-solid fa-bicycle'></i> Prohibited Entry for Cyclists": cyclingInfraSourceFiles["ProhibitedEntryForCyclists.shp.zip"],
+		"<i class='fa-solid fa-bicycle'></i> Canceled sections": cyclingInfraSourceFiles["TheSectionWasCanceled.shp.zip"],
+		"<i class='fa-solid fa-bicycle'></i> Others": cyclingInfraSourceFiles["Others.shp.zip"],
+		"<i class='fa-solid fa-arrow-up-right-dots'></i> Minimal (<5%)": streetSlopeSourceFiles["Min.shp.zip"],
+		"<i class='fa-solid fa-arrow-up-right-dots'></i> Medium (5%-10%)": streetSlopeSourceFiles["Medium.shp.zip"],
+		"<i class='fa-solid fa-arrow-up-right-dots'></i> Dangerous (10%-20%)": streetSlopeSourceFiles["Dangerous.shp.zip"],
+		"<i class='fa-solid fa-arrow-up-right-dots'></i> Extreme (>20%)": streetSlopeSourceFiles["Extreme.shp.zip"]
 	}
 
 
 	// layer selector
-	L.control.layers(base_layers, overlays).addTo(map);
+	L.control.layers(base_layers, overlays, {groupCheckboxes: true}).addTo(map);
 
 	// zoom control
 	L.control.zoom({
@@ -389,7 +662,7 @@
 	L.control.sidebar('sidebar').addTo(map);
 
 	// filtering
-	let filter_categories = []
+	let filterCategories = []
 
 	let collision_with_category =  L.control.tagFilterButton({
 		data: [
@@ -406,7 +679,7 @@
 		filterOnEveryClick: true,
 		icon: '<i class="fa-solid fa-car-burst"></i> Collision With'
 	}).addTo(map);
-	filter_categories.push(collision_with_category);
+	filterCategories.push(collision_with_category);
 
 	let cause = L.control.tagFilterButton({
 		data: [
@@ -421,9 +694,9 @@
 		filterOnEveryClick: true,
 		icon: '<i class="fa fa-question"></i> Cause'
 	}).addTo(map);
-	filter_categories.push(cause);
+	filterCategories.push(cause);
 
-	let alcohol_category = L.control.tagFilterButton({
+	let alcoholCategory = L.control.tagFilterButton({
 		data: [
 			'DUI - blood alcohol content < 0,24‰',
 			'DUI - blood alcohol content < 0,5‰ & >= 0,24‰',
@@ -439,9 +712,9 @@
 		filterOnEveryClick: true,
 		icon: '<i class="fa fa-beer"></i> Alcohol'
 	}).addTo(map);
-	filter_categories.push(alcohol_category);
+	filterCategories.push(alcoholCategory);
 
-	let caused_by_category = L.control.tagFilterButton({
+	let causedByCategory = L.control.tagFilterButton({
 		data: [
 			'pedestrian',
 			'other',
@@ -455,9 +728,9 @@
 		filterOnEveryClick: true,
 		icon: '<i class="fa-solid fa-person-circle-question"></i> Caused By'
 	}).addTo(map);
-	filter_categories.push(caused_by_category);
+	filterCategories.push(causedByCategory);
 
-	let road_condition_category = L.control.tagFilterButton({
+	let roadConditionCategory = L.control.tagFilterButton({
 		data: [
 			'different state of the road surface at the time of accidents',
 			'mud on the road',
@@ -472,9 +745,9 @@
 		filterOnEveryClick: true,
 		icon: '<i class="fa-solid fa-road-circle-exclamation"></i> Road Condition'
 	}).addTo(map);
-	filter_categories.push(road_condition_category);
+	filterCategories.push(roadConditionCategory);
 
-	let weather_conditions_category = L.control.tagFilterButton({
+	let weatherConditionsCategory = L.control.tagFilterButton({
 		data: [
 			'rain',
 			'different difficult weather conditions',
@@ -488,9 +761,9 @@
 		filterOnEveryClick: true,
 		icon: '<i class="fa-solid fa-cloud"></i> Weather Condition'
 	}).addTo(map);
-	filter_categories.push(weather_conditions_category);
+	filterCategories.push(weatherConditionsCategory);
 
-	let visibility_category = L.control.tagFilterButton({
+	let visibilityCategory = L.control.tagFilterButton({
 		data: [
 			'at night - without public lighting, visibility unimpaired due to weather conditions',
 			'at night - without public lighting, visibility impaired due to weather conditions (fog, rain, snowfall etc.)',
@@ -503,9 +776,9 @@
 		filterOnEveryClick: true,
 		icon: '<i class="fa-solid fa-smog"></i> Visibility'
 	}).addTo(map);
-	filter_categories.push(visibility_category);
+	filterCategories.push(visibilityCategory);
 
-	let view_condition_category = L.control.tagFilterButton({
+	let viewConditionCategory = L.control.tagFilterButton({
 		data: [
 			'good view',
 			'bad view - other reason',
@@ -518,9 +791,9 @@
 		filterOnEveryClick: true,
 		icon: '<i class="fa-solid fa-eye"></i> View Condition'
 	}).addTo(map);
-	filter_categories.push(view_condition_category);
+	filterCategories.push(viewConditionCategory);
 
-	let accident_place_category = L.control.tagFilterButton({
+	let accidentPlaceCategory = L.control.tagFilterButton({
 		data: [
 			'bridge, overpass, underpass, tunnel',
 			'parking lot adjacent to the road',
@@ -537,9 +810,9 @@
 		filterOnEveryClick: true,
 		icon: '<i class="fa-solid fa-location-pin"></i> Location'
 	}).addTo(map);
-	filter_categories.push(accident_place_category);
+	filterCategories.push(accidentPlaceCategory);
 
-	let road_type_category = L.control.tagFilterButton({
+	let roadTypeCategory = L.control.tagFilterButton({
 		name: 'Road type category',
 		data: [
 			'highway',
@@ -555,13 +828,13 @@
 		filterOnEveryClick: true,
 		icon: '<i class="fa fa-road"></i> Road Type'
 	}).addTo(map);
-	filter_categories.push(road_type_category);
+	filterCategories.push(roadTypeCategory);
 
 	// enable Prunecluster filtering
-	filter_categories.forEach(cat => cat.enablePruneCluster(accidents_cluster));
+	filterCategories.forEach(cat => cat.enablePruneCluster(accidentsCluster));
 
 	// Add filter to the sidebar
-	function move_filter_icon_to_sidebar() {
+	function moveFilterIconToSidebar() {
 		console.log("Moving filter to the sidebar");
 		let filter_buttons = document.getElementsByClassName("leaflet-bar easy-button-container leaflet-control");
 		let button_container = filter_buttons[0].parentNode;
@@ -569,64 +842,120 @@
 		let sidebar_container = document.getElementById('filters');
 		sidebar_container.append(button_container);
 	}
-	move_filter_icon_to_sidebar();
+	moveFilterIconToSidebar();
 
 	// create date filter
-	function date_filter(start_date, end_date) {
-		traffic_accident_markers.map(marker => marker.filtered = true);
-		let traffic_matching = traffic_accident_markers.filter(marker => marker.date >= start_date && marker.date <= end_date)
+	function DateRangeFilter(startDate, endDate) {
+		trafficAccidentMarkers.map(marker => marker.filtered = true);
+		let traffic_matching = trafficAccidentMarkers.filter(marker => marker.date >= startDate && marker.date <= endDate)
 		console.log("Found " + traffic_matching.length + " matching entries in pedestrian_accidents")
 		traffic_matching.map(marker => marker.filtered = false);
 
-		bike_accident_markers.map(marker => marker.filtered = true);
-		let bike_matching = bike_accident_markers.filter(marker => marker.date >= start_date && marker.date <= end_date)
+		bikeAccidentMarkers.map(marker => marker.filtered = true);
+		let bike_matching = bikeAccidentMarkers.filter(marker => marker.date >= startDate && marker.date <= endDate)
 		console.log("Found " + bike_matching.length + " matching entries in pedestrian_accidents")
 		bike_matching.map(marker => marker.filtered = false);
 
-		pedestrian_accident_markers.map(marker => marker.filtered = true);
-		let ped_matching = pedestrian_accident_markers.filter(marker => marker.date >= start_date && marker.date <= end_date)
+		pedestrianAccidentMarkers.map(marker => marker.filtered = true);
+		let ped_matching = pedestrianAccidentMarkers.filter(marker => marker.date >= startDate && marker.date <= endDate)
 		console.log("Found " + ped_matching.length + " matching entries in pedestrian_accidents")
 		ped_matching.map(marker => marker.filtered = false);
 
-		accidents_cluster.ProcessView();
-}
+		accidentsCluster.ProcessView();
+	}
+
+	function DateCustomSelect() {
+		let year_el = document.getElementById('year');
+		let year_sel = year_el.parentNode.firstElementChild.firstElementChild.checked;
+
+		let month_el =  document.getElementById('month');
+		let month_sel = month_el.parentNode.firstElementChild.firstElementChild.checked;
+
+		let day_el = document.getElementById('day')
+		let day_sel = day_el.parentNode.firstElementChild.firstElementChild.checked;
+
+		let weekday_el = document.getElementById('weekday')
+		let weekday_sel = weekday_el.parentNode.firstElementChild.firstElementChild.checked;
+
+		let all_markers = [trafficAccidentMarkers, bikeAccidentMarkers, pedestrianAccidentMarkers]
+
+		// disable all markers
+		all_markers.forEach(removeMarkerSet);
+
+		let filtered_set = trafficAccidentMarkers.concat(bikeAccidentMarkers).concat(pedestrianAccidentMarkers);
+
+		if (year_sel){
+			filtered_set = filtered_set.filter(value => value.date.getFullYear().toString() === year_el.selectedOptions[0].value
+			)
+		}
+		if (month_sel) {
+			filtered_set = filtered_set.filter(value => value.date.getMonth().toString() === month_el.selectedOptions[0].value
+			)
+		}
+		if (day_sel) {
+			filtered_set =filtered_set.filter(value => value.date.getDate().toString() === day_el.selectedOptions[0].value
+			)
+		}
+		if (weekday_sel) {
+			filtered_set = filtered_set.filter(value => value.date.getDay().toString() === weekday_el.selectedOptions[0].value
+			)
+		}
+		console.log(filtered_set.length + " markers selected");
+		filtered_set.map(marker => marker.filtered = false);
+		accidentsCluster.ProcessView();
 
 
+
+	}
 
 
 
 	// EVENT HANDLERS
-	function toggle_traffic_accidents() {
+	function toggleTrafficAccidents() {
 		if (this.checked) {
 			console.log("Adding traffic accidents");
-			add_traffic_accidents();
+			addTrafficAccidents();
 		} else {
 			console.log("Removing traffic accidents");
-			remove_marker_set(traffic_accident_markers);
+			removeMarkerSet(trafficAccidentMarkers);
 		}
 	}
 
-	function toggle_bike_accidents() {
+	function toggleBikeAccidents() {
 		if (this.checked) {
 			console.log("Adding bike accidents");
-			add_bike_accidents();
+			addBikeAccidents();
 		} else {
 			console.log("Removing bike accidents");
-			remove_marker_set(bike_accident_markers);
+			removeMarkerSet(bikeAccidentMarkers);
 		}}
 
-	function toggle_pedestrian_accidents() {
+	function togglePedestrianAccidents() {
 		if (this.checked) {
 			console.log("Adding pedestrian accidents");
-			add_pedestrian_accidents();
+			addPedestrianAccidents();
 		} else {
 			console.log("Removing pedestrian accidents");
-			remove_marker_set(pedestrian_accident_markers);
+			removeMarkerSet(pedestrianAccidentMarkers);
 		}}
 
-	document.getElementById("traffic_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggle_traffic_accidents, false);
-	document.getElementById("bike_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggle_bike_accidents, false);
-	document.getElementById("pedestrian_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggle_pedestrian_accidents, false);
+	function toggleAllAccidents() {
+		if (this.checked) {
+			console.log("Adding all accidents");
+			addTrafficAccidents();
+			addBikeAccidents();
+			addPedestrianAccidents();
+		} else {
+			console.log("Removing all accidents");
+			removeMarkerSet(trafficAccidentMarkers);
+			removeMarkerSet(bikeAccidentMarkers);
+			removeMarkerSet(pedestrianAccidentMarkers);
+		}
+	}
+
+	document.getElementById("traffic_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggleTrafficAccidents, false);
+	document.getElementById("bike_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggleBikeAccidents, false);
+	document.getElementById("pedestrian_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", togglePedestrianAccidents, false);
 
 </script>
 </body>
