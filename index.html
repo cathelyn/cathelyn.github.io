@@ -16,8 +16,6 @@
 	<link rel="stylesheet" href="css/leaflet-sidebar.css" />
 	<link rel="stylesheet" href="css/leaflet-tag-filter-button.css" />
 	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-
-	<!-- CSS only -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
 
@@ -41,9 +39,17 @@
 	<script src="js/catiline.js"></script>
 	<!--	Bootstrap -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+	<!--	Custom functions	-->
+	<script src="js/utilities.js"></script>
+	<script src="js/event-handlers.js"></script>
+	<script src="js/date-selectors.js"></script>
+	<script src="js/main-layer-builders.js"></script>
+	<script src="js/extra-layer-builders.js"></script>
+	<!--	Constants -->
+	<script src="js/base-maps.js"></script>
 
 
-	<!--	Data sources TODO: Find better way to store-->
+	<!--	Data sources-->
 
 	<script src="sources/bike_accidents.js"></script>
 	<script src="sources/traffic_accidents.js"></script>
@@ -351,13 +357,9 @@
 	const pedestrianCategory = 2
 	// END CONSTANTS
 
-	// DATA
 	// START LAYER SETUP
-
 	// main clustering layer
 	let accidentsCluster = new PruneClusterForLeaflet(160);
-
-
 
 	// other info layers
 	let pedestrianCrossingsLayer = L.layerGroup();
@@ -391,7 +393,6 @@
 		'Medium.shp.zip': L.layerGroup(),
 		'Min.shp.zip': L.layerGroup()
 	}
-
 
 	const overlaysGrouped = {
 		"Accidents" : {
@@ -502,15 +503,6 @@
 		}
 	});
 
-	function fontAwesomeMapMarkerIcon()	{
-		return new L.divIcon({
-					html: '<i class="fa fa-map-marker fa-2x"></i>',
-					iconSize: [40, 40],
-					className: "MapMarkerIcon",
-				}
-		)
-	}
-
 	// END ICON (MARKER) GENERATOR
 
 	// START MARKER GENERATOR FROM DATA
@@ -520,95 +512,12 @@
 	let bikeAccidentMarkers = [];
 	let pedestrianAccidentMarkers = [];
 
-	function addAccident(dataset, markersArray, category)
-	/**
-	 * Create and add markers for the accidents based on the date in @param dataset. Created markers are also stored
-	 * in @param markers_array for further manipulation and filtering. Each marker is assigned a respective category.
-	 * @param dataset input data in js array format consisting of comma-separated lat,lon,YYYY,MM,DD values
-	 * @param markersArray js array for storing created markers
-	 * @param category representation of category for filtering/icon composition purposes
-	 */
-	{
-		if (markersArray.length > 0){
-			console.log("Registering " + markersArray.length + " markers");
-			markersArray.map(marker => {marker.filtered = false})
-		} else {
-
-			let color = "black";
-			if (category === 0) {
-				color = "red";
-			}
-			else if (category === 1) {
-				color = "violet";
-			}
-			else if (category === 2) {
-				color = "blue";
-			}
-
-
-			console.log("Building markers anew - category " + category);
-			dataset.forEach(value => {
-				let marker = new PruneCluster.Marker(
-						value.point_y,
-						value.point_x
-				);
-				marker.date = new Date(value.datetime);
-				marker.filtered = true;
-				marker.category = category;
-
-
-				marker.data.tags = [
-					value.collision_with,
-					value.cause,
-					value.alcohol,
-					value.caused_by,
-					value.road_condition,
-					value.weather,
-					value.visibility,
-					value.view_condition,
-					value.accident_place,
-					value.road_type
-				]
-
-				marker.data.icon = fontAwesomeMapMarkerIcon();
-				marker.data.icon.options.className = "MapMarkerIcon " + color;
-				let keys = Object.keys(value);
-				let info = "";
-				for (let i = 0; i < keys.length; i++) {
-					info += keys[i] + ": " + value[keys[i]] + "<br>"
-				}
-
-				marker.data.popup = info; // TODO: make popup
-				marker.data.tooltip = "Number of people in the accident: " // TODO: Make tooltip
-				markersArray.push(marker);
-				accidentsCluster.RegisterMarker(marker)}
-			);
-		}
-		accidentsCluster.ProcessView();
-	}
-
-	function addTrafficAccidents() {
-		addAccident(traffic_accidents_json, trafficAccidentMarkers, trafficCategory);
-	}
-
-	function addBikeAccidents() {
-		addAccident(bike_accidents_json, bikeAccidentMarkers, bikeCategory);
-	}
-
-	function addPedestrianAccidents() {
-		addAccident(pedestrian_accidents_json, pedestrianAccidentMarkers, pedestrianCategory);
-	}
-
-	function removeMarkerSet(marker_set) {
-		marker_set.map(marker => {marker.filtered = true})
-		accidentsCluster.ProcessView();
-	}
-
 	// init the clusters
 	addTrafficAccidents();
 	addBikeAccidents();
 	addPedestrianAccidents();
 
+	// build extra information layers
 	public_transportation_stops.forEach(addPublicTransStops);
 	street_lights.forEach(addStreetLights);
 	addBikeInfrastructure();
@@ -616,106 +525,10 @@
 	addPedestrianCrossings();
 
 
-	function addPublicTransStops(value) {
-		L.circle([value.split(",")[0], value.split(",")[1]], {
-			stroke: false,
-			fillColor: '#000000',
-			fillOpacity: 0.7,
-			radius: 2,
-		}).addTo(publicTransportStopsLayer).bindPopup(value.split(",")[2]);
-	}
-
-	function addStreetLights(value) {
-		// TODO: Make this faster (probably run in the bg on startup or use CircleMarker)
-		L.circle([value.split(",")[0], value.split(",")[1]], {
-			stroke: false,
-			fillColor: '#ffac00',
-			fillOpacity: 0.5,
-			radius: 1.5,
-		}).addTo(streetLightsLayer);
-	}
-
-	function addStreetSlopes() {
-		let colors = ['red', 'orange', 'blue', 'green']
-		for (let [pathname, layer_obj] of Object.entries(streetSlopeSourceFiles)){
-			let shp = new L.Shapefile('sources/shapefiles/street_slopes/' + pathname, {
-				onEachFeature: function(feature, layer) {
-					layer.bindPopup("Slope: " + Math.round(feature.properties['slope']) + "%");
-				},
-				style: function (feature) {
-					let selectedColor = colors[Object.keys(streetSlopeSourceFiles).indexOf(pathname)];
-					return {color: selectedColor, fillColor: selectedColor}
-				}
-			}).addTo(layer_obj);
-			shp.once("data:loaded", function() {
-				console.log("Finished loading " + pathname)
-			});
-		}
-	}
-
-	function addPedestrianCrossings() {
-		let shp = new L.Shapefile('sources/shapefiles/pedestrian_crossings/Pedestrian_crossings.zip', {
-			onEachFeature: function(feature, layer) {
-				layer.bindPopup(Object.keys(feature.properties).map(function(k) {
-					return k + ": " + feature.properties[k];
-				}).join("<br />"), {
-					maxHeight: 200
-				});
-			},
-			style: function (feature) {
-				return {color: 'black', fillColor: 'black'}
-			}
-		}).addTo(pedestrianCrossingsLayer);
-		shp.once("data:loaded", function() {
-			console.log("Finished loading sources/shapefiles/pedestrian_crossings/Pedestrian_crossings.zip")
-		});
-	}
 
 
-	function addBikeInfrastructure() {
-		for (let [pathname, layer_obj] of Object.entries(cyclingInfraSourceFiles)){
-			let shp = new L.Shapefile('sources/shapefiles/cycling_measures/' + pathname, {
-				onEachFeature: function(feature, layer) {
-					layer.bindPopup(Object.keys(feature.properties).map(function(k) {
-						return k + ": " + feature.properties[k];
-					}).join("<br />"), {
-						maxHeight: 200
-					});
-				}
-			}).addTo(layer_obj);
-			shp.once("data:loaded", function() {
-				console.log("Finished loading "+pathname)
-			});
-		}
-	}
 
-
-	let OSM = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-		maxZoom: 19,
-		attribution: 'Katarína Bulková<br>&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-	});
-
-	let CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-		subdomains: 'abcd',
-		maxZoom: 20
-	});
-
-	let Stadia_AlidadeSmooth = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
-		maxZoom: 20,
-		attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
-	});
-
-	let Stamen_TonerLite = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.{ext}', {
-		attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-		subdomains: 'abcd',
-		minZoom: 0,
-		maxZoom: 20,
-		ext: 'png'
-	});
-
-
-	let CyclOSM = L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
+	const CyclOSM = L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
 		maxZoom: 20,
 		attribution: '<a href="https://github.com/cyclosm/cyclosm-cartocss-style/releases" title="CyclOSM - Open Bicycle render">CyclOSM</a> | Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 	});
@@ -779,7 +592,6 @@
 	// sidebar
 	L.control.sidebar('sidebar').addTo(map);
 
-	// filtering
 	let filterCategories = []
 
 	let collision_with_category =  L.control.tagFilterButton({
@@ -951,136 +763,8 @@
 	// enable Prunecluster filtering
 	filterCategories.forEach(cat => cat.enablePruneCluster(accidentsCluster));
 
-	// Add filter to the sidebar
-	function moveFilterIconToSidebar() {
-		console.log("Moving filter to the sidebar");
-		let filter_buttons = document.getElementsByClassName("leaflet-bar easy-button-container leaflet-control");
-		let button_container = filter_buttons[0].parentNode;
-		button_container.classList.remove('leaflet-top');
-		let sidebar_container = document.getElementById('filters');
-		sidebar_container.append(button_container);
-	}
 	moveFilterIconToSidebar();
 
-	// create date filter
-	function DateRangeFilter(startDate, endDate) {
-		trafficAccidentMarkers.map(marker => marker.filtered = true);
-		let traffic_matching = trafficAccidentMarkers.filter(marker => marker.date >= startDate && marker.date <= endDate)
-		console.log("Found " + traffic_matching.length + " matching entries in pedestrian_accidents")
-		traffic_matching.map(marker => marker.filtered = false);
-
-		bikeAccidentMarkers.map(marker => marker.filtered = true);
-		let bike_matching = bikeAccidentMarkers.filter(marker => marker.date >= startDate && marker.date <= endDate)
-		console.log("Found " + bike_matching.length + " matching entries in pedestrian_accidents")
-		bike_matching.map(marker => marker.filtered = false);
-
-		pedestrianAccidentMarkers.map(marker => marker.filtered = true);
-		let ped_matching = pedestrianAccidentMarkers.filter(marker => marker.date >= startDate && marker.date <= endDate)
-		console.log("Found " + ped_matching.length + " matching entries in pedestrian_accidents")
-		ped_matching.map(marker => marker.filtered = false);
-
-		accidentsCluster.ProcessView();
-	}
-
-	function DateCustomSelect() {
-		let year_el = document.getElementById('year');
-		let year_sel = year_el.parentNode.firstElementChild.firstElementChild.checked;
-
-		let month_el =  document.getElementById('month');
-		let month_sel = month_el.parentNode.firstElementChild.firstElementChild.checked;
-
-		let day_el = document.getElementById('day')
-		let day_sel = day_el.parentNode.firstElementChild.firstElementChild.checked;
-
-		let weekday_el = document.getElementById('weekday')
-		let weekday_sel = weekday_el.parentNode.firstElementChild.firstElementChild.checked;
-
-		let all_markers = [trafficAccidentMarkers, bikeAccidentMarkers, pedestrianAccidentMarkers]
-
-		// disable all markers
-		all_markers.forEach(removeMarkerSet);
-
-		let filtered_set = trafficAccidentMarkers.concat(bikeAccidentMarkers).concat(pedestrianAccidentMarkers);
-
-		if (year_sel){
-			filtered_set = filtered_set.filter(value => value.date.getFullYear().toString() === year_el.selectedOptions[0].value
-			)
-		}
-		if (month_sel) {
-			filtered_set = filtered_set.filter(value => value.date.getMonth().toString() === month_el.selectedOptions[0].value
-			)
-		}
-		if (day_sel) {
-			filtered_set =filtered_set.filter(value => value.date.getDate().toString() === day_el.selectedOptions[0].value
-			)
-		}
-		if (weekday_sel) {
-			filtered_set = filtered_set.filter(value => value.date.getDay().toString() === weekday_el.selectedOptions[0].value
-			)
-		}
-		console.log(filtered_set.length + " markers selected");
-		filtered_set.map(marker => marker.filtered = false);
-		accidentsCluster.ProcessView();
-
-
-
-	}
-
-
-
-	// EVENT HANDLERS
-	function toggleTrafficAccidents(el) {
-		if (!el.classList.contains("enabled")) {
-			console.log("Adding traffic accidents");
-			el.classList.add("enabled");
-			addTrafficAccidents();
-		} else {
-			console.log("Removing traffic accidents");
-			el.classList.remove("enabled")
-			removeMarkerSet(trafficAccidentMarkers);
-		}
-	}
-
-	function toggleBikeAccidents(el) {
-		if (!el.classList.contains("enabled")) {
-			console.log("Adding bike accidents");
-			el.classList.add("enabled");
-
-			addBikeAccidents();
-		} else {
-			console.log("Removing bike accidents");
-			el.classList.remove("enabled")
-			removeMarkerSet(bikeAccidentMarkers);
-		}}
-
-	function togglePedestrianAccidents(el) {
-		if (!el.classList.contains("enabled")) {
-			console.log("Adding pedestrian accidents");
-			el.classList.add("enabled");
-			addPedestrianAccidents();
-		} else {
-			console.log("Removing pedestrian accidents");
-			el.classList.remove("enabled")
-			removeMarkerSet(pedestrianAccidentMarkers);
-		}}
-
-	function toggleAllAccidents() {
-		if (this.checked) {
-			console.log("Adding all accidents");
-			addTrafficAccidents();
-			addBikeAccidents();
-			addPedestrianAccidents();
-		} else {
-			console.log("Removing all accidents");
-			removeMarkerSet(trafficAccidentMarkers);
-			removeMarkerSet(bikeAccidentMarkers);
-			removeMarkerSet(pedestrianAccidentMarkers);
-		}
-	}
-
-	// document.getElementById("traffic_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggleTrafficAccidents, false);
-	// document.getElementById("bike_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggleBikeAccidents, false);
-	// document.getElementById("pedestrian_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", togglePedestrianAccidents, false);
 
 </script>
 </body>
