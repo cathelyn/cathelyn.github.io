@@ -18,7 +18,7 @@
 	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
 	<!-- CSS only -->
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
 
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
@@ -39,6 +39,9 @@
 	<script src="js/leaflet.shpfile.js"></script>
 	<script src="js/shp.js"></script>
 	<script src="js/catiline.js"></script>
+	<!--	Bootstrap -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
 
 	<!--	Data sources TODO: Find better way to store-->
 
@@ -47,11 +50,6 @@
 	<script src="sources/ped_accidents.js"></script>
 	<script src="sources/pub_trans_stops_lat_lon_name.js"></script>
 	<script src="sources/street_lights_lat_lon_date.js"></script>
-
-	<!-- 	Bootstrap	-->
-	<!-- JavaScript Bundle with Popper -->
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
-
 
 </head>
 <body>
@@ -62,8 +60,9 @@
 	<div class="sidebar-tabs">
 		<ul role="tablist">
 			<li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
+			<li ><a href="#layers" role="tab"><i class="fa-solid fa-layer-group"></i></a></li>
 			<li><a href="#dates" role="tab"><i class="fa-solid fa-calendar-days"></i></a></li>
-			<li ><a href="#filter" role="tab"><i class="fa fa-filter"></i></a></li>
+			<li ><a href="#filter" role="tab"><i class="fa-solid fa-filter"></i></a></li>
 		</ul>
 
 		<ul role="tablist">
@@ -80,6 +79,95 @@
 			</h1>
 			<!--			TODO: Decide what to do with this menu -->
 			This is a project.
+
+		</div>
+
+		<div class="sidebar-pane" id="layers">
+			<h1 class="sidebar-header">Layers selection<span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+			</h1>
+			<script>
+				function generateOverlaysControl() {
+					let outputEl = document.getElementById("layer_selector");
+					const ulMain = document.createElement('ul')
+
+					Object.keys(overlaysGrouped).forEach(group => {
+						const liGroup = document.createElement('li');
+						liGroup.classList.add('overlayGroup');
+						liGroup.classList.add('form-check');
+						liGroup.classList.add('form-switch');
+						// liGroup.innerHTML = group;
+
+						const checkbox = document.createElement('input');
+						checkbox.classList.add("form-check-input")
+						checkbox.type = "checkbox";
+						checkbox.name = group;
+						checkbox.id = "chb_" + group.replace(" ", "_");
+
+						// label for the checkbox
+						const label = document.createElement('label');
+						label.classList.add("form-check-label");
+						label.htmlFor = "chb_" + group.replace(" ", "_");
+
+						// label tag
+						label.appendChild(document.createTextNode(group));
+
+						liGroup.appendChild(checkbox);
+						liGroup.appendChild(label)
+
+
+						checkbox.addEventListener("change", function () {
+							const trigger = new Event("click");
+							const groupItems = this.parentElement.getElementsByTagName('li');
+							for (const item of groupItems) {
+								if (this.checked){
+									if (!item.classList.contains("enabled"))
+										item.dispatchEvent(trigger);
+								} else {
+									if (item.classList.contains("enabled")){
+										item.dispatchEvent(trigger);
+									}
+								}
+							}
+						})
+
+
+
+						ulMain.appendChild(liGroup)
+						const ulNestedGroup = document.createElement('ul');
+						liGroup.appendChild(ulNestedGroup);
+						Object.keys(overlaysGrouped[group]).forEach(layerName => {
+							const liLayer = document.createElement('li');
+							liLayer.classList.add('overlayLayer');
+							liLayer.innerHTML = layerName;
+							liLayer.addEventListener("click", function() {
+								if (layerName.toString().includes("Traffic accidents")) {
+									toggleTrafficAccidents(this);
+									return;
+								} else if (layerName.toString().includes("Bike accidents")){
+									toggleBikeAccidents(this);
+									return;
+								} else if (layerName.toString().includes("Pedestrian accidents")) {
+									togglePedestrianAccidents(this);
+									return;
+								}
+								if (!this.classList.contains("enabled")) {
+									this.classList.add("enabled");
+									map.addLayer(overlaysGrouped[group][layerName]);
+								} else if (this.classList.contains("enabled")) {
+									this.classList.remove("enabled")
+									map.removeLayer(overlaysGrouped[group][layerName]);
+								}
+							});
+							ulNestedGroup.appendChild(liLayer);
+						})
+					})
+					outputEl.appendChild(ulMain);
+				}
+
+			</script>
+			<div id="layer_selector">
+
+			</div>
 
 		</div>
 
@@ -241,6 +329,8 @@
 
 		</div>
 
+
+
 		<div class="sidebar-pane" id="settings">
 			<h1 class="sidebar-header">Settings<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
 		</div>
@@ -254,6 +344,7 @@
 	// CONSTANTS
 	const categoriesColors = ['rgba(255,75,0,0.6)', 'rgba(160,61,229,0.6)', 'rgba(3,170,234,0.6)'];
 	const pi2 = Math.PI * 2;
+
 	// categories configuration
 	const trafficCategory = 0
 	const bikeCategory = 1
@@ -265,6 +356,7 @@
 
 	// main clustering layer
 	let accidentsCluster = new PruneClusterForLeaflet(160);
+
 
 
 	// other info layers
@@ -300,6 +392,40 @@
 		'Min.shp.zip': L.layerGroup()
 	}
 
+
+	const overlaysGrouped = {
+		"Accidents" : {
+			"<span id='traffic_accidents'><i class='fa fa-map-marker red'></i> Traffic accidents</span>": accidentsCluster,
+			"<span id='bike_accidents'><i class='fa fa-map-marker violet'></i> Bike accidents</span>": accidentsCluster,
+			"<span id='pedestrian_accidents'><i class='fa fa-map-marker blue'></i> Pedestrian accidents</span>": accidentsCluster,
+		}, "Architecture": {
+			"<i class='fa-regular fa-lightbulb'></i> Street lights": streetLightsLayer,
+			"<i class='fa-solid fa-bus'></i> Bus Stops": publicTransportStopsLayer,
+			"<i class='fa-solid fa-person-walking'></i> Pedestrian Crossings": pedestrianCrossingsLayer,
+		}, "Cycling infrastrucure": {
+			"<i class='fa-solid fa-bicycle'></i> Bicycle Crossing": cyclingInfraSourceFiles["BicycleCrossing.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Bicycle Path": cyclingInfraSourceFiles["BikePath.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Separate Line for Taxi, Bicycle, Bus": cyclingInfraSourceFiles["ReservedLaneForTaxi_Bicycle_Bus.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Bicycle Path in the Opposite direction (Lane)": cyclingInfraSourceFiles["BikePathInTheOppositeDirection(Lane).shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Cyclists riding in the opposite direction": cyclingInfraSourceFiles["CyclistsRidingInTheOppositeDirection.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Dedicated bicycle line": cyclingInfraSourceFiles["DedicatedBicycleLane.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Protective Line for Cyclists": cyclingInfraSourceFiles["ProtectiveLaneForCyclists.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Marked Corridor for Cyclists": cyclingInfraSourceFiles["MarkedCorridorForCyclists.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Entry Allowed for Cyclists": cyclingInfraSourceFiles["EntryAllowedForCyclists.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> No Entry for All Motor Vehicles": cyclingInfraSourceFiles["NoEntryForAllMotorVehicles.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Path for Pedestrians and Cyclists (Separated)": cyclingInfraSourceFiles["PathForPedestriansAndCyclists(Separated).shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Path for Pedestrians and Cyclists (Joint)": cyclingInfraSourceFiles["PathForPedestriansAndCyclists(Unseparated).shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Pedestrian Path with Cyclists Allowed": cyclingInfraSourceFiles["PedestrianPathWithCyclistsAllowed.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Prohibited Entry for Cyclists": cyclingInfraSourceFiles["ProhibitedEntryForCyclists.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Canceled sections": cyclingInfraSourceFiles["TheSectionWasCanceled.shp.zip"],
+			"<i class='fa-solid fa-bicycle'></i> Others": cyclingInfraSourceFiles["Others.shp.zip"],
+		}, "Street slopes": {
+			"<i class='fa-solid fa-arrow-up-right-dots'></i> Minimal (<5%)": streetSlopeSourceFiles["Min.shp.zip"],
+			"<i class='fa-solid fa-arrow-up-right-dots'></i> Medium (5%-10%)": streetSlopeSourceFiles["Medium.shp.zip"],
+			"<i class='fa-solid fa-arrow-up-right-dots'></i> Dangerous (10%-20%)": streetSlopeSourceFiles["Dangerous.shp.zip"],
+			"<i class='fa-solid fa-arrow-up-right-dots'></i> Extreme (>20%)": streetSlopeSourceFiles["Extreme.shp.zip"]
+		}
+	}
 	// END LAYER SETUP
 
 	// START ICON (MARKER) GENERATOR
@@ -376,8 +502,7 @@
 		}
 	});
 
-	function fontAwesomeMapMarkerIcon()
-	{
+	function fontAwesomeMapMarkerIcon()	{
 		return new L.divIcon({
 					html: '<i class="fa fa-map-marker fa-2x"></i>',
 					iconSize: [40, 40],
@@ -576,49 +701,41 @@
 		maxZoom: 20
 	});
 
+	let Stadia_AlidadeSmooth = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
+		maxZoom: 20,
+		attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+	});
+
+	let Stamen_TonerLite = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.{ext}', {
+		attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+		subdomains: 'abcd',
+		minZoom: 0,
+		maxZoom: 20,
+		ext: 'png'
+	});
+
+
+	let CyclOSM = L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
+		maxZoom: 20,
+		attribution: '<a href="https://github.com/cyclosm/cyclosm-cartocss-style/releases" title="CyclOSM - Open Bicycle render">CyclOSM</a> | Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+	});
+
 	let map = L.map('map', {
 		center: [49.196822238343486, 16.60474816825514],
 		zoom: 13,
 		zoomControl: false,
-		layers: [OSM]
+		layers: [CartoDB_Positron]
 	});
 
-	const base_layers = {
+	// clustering layer uses per-marker toggling, can be added directly
+	map.addLayer(accidentsCluster);
+
+	const baseLayers = {
+		"Carto": CartoDB_Positron,
 		"OpenStreetMap": OSM,
-		"Carto": CartoDB_Positron}
-	const overlays_sorted = {
-		"Accidents" : {
-			"<span id='traffic_accidents'><i class='fa fa-map-marker red'></i> Traffic accidents</span>": accidentsCluster,
-			"<span id='bike_accidents'><i class='fa fa-map-marker violet'></i> Bike accidents</span>": accidentsCluster,
-			"<span id='pedestrian_accidents'><i class='fa fa-map-marker blue'></i> Pedestrian accidents</span>": accidentsCluster,
-		}, "Architecture": {
-			"<i class='fa-regular fa-lightbulb'></i> Street lights": streetLightsLayer,
-			"<i class='fa-solid fa-bus'></i> Bus Stops": publicTransportStopsLayer,
-			"<i class='fa-solid fa-person-walking'></i> Pedestrian Crossings": pedestrianCrossingsLayer,
-		}, "Cycling infrastrucure": {
-			"<i class='fa-solid fa-bicycle'></i> Bicycle Crossing": cyclingInfraSourceFiles["BicycleCrossing.shp.zip"],
-			"<i class='fa-solid fa-bicycle'></i> Bicycle Path": cyclingInfraSourceFiles["BikePath.shp.zip"],
-			"<i class='fa-solid fa-bicycle'></i> Separate Line for Taxi, Bicycle, Bus": cyclingInfraSourceFiles["ReservedLaneForTaxi_Bicycle_Bus.shp.zip"],
-			"<i class='fa-solid fa-bicycle'></i> Bicycle Path in the Opposite direction (Lane)": cyclingInfraSourceFiles["BikePathInTheOppositeDirection(Lane).shp.zip"],
-			"<i class='fa-solid fa-bicycle'></i> Cyclists riding in the opposite direction": cyclingInfraSourceFiles["CyclistsRidingInTheOppositeDirection.shp.zip"],
-			"<i class='fa-solid fa-bicycle'></i> Dedicated bicycle line": cyclingInfraSourceFiles["DedicatedBicycleLane.shp.zip"],
-			"<i class='fa-solid fa-bicycle'></i> Protective Line for Cyclists": cyclingInfraSourceFiles["ProtectiveLaneForCyclists.shp.zip"],
-			"<i class='fa-solid fa-bicycle'></i> Marked Corridor for Cyclists": cyclingInfraSourceFiles["MarkedCorridorForCyclists.shp.zip"],
-			"<i class='fa-solid fa-bicycle'></i> Entry Allowed for Cyclists": cyclingInfraSourceFiles["EntryAllowedForCyclists.shp.zip"],
-			"<i class='fa-solid fa-bicycle'></i> No Entry for All Motor Vehicles": cyclingInfraSourceFiles["NoEntryForAllMotorVehicles.shp.zip"],
-			"<i class='fa-solid fa-bicycle'></i> Path for Pedestrians and Cyclists (Separated)": cyclingInfraSourceFiles["PathForPedestriansAndCyclists(Separated).shp.zip"],
-			"<i class='fa-solid fa-bicycle'></i> Path for Pedestrians and Cyclists (Joint)": cyclingInfraSourceFiles["PathForPedestriansAndCyclists(Unseparated).shp.zip"],
-			"<i class='fa-solid fa-bicycle'></i> Pedestrian Path with Cyclists Allowed": cyclingInfraSourceFiles["PedestrianPathWithCyclistsAllowed.shp.zip"],
-			"<i class='fa-solid fa-bicycle'></i> Prohibited Entry for Cyclists": cyclingInfraSourceFiles["ProhibitedEntryForCyclists.shp.zip"],
-			"<i class='fa-solid fa-bicycle'></i> Canceled sections": cyclingInfraSourceFiles["TheSectionWasCanceled.shp.zip"],
-			"<i class='fa-solid fa-bicycle'></i> Others": cyclingInfraSourceFiles["Others.shp.zip"],
-		}, "Street slopes": {
-			"<i class='fa-solid fa-arrow-up-right-dots'></i> Minimal (<5%)": streetSlopeSourceFiles["Min.shp.zip"],
-			"<i class='fa-solid fa-arrow-up-right-dots'></i> Medium (5%-10%)": streetSlopeSourceFiles["Medium.shp.zip"],
-			"<i class='fa-solid fa-arrow-up-right-dots'></i> Dangerous (10%-20%)": streetSlopeSourceFiles["Dangerous.shp.zip"],
-			"<i class='fa-solid fa-arrow-up-right-dots'></i> Extreme (>20%)": streetSlopeSourceFiles["Extreme.shp.zip"]
-		}
-	}
+		"Stadia AlidadeSmooth": Stadia_AlidadeSmooth,
+		"Stamen TonerLite": Stamen_TonerLite,
+		"Cyclo OpenStreetMap": CyclOSM}
 
 	const overlays = {
 		"<span id='traffic_accidents'><i class='fa fa-map-marker red'></i> Traffic accidents</span>": accidentsCluster,
@@ -649,9 +766,10 @@
 		"<i class='fa-solid fa-arrow-up-right-dots'></i> Extreme (>20%)": streetSlopeSourceFiles["Extreme.shp.zip"]
 	}
 
+	generateOverlaysControl();
 
 	// layer selector
-	L.control.layers(base_layers, overlays, {groupCheckboxes: true}).addTo(map);
+	L.control.layers(baseLayers, [], {groupCheckboxes: true}).addTo(map);
 
 	// zoom control
 	L.control.zoom({
@@ -911,31 +1029,38 @@
 
 
 	// EVENT HANDLERS
-	function toggleTrafficAccidents() {
-		if (this.checked) {
+	function toggleTrafficAccidents(el) {
+		if (!el.classList.contains("enabled")) {
 			console.log("Adding traffic accidents");
+			el.classList.add("enabled");
 			addTrafficAccidents();
 		} else {
 			console.log("Removing traffic accidents");
+			el.classList.remove("enabled")
 			removeMarkerSet(trafficAccidentMarkers);
 		}
 	}
 
-	function toggleBikeAccidents() {
-		if (this.checked) {
+	function toggleBikeAccidents(el) {
+		if (!el.classList.contains("enabled")) {
 			console.log("Adding bike accidents");
+			el.classList.add("enabled");
+
 			addBikeAccidents();
 		} else {
 			console.log("Removing bike accidents");
+			el.classList.remove("enabled")
 			removeMarkerSet(bikeAccidentMarkers);
 		}}
 
-	function togglePedestrianAccidents() {
-		if (this.checked) {
+	function togglePedestrianAccidents(el) {
+		if (!el.classList.contains("enabled")) {
 			console.log("Adding pedestrian accidents");
+			el.classList.add("enabled");
 			addPedestrianAccidents();
 		} else {
 			console.log("Removing pedestrian accidents");
+			el.classList.remove("enabled")
 			removeMarkerSet(pedestrianAccidentMarkers);
 		}}
 
@@ -953,9 +1078,9 @@
 		}
 	}
 
-	document.getElementById("traffic_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggleTrafficAccidents, false);
-	document.getElementById("bike_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggleBikeAccidents, false);
-	document.getElementById("pedestrian_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", togglePedestrianAccidents, false);
+	// document.getElementById("traffic_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggleTrafficAccidents, false);
+	// document.getElementById("bike_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", toggleBikeAccidents, false);
+	// document.getElementById("pedestrian_accidents").parentNode.parentNode.firstElementChild.addEventListener ("change", togglePedestrianAccidents, false);
 
 </script>
 </body>

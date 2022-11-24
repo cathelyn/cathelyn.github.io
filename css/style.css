@@ -75,6 +75,19 @@ html, body {
     height: 45px;
 }
 
-#dates form label,input{
+#dates form label,input {
     display: inline-block;
+}
+
+li.overlayGroup, li.overlayLayer {
+    list-style-type: none;
+    padding: 2px 2px;
+    margin: 2px 0;
+    border-radius: 5px;
+    background-color: white;
+}
+
+li.overlayLayer.enabled {
+    background-clip: padding-box;
+    background-color: var(--green);
 }
