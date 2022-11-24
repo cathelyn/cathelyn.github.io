@@ -183,28 +183,21 @@
 				function activate_date_selector() {
 					let range_selector = document.getElementById('date_range_selector').checked;
 					if (range_selector) {
-						document.getElementById('custom_date_selector_form').childNodes.forEach(value => value.disabled = true);
-						document.getElementById('date_range_selector_form').childNodes.forEach(value => value.disabled = false);
+						document.getElementById('custom_date_selector_form').classList.add("collapse");
+						document.getElementById('date_range_selector_form').classList.remove("collapse");
 					} else {
-						document.getElementById('custom_date_selector_form').childNodes.forEach(value => value.disabled = false);
-						document.getElementById('date_range_selector_form').childNodes.forEach(value => value.disabled = true);
+						document.getElementById('custom_date_selector_form').classList.remove("collapse");
+						document.getElementById('date_range_selector_form').classList.add("collapse");
 					}
 				}
 			</script>
-			<div>
-				<form>
-					<input id="date_range_selector" type="radio" name="date_selector_method" checked onclick=activate_date_selector()>
-					<label for="date_range_selector">Date range</label><br>
-
-					<input id="custom_date_selector" type="radio" name="date_selector_method" onclick=activate_date_selector()>
-					<label for="custom_date_selector">Custom date selector</label>
-				</form>
+			<div class="d-grid gap-2 col-5 my-3">
+				<input type="radio" class="btn-check" name="options-outlined" id="date_range_selector" autocomplete="off" onclick="activate_date_selector()" checked>
+				<label class="btn btn-outline-secondary" for="date_range_selector">Date range</label>
 			</div>
-			<hr>
-			<div id="date_range_selector_form">
-				<label for="date_range"><h2>Date range</h2></label>
 
-				<input id="date_range" type="text" name="dates" />
+			<div id="date_range_selector_form" class="collapse">
+				<input id="date_range" type="text" name="dates" class=col-12 aria-label="Date Range selector"/>
 				<script>
 					$('input[name="dates"]').daterangepicker({
 								opens: 'right',
@@ -220,15 +213,17 @@
 					);
 				</script>
 			</div>
-			<hr>
-			<div id="custom_date_selector_form">
-				<h2>Custom date selector</h2>
-				<fieldset disabled>
-					<label>
-						<input type="checkbox" name="fields">
-					</label>
-					<label for="year">Year:</label>
-					<select id="year" multiple>
+			<div class="d-grid gap-2 col-5 my-3">
+				<input type="radio" class="btn-check" name="options-outlined" id="custom_date_selector" onclick="activate_date_selector()" autocomplete="off" >
+				<label class="btn btn-outline-secondary" for="custom_date_selector">Custom date</label>
+			</div>
+			<div id="custom_date_selector_form" class="collapse" >
+				<div class="input-group row-container">
+					<div class="input-group-text col-lg-1">
+						<input type="checkbox" name="fields" aria-label="Checkbox for selecting Year filter">
+					</div>
+					<span class="input-group-text col-lg-5">Year</span>
+					<select class="form-select form-control col-lg-6" multiple id="year" aria-label="Year selector">
 						<option value=2010>2010</option>
 						<option value=2011>2011</option>
 						<option value=2012>2012</option>
@@ -242,14 +237,14 @@
 						<option value=2020>2020</option>
 						<option value=2021>2021</option>
 					</select>
-				</fieldset>
-				<fieldset disabled>
-					<label>
-						<input type="checkbox" name="fields">
-					</label>
-					<label for="month">Month of the year:</label>
+				</div>
+				<div class="input-group row-container">
+					<div class="input-group-text col-lg-1">
+						<input type="checkbox" name="fields" aria-label="Checkbox for selecting Month filter">
+					</div>
+					<span class="input-group-text col-lg-5">Month</span>
 
-					<select id="month">
+					<select class="form-select form-control col-lg-6" multiple id="month">
 						<option value=0>January</option>
 						<option value=1>February</option>
 						<option value=2>March</option>
@@ -263,15 +258,15 @@
 						<option value=10>November</option>
 						<option value=11>December</option>
 					</select>
-				</fieldset>
+				</div>
 
-				<fieldset disabled>
-					<label>
-						<input type="checkbox" name="fields">
-					</label>
-					<label for="day">Day of the month:</label>
+				<div class="input-group row-container">
+					<div class="input-group-text col-lg-1">
+						<input type="checkbox" name="fields" aria-label="Checkbox for selecting Day filter">
+					</div>
+					<span class="input-group-text col-lg-5">Day</span>
 
-					<select id="day" >
+					<select class="form-select form-control col-lg-6" multiple id="day" >
 						<option value=1>1</option>
 						<option value=2>2</option>
 						<option value=3>3</option>
@@ -304,14 +299,14 @@
 						<option value=30>30</option>
 						<option value=31>31</option>
 					</select>
-				</fieldset>
-				<fieldset disabled>
-					<label>
-						<input type="checkbox" name="fields">
-					</label>
-					<label for="weekday">Day of the week:</label>
+				</div>
+				<div class="input-group row-container">
+					<div class="input-group-text col-lg-1">
+						<input type="checkbox" name="fields" aria-label="Checkbox for selecting Day of the week filter">
+					</div>
+					<span class="input-group-text col-lg-5">Day of the week</span>
 
-					<select id="weekday">
+					<select class="form-select col-lg-6" multiple id="weekday">
 						<option value=1>Monday</option>
 						<option value=2">Tuesday</option>
 						<option value=3">Wednesday</option>
@@ -320,8 +315,10 @@
 						<option value=6">Saturday</option>
 						<option value=7>Sunday</option>
 					</select>
-				</fieldset>
-				<button type="submit" onclick="DateCustomSelect()">Filter</button>
+				</div>
+				<div>
+					<button type="submit" class="btn btn-outline-primary" onclick="DateCustomSelect()">Filter</button>
+				</div>
 			</div>
 		</div>
 

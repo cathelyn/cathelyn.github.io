@@ -42,42 +42,42 @@ html, body {
     color: var(--black);
 }
 
-#dates h2 {
-    background-color: var(--green);
-    width: 100%;
-    background-clip: padding-box;
-    padding: 10px 0;
-    text-align: center;
-    font-size: small;
-}
+/*#dates h2 {*/
+/*    background-color: var(--green);*/
+/*    width: 100%;*/
+/*    background-clip: padding-box;*/
+/*    padding: 10px 0;*/
+/*    text-align: center;*/
+/*    font-size: small;*/
+/*}*/
 
-#custom_date_selector_form > select, #custom_date_selector_form > label{
-    float: left;
-    clear: both;
-    width: 100%;
-    margin-bottom: 5px;
-}
+/*#custom_date_selector_form > select, #custom_date_selector_form > label{*/
+/*    float: left;*/
+/*    clear: both;*/
+/*    width: 100%;*/
+/*    margin-bottom: 5px;*/
+/*}*/
 
-#date_range_selector_form input {
-    clear: both;
-    width: 366px;
-    padding: 5px;
-    border-radius: 4px;
-    background-color: var(--gray);
-    height: 45px;
-    margin-bottom: 20px;
-}
+/*#date_range_selector_form input {*/
+/*    clear: both;*/
+/*    width: 366px;*/
+/*    padding: 5px;*/
+/*    border-radius: 4px;*/
+/*    background-color: var(--gray);*/
+/*    height: 45px;*/
+/*    margin-bottom: 20px;*/
+/*}*/
 
-#custom_date_selector_form select {
-    border: none;
-    border-radius: 4px;
-    background-color: var(--gray);
-    height: 45px;
-}
+/*#custom_date_selector_form select {*/
+/*    border: none;*/
+/*    border-radius: 4px;*/
+/*    background-color: var(--gray);*/
+/*    height: 45px;*/
+/*}*/
 
-#dates form label,input {
-    display: inline-block;
-}
+/*#dates form label,input {*/
+/*    display: inline-block;*/
+/*}*/
 
 li.overlayGroup, li.overlayLayer {
     list-style-type: none;
