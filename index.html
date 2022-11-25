@@ -12,7 +12,7 @@
 	<link rel="stylesheet" href="leaflet/leaflet.css" />
 	<link rel="stylesheet" href="css/LeafletStyleSheet.css" />
 	<link rel="stylesheet" href="css/leaflet-sidebar.css" />
-	<link rel="stylesheet" href="css/leaflet-tag-filter-button.css" />
+<!--	<link rel="stylesheet" href="css/leaflet-tag-filter-button.css" />-->
 	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 	<link rel="stylesheet" type="text/css" href="bootstrap-5.0.2-dist/css/bootstrap.css" />
 
@@ -31,8 +31,8 @@
 	<!--	Leaflet sidebar-->
 	<script src="js/leaflet-sidebar.js"></script>
 	<!--	Filtering -->
-	<script src="js/leaflet-easy-button.js"></script>
-	<script src="js/leaflet-tag-filter-button.js"></script>
+<!--	<script src="js/leaflet-easy-button.js"></script>-->
+<!--	<script src="js/leaflet-tag-filter-button.js"></script>-->
 	<!--	Leaflet Shapefile	-->
 	<script src="js/leaflet.shpfile.js"></script>
 	<script src="js/shp.js"></script>
@@ -336,8 +336,61 @@
 
 		<div class="sidebar-pane" id="filter">
 			<h1 class="sidebar-header">Filters<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
-			<div id="filters">
+			<script>
+				function generateFilterControl() {
+					let outputEl = document.getElementById('filters');
+					let divMain = document.createElement('div');
+					divMain.classList.add('accordion');
+					// divMain.classList.add('list-group')
 
+					//replace with one dict with all categories
+					Object.keys(filterCategories).forEach((cat, index) => {
+						let accordionItemWrapper = document.createElement('div');
+						accordionItemWrapper.classList.add('accordion-item');
+
+						// category switcher button
+						let buttonCategory = document.createElement('button');
+						buttonCategory.type = 'button';
+						buttonCategory.dataset.bsToggle = 'collapse';
+						buttonCategory.dataset.bsTarget = '#divCategory_' + index.toString();
+						buttonCategory.ariaExpanded = 'false';
+						// buttonCategory.classList.add('list-group-item');
+						// buttonCategory.classList.add('list-group-item-action');
+						// buttonCategory.classList.add('btn-outline-primary');
+						buttonCategory.classList.add('accordion-button');
+						buttonCategory.classList.add('collapsed');
+						buttonCategory.innerHTML = cat;
+						accordionItemWrapper.appendChild(buttonCategory);
+						divMain.appendChild(accordionItemWrapper);
+
+						// inner div for possible selections
+						let divCategoryOptions = document.createElement('div');
+						divCategoryOptions.classList.add('list-group');
+						divCategoryOptions.classList.add('accordion-collapse');
+						divCategoryOptions.classList.add('collapse');
+						divCategoryOptions.id = "divCategory_" + index.toString();
+
+						let accordionBodyWrapper = document.createElement('div');
+						accordionBodyWrapper.classList.add('accordion-body');
+
+						filterCategories[cat].forEach(value => {
+							let buttonOption = document.createElement('button');
+							buttonOption.type = 'button';
+							buttonOption.dataset.bsToggle = 'button';
+							buttonOption.classList.add('btn');
+							buttonOption.classList.add('btn-outline-secondary');
+							buttonOption.classList.add('list-group-item');
+							buttonOption.classList.add('list-group-item-action');
+							buttonOption.appendChild(document.createTextNode(value));
+							accordionBodyWrapper.appendChild(buttonOption);
+						})
+						divCategoryOptions.appendChild(accordionBodyWrapper);
+						accordionItemWrapper.appendChild(divCategoryOptions);
+					})
+					outputEl.appendChild(divMain);
+				}
+			</script>
+			<div id="filters">
 
 			</div>
 
@@ -558,35 +611,6 @@
 		"Stamen TonerLite": Stamen_TonerLite,
 		"Cyclo OpenStreetMap": CyclOSM}
 
-	const overlays = {
-		"<span id='traffic_accidents'><i class='fa fa-map-marker red'></i> Traffic accidents</span>": accidentsCluster,
-		"<span id='bike_accidents'><i class='fa fa-map-marker violet'></i> Bike accidents</span>": accidentsCluster,
-		"<span id='pedestrian_accidents'><i class='fa fa-map-marker blue'></i> Pedestrian accidents</span>": accidentsCluster,
-		"<i class='fa-regular fa-lightbulb'></i> Street lights": streetLightsLayer,
-		"<i class='fa-solid fa-bus'></i> Bus Stops": publicTransportStopsLayer,
-		"<i class='fa-solid fa-person-walking'></i> Pedestrian Crossings": pedestrianCrossingsLayer,
-		"<i class='fa-solid fa-bicycle'></i> Bicycle Crossing": cyclingInfraSourceFiles["BicycleCrossing.shp.zip"],
-		"<i class='fa-solid fa-bicycle'></i> Bicycle Path": cyclingInfraSourceFiles["BikePath.shp.zip"],
-		"<i class='fa-solid fa-bicycle'></i> Separate Line for Taxi, Bicycle, Bus": cyclingInfraSourceFiles["ReservedLaneForTaxi_Bicycle_Bus.shp.zip"],
-		"<i class='fa-solid fa-bicycle'></i> Bicycle Path in the Opposite direction (Lane)": cyclingInfraSourceFiles["BikePathInTheOppositeDirection(Lane).shp.zip"],
-		"<i class='fa-solid fa-bicycle'></i> Cyclists riding in the opposite direction": cyclingInfraSourceFiles["CyclistsRidingInTheOppositeDirection.shp.zip"],
-		"<i class='fa-solid fa-bicycle'></i> Dedicated bicycle line": cyclingInfraSourceFiles["DedicatedBicycleLane.shp.zip"],
-		"<i class='fa-solid fa-bicycle'></i> Protective Line for Cyclists": cyclingInfraSourceFiles["ProtectiveLaneForCyclists.shp.zip"],
-		"<i class='fa-solid fa-bicycle'></i> Marked Corridor for Cyclists": cyclingInfraSourceFiles["MarkedCorridorForCyclists.shp.zip"],
-		"<i class='fa-solid fa-bicycle'></i> Entry Allowed for Cyclists": cyclingInfraSourceFiles["EntryAllowedForCyclists.shp.zip"],
-		"<i class='fa-solid fa-bicycle'></i> No Entry for All Motor Vehicles": cyclingInfraSourceFiles["NoEntryForAllMotorVehicles.shp.zip"],
-		"<i class='fa-solid fa-bicycle'></i> Path for Pedestrians and Cyclists (Separated)": cyclingInfraSourceFiles["PathForPedestriansAndCyclists(Separated).shp.zip"],
-		"<i class='fa-solid fa-bicycle'></i> Path for Pedestrians and Cyclists (Joint)": cyclingInfraSourceFiles["PathForPedestriansAndCyclists(Unseparated).shp.zip"],
-		"<i class='fa-solid fa-bicycle'></i> Pedestrian Path with Cyclists Allowed": cyclingInfraSourceFiles["PedestrianPathWithCyclistsAllowed.shp.zip"],
-		"<i class='fa-solid fa-bicycle'></i> Prohibited Entry for Cyclists": cyclingInfraSourceFiles["ProhibitedEntryForCyclists.shp.zip"],
-		"<i class='fa-solid fa-bicycle'></i> Canceled sections": cyclingInfraSourceFiles["TheSectionWasCanceled.shp.zip"],
-		"<i class='fa-solid fa-bicycle'></i> Others": cyclingInfraSourceFiles["Others.shp.zip"],
-		"<i class='fa-solid fa-arrow-up-right-dots'></i> Minimal (<5%)": streetSlopeSourceFiles["Min.shp.zip"],
-		"<i class='fa-solid fa-arrow-up-right-dots'></i> Medium (5%-10%)": streetSlopeSourceFiles["Medium.shp.zip"],
-		"<i class='fa-solid fa-arrow-up-right-dots'></i> Dangerous (10%-20%)": streetSlopeSourceFiles["Dangerous.shp.zip"],
-		"<i class='fa-solid fa-arrow-up-right-dots'></i> Extreme (>20%)": streetSlopeSourceFiles["Extreme.shp.zip"]
-	}
-
 	generateOverlaysControl();
 
 	// layer selector
@@ -600,10 +624,10 @@
 	// sidebar
 	L.control.sidebar('sidebar').addTo(map);
 
-	let filterCategories = []
+	// let filterCategories = []
 
-	let collision_with_category =  L.control.tagFilterButton({
-		data: [
+	const filterCategories =  {
+		'<i class="fa-solid fa-car"></i> Collision With': [
 			'crash',
 			'collision with a pedestrian',
 			'collision with an animal',
@@ -612,15 +636,9 @@
 			'collision with tram',
 			'collision with train',
 			'collision with parked vehicle',
-			'other',
+			'other'
 		],
-		filterOnEveryClick: true,
-		icon: '<i class="fa-solid fa-car-burst"></i> Collision With'
-	}).addTo(map);
-	filterCategories.push(collision_with_category);
-
-	let cause = L.control.tagFilterButton({
-		data: [
+		'<i class="fa-solid fa-person-circle-question"></i> Cause': [
 			'improper driving style',
 			'others',
 			'speed adjustment',
@@ -629,13 +647,7 @@
 			'overtaking',
 			'technical defects'
 		],
-		filterOnEveryClick: true,
-		icon: '<i class="fa fa-question"></i> Cause'
-	}).addTo(map);
-	filterCategories.push(cause);
-
-	let alcoholCategory = L.control.tagFilterButton({
-		data: [
+		'<i class="fa fa-beer"></i> Alcohol': [
 			'DUI - blood alcohol content < 0,24‰',
 			'DUI - blood alcohol content < 0,5‰ & >= 0,24‰',
 			'DUI - blood alcohol content < 0,8‰ & >= 0,5‰',
@@ -647,13 +659,7 @@
 			'DUI - alcohol and drugs',
 			'DUI - drugs'
 		],
-		filterOnEveryClick: true,
-		icon: '<i class="fa fa-beer"></i> Alcohol'
-	}).addTo(map);
-	filterCategories.push(alcoholCategory);
-
-	let causedByCategory = L.control.tagFilterButton({
-		data: [
+		'<i class="fa-solid fa-person-circle-question"></i> Caused By': [
 			'pedestrian',
 			'other',
 			'another road user',
@@ -661,15 +667,9 @@
 			'vehicle technical defect',
 			'communication obstacle',
 			'motor vehicle driver',
-			'driver of a non-motor vehicle',
+			'driver of a non-motor vehicle'
 		],
-		filterOnEveryClick: true,
-		icon: '<i class="fa-solid fa-person-circle-question"></i> Caused By'
-	}).addTo(map);
-	filterCategories.push(causedByCategory);
-
-	let roadConditionCategory = L.control.tagFilterButton({
-		data: [
+		'<i class="fa-solid fa-road-circle-exclamation"></i> Road Condition': [
 			'different state of the road surface at the time of accidents',
 			'mud on the road',
 			'ice on the road - untreated',
@@ -678,15 +678,9 @@
 			'wet surface',
 			'dry surface, clean',
 			'dry surface, dirty (sand, dust, leaves, gravel etc.)',
-			'continuous snow layer, slush',
+			'continuous snow layer, slush'
 		],
-		filterOnEveryClick: true,
-		icon: '<i class="fa-solid fa-road-circle-exclamation"></i> Road Condition'
-	}).addTo(map);
-	filterCategories.push(roadConditionCategory);
-
-	let weatherConditionsCategory = L.control.tagFilterButton({
-		data: [
+		'<i class="fa-solid fa-cloud"></i> Weather Condition': [
 			'rain',
 			'different difficult weather conditions',
 			'fog',
@@ -694,45 +688,27 @@
 			'normal weather conditions',
 			'gusting wind (side wind, whirlwind etc.)',
 			'snowfall',
-			'frost, icicles are formed',
+			'frost, icicles are formed'
 		],
-		filterOnEveryClick: true,
-		icon: '<i class="fa-solid fa-cloud"></i> Weather Condition'
-	}).addTo(map);
-	filterCategories.push(weatherConditionsCategory);
-
-	let visibilityCategory = L.control.tagFilterButton({
-		data: [
+		'<i class="fa-solid fa-smog"></i> Visibility': [
 			'at night - without public lighting, visibility unimpaired due to weather conditions',
 			'at night - without public lighting, visibility impaired due to weather conditions (fog, rain, snowfall etc.)',
 			'at night - with public lighting, visibility unimpaired due to weather conditions',
 			'at night - with public lighting, visibility impaired due to weather conditions (fog, rain, snowfall etc.)',
 			'during the day, visibility not impaired  weather conditions',
 			'during the day, reduced visibility (dawn, dusk)',
-			'during the day, poor visibility due to weather conditions (fog, snow, rain, etc.)',
+			'during the day, poor visibility due to weather conditions (fog, snow, rain, etc.)'
 		],
-		filterOnEveryClick: true,
-		icon: '<i class="fa-solid fa-smog"></i> Visibility'
-	}).addTo(map);
-	filterCategories.push(visibilityCategory);
-
-	let viewConditionCategory = L.control.tagFilterButton({
-		data: [
+		'<i class="fa-solid fa-eye"></i> View Condition': [
 			'good view',
 			'bad view - other reason',
 			'view blocked by a stationary vehicle',
 			'bad view - due to surrounding construction (buildings, full railings, etc.)',
 			'bad view - due to the course of the road, or the longitudinal profile or routing (unclear top of the climb, road cut, etc.)',
 			'bad view - due to vegetation - temporary (grass, grain etc.)',
-			'bad view - due to vegetation - permanent (trees, bushes, etc.)',
+			'bad view - due to vegetation - permanent (trees, bushes, etc.)'
 		],
-		filterOnEveryClick: true,
-		icon: '<i class="fa-solid fa-eye"></i> View Condition'
-	}).addTo(map);
-	filterCategories.push(viewConditionCategory);
-
-	let accidentPlaceCategory = L.control.tagFilterButton({
-		data: [
+		'<i class="fa-solid fa-location-pin"></i> Location': [
 			'bridge, overpass, underpass, tunnel',
 			'parking lot adjacent to the road',
 			'pedestrain crossing',
@@ -743,16 +719,9 @@
 			'fuel pump',
 			'railway crossing not secured by barriers or light warning devices',
 			'railway crossing secured',
-			'none of the above',
+			'none of the above'
 		],
-		filterOnEveryClick: true,
-		icon: '<i class="fa-solid fa-location-pin"></i> Location'
-	}).addTo(map);
-	filterCategories.push(accidentPlaceCategory);
-
-	let roadTypeCategory = L.control.tagFilterButton({
-		name: 'Road type category',
-		data: [
+		'<i class="fa fa-road"></i> Road Type': [
 			'highway',
 			'local road',
 			'controlled road (in specific areas)',
@@ -761,18 +730,11 @@
 			'1st class roads',
 			'2nd class roads',
 			'3rd class roads',
-			'road junction (crossroad controlled in specific areas)',
-		],
-		filterOnEveryClick: true,
-		icon: '<i class="fa fa-road"></i> Road Type'
-	}).addTo(map);
-	filterCategories.push(roadTypeCategory);
+			'road junction (crossroad controlled in specific areas)'
+		]
 
-	// enable Prunecluster filtering
-	filterCategories.forEach(cat => cat.enablePruneCluster(accidentsCluster));
-
-	moveFilterIconToSidebar();
-
+	}
+	generateFilterControl();
 
 </script>
 </body>
