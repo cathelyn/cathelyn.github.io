@@ -408,6 +408,7 @@
         },
 
         hide: function(accept) {
+            console.log(this);
             if (this._container && (this._container.style.display == "none" || this._container.style.display == "")) {
                 return;
             }
@@ -455,6 +456,10 @@
 
             L.DomEvent.addListener(this._clearEl.getElementsByTagName('a')[0], 'click', this._clearSelections.bind(this));
             L.DomEvent.addListener(this._clearEl.getElementsByTagName('li')[0], 'click', this._clearSelections.bind(this));
+
+
+            L.DomEvent.addListener(this._nameEl.getElementsByTagName('button')[0], 'click', this.hide)
+            // this._nameEl.getElementsByTagName['button'][0].onclick(this.hide, this);
 
             this._tagEl = L.DomUtil.create('ul', '', this._container);
             this._map.on('dragstart click', this.hide, this);

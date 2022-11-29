@@ -27,7 +27,7 @@ function generateFilterControl() {
     //replace with one dict with all categories
     Object.keys(filterCategories).forEach((cat, index) => {
         let accordionItemWrapper = document.createElement('div');
-        accordionItemWrapper.classList.add('accordion-item');
+        // accordionItemWrapper.classList.add('accordion-item');
 
         // category switcher button
         let buttonCategory = document.createElement('button');
@@ -37,12 +37,21 @@ function generateFilterControl() {
         buttonCategory.ariaExpanded = 'false';
         // buttonCategory.classList.add('list-group-item');
         // buttonCategory.classList.add('list-group-item-action');
-        // buttonCategory.classList.add('btn-outline-primary');
+        buttonCategory.classList.add('btn');
+        buttonCategory.classList.add('btn-dark');
         buttonCategory.classList.add('accordion-button');
         buttonCategory.classList.add('collapsed');
+        buttonCategory.classList.add('fw-bold');
+        buttonCategory.classList.add('text-uppercase');
         buttonCategory.innerHTML = cat;
         accordionItemWrapper.appendChild(buttonCategory);
+
+        let dividerHr = document.createElement('hr');
+        dividerHr.classList.add("catDivider");
+        divMain.appendChild(dividerHr);
+
         divMain.appendChild(accordionItemWrapper);
+
 
         // inner div for possible selections
         let divCategoryOptions = document.createElement('div');
@@ -52,16 +61,17 @@ function generateFilterControl() {
         divCategoryOptions.id = "divCategory_" + index.toString();
 
         let accordionBodyWrapper = document.createElement('div');
-        accordionBodyWrapper.classList.add('accordion-body');
+        // accordionBodyWrapper.classList.add('accordion-body');
+        accordionBodyWrapper.classList.add('bg-light');
 
         filterCategories[cat].forEach(value => {
             let buttonOption = document.createElement('button');
             buttonOption.type = 'button';
             buttonOption.dataset.bsToggle = 'button';
-            buttonOption.classList.add('btn');
-            buttonOption.classList.add('btn-outline-secondary');
-            buttonOption.classList.add('list-group-item');
+            // buttonOption.classList.add('list-group-item');
             buttonOption.classList.add('list-group-item-action');
+            buttonOption.classList.add('btn');
+            buttonOption.classList.add('btn-light');
             buttonOption.addEventListener('click', function() {
                 pruneFilter.handleTagSelection(this.innerText);
             },false);

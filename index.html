@@ -14,7 +14,7 @@
 	<link rel="stylesheet" href="css/leaflet-sidebar.css" />
 <!--	<link rel="stylesheet" href="css/leaflet-tag-filter-button.css" />-->
 	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-	<link rel="stylesheet" type="text/css" href="bootstrap-5.0.2-dist/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="scss/custom.css" />
 
 	<!-- FontAwesome-->
 	<script src="https://kit.fontawesome.com/1f4d66b7c3.js" crossorigin="anonymous"></script>
@@ -38,7 +38,7 @@
 	<script src="js/shp.js"></script>
 	<script src="js/catiline.js"></script>
 	<!--	Bootstrap -->
-	<script src="bootstrap-5.0.2-dist/js/bootstrap.js"></script>
+	<script src="bootstrap/dist/js/bootstrap.js"></script>
 	<!--	Custom functions	-->
 	<script src="js/filtering.js"></script>
 	<script src="js/utilities.js"></script>
@@ -336,7 +336,7 @@
 
 
 		<div class="sidebar-pane" id="filter">
-			<h1 class="sidebar-header">Filters<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+			<h1 class="sidebar-header">F I L T E R S<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
 			<div id="filters">
 
 			</div>
@@ -574,7 +574,7 @@
 	// let filterCategories = []
 
 	const filterCategories =  {
-		'<i class="fa-solid fa-car"></i> Collision With': [
+		'<i class="fa-solid fa-car me-2"></i> Collision With': [
 			'crash',
 			'collision with a pedestrian',
 			'collision with an animal',
@@ -585,7 +585,7 @@
 			'collision with parked vehicle',
 			'other'
 		],
-		'<i class="fa-solid fa-person-circle-question"></i> Cause': [
+		'<i class="fa-solid fa-circle-question me-2"></i> Cause': [
 			'improper driving style',
 			'others',
 			'speed adjustment',
@@ -594,7 +594,7 @@
 			'overtaking',
 			'technical defects'
 		],
-		'<i class="fa fa-beer"></i> Alcohol': [
+		'<i class="fa fa-beer me-2"></i> Alcohol': [
 			'DUI - blood alcohol content < 0,24‰',
 			'DUI - blood alcohol content < 0,5‰ & >= 0,24‰',
 			'DUI - blood alcohol content < 0,8‰ & >= 0,5‰',
@@ -606,7 +606,7 @@
 			'DUI - alcohol and drugs',
 			'DUI - drugs'
 		],
-		'<i class="fa-solid fa-person-circle-question"></i> Caused By': [
+		'<i class="fa-solid fa-person-circle-question me-2"></i> Caused By': [
 			'pedestrian',
 			'other',
 			'another road user',
@@ -616,7 +616,7 @@
 			'motor vehicle driver',
 			'driver of a non-motor vehicle'
 		],
-		'<i class="fa-solid fa-road-circle-exclamation"></i> Road Condition': [
+		'<i class="fa-solid fa-road-circle-exclamation me-2"></i> Road Condition': [
 			'different state of the road surface at the time of accidents',
 			'mud on the road',
 			'ice on the road - untreated',
@@ -627,7 +627,7 @@
 			'dry surface, dirty (sand, dust, leaves, gravel etc.)',
 			'continuous snow layer, slush'
 		],
-		'<i class="fa-solid fa-cloud"></i> Weather Condition': [
+		'<i class="fa-solid fa-cloud me-2"></i> Weather Condition': [
 			'rain',
 			'different difficult weather conditions',
 			'fog',
@@ -637,7 +637,7 @@
 			'snowfall',
 			'frost, icicles are formed'
 		],
-		'<i class="fa-solid fa-smog"></i> Visibility': [
+		'<i class="fa-solid fa-smog me-2"></i> Visibility': [
 			'at night - without public lighting, visibility unimpaired due to weather conditions',
 			'at night - without public lighting, visibility impaired due to weather conditions (fog, rain, snowfall etc.)',
 			'at night - with public lighting, visibility unimpaired due to weather conditions',
@@ -646,7 +646,7 @@
 			'during the day, reduced visibility (dawn, dusk)',
 			'during the day, poor visibility due to weather conditions (fog, snow, rain, etc.)'
 		],
-		'<i class="fa-solid fa-eye"></i> View Condition': [
+		'<i class="fa-solid fa-eye me-2"></i> View Condition': [
 			'good view',
 			'bad view - other reason',
 			'view blocked by a stationary vehicle',
@@ -655,7 +655,7 @@
 			'bad view - due to vegetation - temporary (grass, grain etc.)',
 			'bad view - due to vegetation - permanent (trees, bushes, etc.)'
 		],
-		'<i class="fa-solid fa-location-pin"></i> Location': [
+		'<i class="fa-solid fa-location-pin me-2"></i> Location': [
 			'bridge, overpass, underpass, tunnel',
 			'parking lot adjacent to the road',
 			'pedestrain crossing',
@@ -668,7 +668,7 @@
 			'railway crossing secured',
 			'none of the above'
 		],
-		'<i class="fa fa-road"></i> Road Type': [
+		'<i class="fa fa-road me-2"></i> Road Type': [
 			'highway',
 			'local road',
 			'controlled road (in specific areas)',

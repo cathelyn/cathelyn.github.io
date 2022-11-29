@@ -58,8 +58,13 @@
             this._buildButton(), this._activateState(this._states[0])
         },
         _buildButton: function() {
-            if (this.button = L.DomUtil.create("button", ""), this.options.id && (this.button.id = this.options.id), this.options.leafletClasses && L.DomUtil.addClass(this.button, "easy-button-button leaflet-bar-part"), L.DomEvent.addListener(this.button, "dblclick", L.DomEvent.stop), L.DomEvent.addListener(this.button, "click", function(t) {
-                L.DomEvent.stop(t), this._currentState.onClick(this, this._map ? this._map : null), this._map.getContainer().focus()
+            if (this.button = L.DomUtil.create("button", "btn btn-outline-primary"),
+            this.options.id && (this.button.id = this.options.id),
+            this.options.leafletClasses && L.DomUtil.addClass(this.button, "easy-button-button leaflet-bar-part"),
+                L.DomEvent.addListener(this.button, "dblclick", L.DomEvent.stop),
+                L.DomEvent.addListener(this.button, "click", function(t) {
+                L.DomEvent.stop(t), this._currentState.onClick(this, this._map ? this._map : null),
+                    this._map.getContainer().focus()
             }, this), "replace" == this.options.type) this.button.appendChild(this._currentState.icon);
             else
                 for (var t = 0; t < this._states.length; t++) this.button.appendChild(this._states[t].icon)
