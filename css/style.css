@@ -85,26 +85,39 @@ li.overlayGroup, li.overlayLayer {
     padding: 2px 2px;
     margin: 2px 0;
     border-radius: 5px;
-    background-color: white;
+    /*background-color: white;*/
 }
 
 li.overlayLayer.enabled {
     background-clip: padding-box;
-    background-color: var(--green);
+    background-color: var(--bs-primary) !important;
+    color: var(--bs-light) !important;
 }
 
 #filter {
-    padding: 10px 0;
+    /*padding: 10px 0;*/
     /*background-color: var(--bs-dark);*/
 }
 
 hr.catDivider {
-    width: 90%;
-    margin-left: 5%;
-    margin-right: 5%;
+    width: 100%;
+    /*margin-left: 5%;*/
+    /*margin-right: 5%;*/
     color: var(--white-transparent);
     border-radius: 2px;
     border-color: var(--bs-white);
 
 }
+
+.layer-item {
+    background-color: var(--bs-secondary);
+    color: var(--bs-gray-dark);
+
+
+}
+.layer-item:hover {
+    background-color: var(--bs-secondary) !important;
+}
+
+
 

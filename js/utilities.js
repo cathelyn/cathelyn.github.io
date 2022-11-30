@@ -40,8 +40,10 @@ function generateFilterControl() {
         buttonCategory.classList.add('btn');
         buttonCategory.classList.add('btn-dark');
         buttonCategory.classList.add('accordion-button');
+        buttonCategory.classList.add('filter-button');
         buttonCategory.classList.add('collapsed');
-        buttonCategory.classList.add('fw-bold');
+        buttonCategory.classList.add('fw-normal');
+        buttonCategory.classList.add('fs-7');
         buttonCategory.classList.add('text-uppercase');
         buttonCategory.innerHTML = cat;
         accordionItemWrapper.appendChild(buttonCategory);
@@ -49,7 +51,6 @@ function generateFilterControl() {
         let dividerHr = document.createElement('hr');
         dividerHr.classList.add("catDivider");
         divMain.appendChild(dividerHr);
-
         divMain.appendChild(accordionItemWrapper);
 
 
@@ -62,7 +63,7 @@ function generateFilterControl() {
 
         let accordionBodyWrapper = document.createElement('div');
         // accordionBodyWrapper.classList.add('accordion-body');
-        accordionBodyWrapper.classList.add('bg-light');
+        // accordionBodyWrapper.classList.add('bg-light');
 
         filterCategories[cat].forEach(value => {
             let buttonOption = document.createElement('button');
@@ -70,8 +71,10 @@ function generateFilterControl() {
             buttonOption.dataset.bsToggle = 'button';
             // buttonOption.classList.add('list-group-item');
             buttonOption.classList.add('list-group-item-action');
+            buttonOption.classList.add('mt-2');
             buttonOption.classList.add('btn');
-            buttonOption.classList.add('btn-light');
+            buttonOption.classList.add('btn-secondary');
+            buttonOption.classList.add('fs-7');
             buttonOption.addEventListener('click', function() {
                 pruneFilter.handleTagSelection(this.innerText);
             },false);

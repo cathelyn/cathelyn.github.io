@@ -1,10 +1,34 @@
-$primary: rgba(255, 148, 77, 0.65);
-$secondary: rgba(255, 163, 102, 0.5);
-$dark: rgba(108, 117, 125, 0.7);
+
+$primary: rgba(232, 131, 102, 0.85);
+$secondary: rgba(251, 209, 182, 0.85);
+$dark: rgba(108, 117, 125, 0.8);
 $light: #f8f9fa;
+
+$font-size-base:              1rem;
+$font-size-sm:                $font-size-base * .875;
+$h1-font-size:                $font-size-base * 2.5;
+$h2-font-size:                $font-size-base * 2;
+$h3-font-size:                $font-size-base * 1.75;
+$h4-font-size:                $font-size-base * 1.5;
+$h5-font-size:                $font-size-base * 1.25;
+$h6-font-size:                $font-size-base;
+
+$font-sizes: (
+        1: $h1-font-size,
+        2: $h2-font-size,
+        3: $h3-font-size,
+        4: $h4-font-size,
+        5: $h5-font-size,
+        6: $h6-font-size,
+        7: $font-size-sm,
+        8: $font-size-base * 0.75
+);
+
 
 $accordion-icon-color: $light;
 $accordion-button-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$accordion-icon-color}' ><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'  stroke-width='5px'/></svg>");
+$accordion-button-active-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$accordion-icon-color}'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e ");
+
 
 .accordion-button {
   background-color: transparent;
@@ -17,7 +41,7 @@ $accordion-button-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/20
 //  font-weight: bold;
 //}
 
-.accordion-button.collapsed {
+.accordion-button {
   background-color: transparent;
   color: var(--bs-light);
 }
@@ -29,14 +53,62 @@ $accordion-button-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/20
 .accordion-button {
   box-shadow: unset;
   color: var(--bs-light) !important;
+  background-color: transparent !important;
+  padding: 0 1.25rem !important;
 }
 
+.sidebar-header {
+
+}
 .btn-dark:hover {
   background-color: unset !important;
+}
+
+.btn {
+
+}
+
+.btn-light {
+  color: $secondary !important;
+  font-size: var(--font-size-sm) !important;
+}
+
+.btn-secondary {
+  color: $dark;
+  &:focus {
+    box-shadow: unset !important;
+    background-color: $primary !important;
+  }
+}
+
+button.active {
+  background-color: $primary !important;
+  color: var(--bs-light) !important;
+  border: 0 !important;
+  &:hover {
+    background-color: $primary !important;
+  }
+
 }
 
 hr:not([size]) {
   height: 3px !important;
 }
+
+.list-group-item-action {
+
+  &:hover {
+    background-color: $secondary !important;
+  }
+  &:active {
+    background-color: $primary !important;
+    color: $dark !important;
+  }
+}
+
+.filter-button {
+  padding: 0 !important;
+}
+
 
 @import "../bootstrap/scss/bootstrap";
