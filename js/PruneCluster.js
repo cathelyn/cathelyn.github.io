@@ -530,6 +530,9 @@ var PruneClusterForLeaflet = (L.Layer ? L.Layer : L.Class).extend({
                 marker.bindPopup(content, data.popupOptions);
             }
         }
+        if (data.tooltip) {
+            marker.bindTooltip(data.tooltip);
+        }
     },
     onAdd: function (map) {
         this._map = map;

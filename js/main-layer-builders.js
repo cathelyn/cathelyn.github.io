@@ -57,9 +57,29 @@ function addAccident(dataset, markersArray, category)
             }
 
             marker.data.popup = info; // TODO: make popup
-            marker.data.tooltip = "Number of people in the accident: " // TODO: Make tooltip
+
+            let short_info = "";
+            for (let i = 0; i < keys.length; i++) {
+                // add something like total no of crashes
+                 if (keys[i] === 'no_parties') {
+                     short_info += "Total number of parties: " + value[keys[i]]  + "<br>"
+                 }
+                if (keys[i] === 'no_injured_minor') {
+                    short_info += "Minor injuries: " + value[keys[i]] + "<br>"
+                }
+                if (keys[i] === 'no_injured_major') {
+                    short_info += "Major injuries: " + value[keys[i]] + "<br>"
+                }
+                if (keys[i] === 'no_casualties') {
+                    short_info += "Casualties: " + value[keys[i]] + "<br>"
+                }
+
+            }
+            marker.data.tooltip = short_info;
             markersArray.push(marker);
-            accidentsCluster.RegisterMarker(marker)}
+            accidentsCluster.RegisterMarker(marker);
+
+        }
         );
     }
     accidentsCluster.ProcessView();
