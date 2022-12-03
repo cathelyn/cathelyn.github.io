@@ -35,18 +35,31 @@ function addAccident(dataset, markersArray, category)
             marker.category = category;
 
 
-            marker.data.tags = [
-                value.collision_with,
-                value.cause,
-                value.alcohol,
-                value.caused_by,
-                value.road_condition,
-                value.weather,
-                value.visibility,
-                value.view_condition,
-                value.accident_place,
-                value.road_type
-            ]
+            // marker.data.tags = [
+            //     value.collision_with,
+            //     value.cause,
+            //     value.alcohol,
+            //     value.caused_by,
+            //     value.road_condition,
+            //     value.weather,
+            //     value.visibility,
+            //     value.view_condition,
+            //     value.accident_place,
+            //     value.road_type
+            // ]
+
+            marker.data.tags = {
+                'cat_0': value.collision_with,
+                'cat_1': value.cause,
+                'cat_2': value.alcohol,
+                'cat_3': value.caused_by,
+                'cat_4': value.road_condition,
+                'cat_5': value.weather,
+                'cat_6': value.visibility,
+                'cat_7': value.view_condition,
+                'cat_8': value.accident_place,
+                'cat_9': value.road_type
+            }
 
             marker.data.icon = fontAwesomeMapMarkerIcon();
             marker.data.icon.options.className = "MapMarkerIcon " + color;

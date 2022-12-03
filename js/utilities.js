@@ -34,6 +34,7 @@ function generateFilterControl() {
         buttonCategory.type = 'button';
         buttonCategory.dataset.bsToggle = 'collapse';
         buttonCategory.dataset.bsTarget = '#divCategory_' + index.toString();
+        buttonCategory.dataset.name = 'cat_' + index.toString();
         buttonCategory.ariaExpanded = 'false';
         // buttonCategory.classList.add('list-group-item');
         // buttonCategory.classList.add('list-group-item-action');
@@ -76,7 +77,7 @@ function generateFilterControl() {
             buttonOption.classList.add('btn-secondary');
             buttonOption.classList.add('fs-7');
             buttonOption.addEventListener('click', function() {
-                pruneFilter.handleTagSelection(this.innerText);
+                pruneFilter.handleTagSelection(this.innerText, this.parentNode.parentNode.parentNode.firstElementChild.getAttribute('data-name'));
             },false);
             buttonOption.appendChild(document.createTextNode(value));
             accordionBodyWrapper.appendChild(buttonOption);
