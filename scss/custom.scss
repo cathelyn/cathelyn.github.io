@@ -93,6 +93,7 @@ button.active {
 
 hr:not([size]) {
   height: 3px !important;
+  color: $light;
 }
 
 .list-group-item-action {
@@ -109,6 +110,7 @@ hr:not([size]) {
 .filter-button {
   padding: 0 !important;
 }
+
 
 
 @import "../bootstrap/scss/bootstrap";

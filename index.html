@@ -84,9 +84,9 @@
 				BRNO ACCIDENT DATA VISUALIZATION
 				<span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
 			</h1>
+			<hr>
 			<div>
-				<!--			TODO: Decide what to do with this menu -->
-				<p>Map visualizes various kinds of accidents that happened in Brno. It is possible to turn on a off traffic, pedestrian and bike accidents in the layers section. Except of that it is possible to select various architectural surroundings of the traffic lanes, cycling infrastructure and street slopes. In the date section it is possible to select accidents according to date, date range or just choose custom date, and in the filter section it is possible to select accidents according to various criteria. The selection is visualized by aggregation into the clusters, if there are more accidents in the same locations. </p>
+				<p class="text-light">Map visualizes various kinds of accidents that happened in Brno. It is possible to turn on and off traffic, pedestrian and bike accidents in the layers section. Except of that, it is possible to select various architectural surroundings of the traffic lanes, cycling infrastructure and street slopes. In the date section it is possible to select accidents according to date, date range or just choose custom date, and in the filter section it is possible to select accidents according to various criteria. The selection is visualized by aggregation into the clusters, if there are more accidents in the same locations. </p>
 			</div>
 
 		</div>
@@ -107,9 +107,14 @@
 
 				function generateOverlaysControl() {
 					let outputEl = document.getElementById("layer_selector");
-					const ulMain = document.createElement('ul')
+					const ulMain = document.createElement('ul');
 
 					Object.keys(overlaysGrouped).forEach(group => {
+
+						let dividerHr = document.createElement('hr');
+						dividerHr.classList.add("catDivider");
+						ulMain.appendChild(dividerHr);
+
 						const liGroup = document.createElement('li');
 						liGroup.classList.add('overlayGroup');
 						liGroup.classList.add('form-check');
@@ -159,6 +164,7 @@
 
 						ulMain.appendChild(liGroup)
 						const ulNestedGroup = document.createElement('ul');
+						ulNestedGroup.classList.add('ps-1');
 						liGroup.appendChild(ulNestedGroup);
 						Object.keys(overlaysGrouped[group]).forEach(layerName => {
 							const liLayer = document.createElement('li');
@@ -203,6 +209,7 @@
 
 		<div class="sidebar-pane" id="dates">
 			<h1 class="sidebar-header">DATE SELECTOR<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+			<hr>
 			<script>
 				function activate_date_selector() {
 					let range_selector = document.getElementById('date_range_selector').checked;
@@ -215,9 +222,9 @@
 					}
 				}
 			</script>
-			<div class="d-grid gap-2 col-5 my-3">
-				<input type="radio" class="btn-check" name="options-outlined" id="date_range_selector" autocomplete="off" onclick="activate_date_selector()" checked>
-				<label class="btn btn-outline-secondary" for="date_range_selector">Date range</label>
+			<div class="d-grid gap-2 my-3">
+				<input type="radio" class="btn-check " name="options-outlined" id="date_range_selector" autocomplete="off" onclick="activate_date_selector()" checked>
+				<label class="btn btn-outline-secondary " for="date_range_selector">Date range</label>
 			</div>
 
 			<div id="date_range_selector_form" class="collapse">
@@ -237,10 +244,12 @@
 					);
 				</script>
 			</div>
+			<hr>
 			<div class="d-grid gap-2 col-5 my-3">
 				<input type="radio" class="btn-check" name="options-outlined" id="custom_date_selector" onclick="activate_date_selector()" autocomplete="off" >
 				<label class="btn btn-outline-secondary" for="custom_date_selector">Custom date</label>
 			</div>
+
 			<div id="custom_date_selector_form" class="collapse" >
 				<div class="input-group row-container">
 					<div class="input-group-text col-lg-1">
@@ -359,7 +368,7 @@
 
 
 		<div class="sidebar-pane" id="filter">
-			<h1 class="sidebar-header">F I L T E R S<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+			<h1 class="sidebar-header">FILTERS<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
 			<div id="filters">
 
 			</div>

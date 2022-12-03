@@ -109,6 +109,11 @@ hr.catDivider {
 
 }
 
+ul > .catDivider {
+    margin-left: -2rem !important;
+    width: calc(100% + 2rem);
+}
+
 .layer-item {
     background-color: var(--bs-secondary);
     color: var(--bs-gray-dark);
@@ -118,6 +123,21 @@ hr.catDivider {
 .layer-item:hover {
     background-color: var(--bs-secondary) !important;
 }
+
+td.in-range {
+    background-color: var(--bs-secondary) !important;
+}
+
+td.start-date, td.end-date {
+    background-color: var(--bs-primary) !important;
+}
+
+button.applyBtn, button.applyBtn:hover {
+    color: var(--bs-light);
+}
+
+
+
 
 
 
