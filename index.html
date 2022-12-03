@@ -12,7 +12,7 @@
 	<link rel="stylesheet" href="leaflet/leaflet.css" />
 	<link rel="stylesheet" href="css/LeafletStyleSheet.css" />
 	<link rel="stylesheet" href="css/leaflet-sidebar.css" />
-<!--	<link rel="stylesheet" href="css/leaflet-tag-filter-button.css" />-->
+	<!--	<link rel="stylesheet" href="css/leaflet-tag-filter-button.css" />-->
 	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 	<link rel="stylesheet" type="text/css" href="scss/custom.css" />
 
@@ -31,8 +31,8 @@
 	<!--	Leaflet sidebar-->
 	<script src="js/leaflet-sidebar.js"></script>
 	<!--	Filtering -->
-<!--	<script src="js/leaflet-easy-button.js"></script>-->
-<!--	<script src="js/leaflet-tag-filter-button.js"></script>-->
+	<!--	<script src="js/leaflet-easy-button.js"></script>-->
+	<!--	<script src="js/leaflet-tag-filter-button.js"></script>-->
 	<!--	Leaflet Shapefile	-->
 	<script src="js/leaflet.shpfile.js"></script>
 	<script src="js/shp.js"></script>
@@ -95,6 +95,16 @@
 			<h1 class="sidebar-header">LAYERS SELECTION<span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
 			</h1>
 			<script>
+				function toggleGroupOnManualSelection() {
+					let checkbox = this.parentNode.parentNode.firstElementChild;
+					if (Array.from(this.parentNode.children).every(el => el.classList.contains('enabled'))) {
+						checkbox.checked = true;
+					} else {
+						checkbox.checked = false;
+					}
+
+				}
+
 				function generateOverlaysControl() {
 					let outputEl = document.getElementById("layer_selector");
 					const ulMain = document.createElement('ul')
@@ -131,7 +141,7 @@
 
 
 						checkbox.addEventListener("change", function () {
-							const trigger = new Event("click");
+							const trigger = new Event("change");
 							const groupItems = this.parentElement.getElementsByTagName('li');
 							for (const item of groupItems) {
 								if (this.checked){
@@ -157,25 +167,27 @@
 							liLayer.classList.add('px-2');
 							liLayer.classList.add('layer-item');
 							liLayer.innerHTML = layerName;
-							liLayer.addEventListener("click", function() {
-								if (layerName.toString().includes("Traffic accidents")) {
-									toggleTrafficAccidents(this);
-									return;
-								} else if (layerName.toString().includes("Bike accidents")){
-									toggleBikeAccidents(this);
-									return;
-								} else if (layerName.toString().includes("Pedestrian accidents")) {
-									togglePedestrianAccidents(this);
-									return;
-								}
-								if (!this.classList.contains("enabled")) {
-									this.classList.add("enabled");
-									map.addLayer(overlaysGrouped[group][layerName]);
-								} else if (this.classList.contains("enabled")) {
-									this.classList.remove("enabled")
-									map.removeLayer(overlaysGrouped[group][layerName]);
-								}
-							});
+							["click", "change"].forEach(event => liLayer.addEventListener(event, function() {
+										if (layerName.toString().includes("Traffic accidents")) {
+											toggleTrafficAccidents(this);
+											return;
+										} else if (layerName.toString().includes("Bike accidents")){
+											toggleBikeAccidents(this);
+											return;
+										} else if (layerName.toString().includes("Pedestrian accidents")) {
+											togglePedestrianAccidents(this);
+											return;
+										}
+										if (!this.classList.contains("enabled")) {
+											this.classList.add("enabled");
+											map.addLayer(overlaysGrouped[group][layerName]);
+										} else if (this.classList.contains("enabled")) {
+											this.classList.remove("enabled")
+											map.removeLayer(overlaysGrouped[group][layerName]);
+										}
+									})
+							);
+							liLayer.addEventListener("click", toggleGroupOnManualSelection);
 							ulNestedGroup.appendChild(liLayer);
 						})
 					})
@@ -565,7 +577,6 @@
 	const baseLayers = {
 		"Carto": CartoDB_Positron,
 		"OpenStreetMap": OSM,
-		"Stadia AlidadeSmooth": Stadia_AlidadeSmooth,
 		"Stamen TonerLite": Stamen_TonerLite,
 		"Cyclo OpenStreetMap": CyclOSM}
 

@@ -34,20 +34,6 @@ function addAccident(dataset, markersArray, category)
             marker.filtered = true;
             marker.category = category;
 
-
-            // marker.data.tags = [
-            //     value.collision_with,
-            //     value.cause,
-            //     value.alcohol,
-            //     value.caused_by,
-            //     value.road_condition,
-            //     value.weather,
-            //     value.visibility,
-            //     value.view_condition,
-            //     value.accident_place,
-            //     value.road_type
-            // ]
-
             marker.data.tags = {
                 'cat_0': value.collision_with,
                 'cat_1': value.cause,
@@ -69,7 +55,7 @@ function addAccident(dataset, markersArray, category)
                 info += keys[i] + ": " + value[keys[i]] + "<br>"
             }
 
-            marker.data.popup = info; // TODO: make popup
+            marker.data.popup = info;
 
             let short_info = "";
             for (let i = 0; i < keys.length; i++) {
