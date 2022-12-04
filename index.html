@@ -441,7 +441,7 @@
 			"<span id='pedestrian_accidents'><i class='fa fa-map-marker fa-fw blue'></i> Pedestrian accidents</span>": accidentsCluster,
 		}, "Architecture": {
 			"<i class='fa-regular fa-lightbulb fa-fw'></i> Street lights": streetLightsLayer,
-			"<i class='fa-solid fa-bus fa-fw'></i> Bus Stops": publicTransportStopsLayer,
+			"<i class='fa-solid fa-bus fa-fw'></i> Public Transport Stops": publicTransportStopsLayer,
 			"<i class='fa-solid fa-person-walking fa-fw'></i> Pedestrian Crossings": pedestrianCrossingsLayer,
 		}, "Cycling infrastrucure": {
 			"<i class='fa-solid fa-bicycle fa-fw'></i> Bicycle Crossing": cyclingInfraSourceFiles["BicycleCrossing.shp.zip"],
@@ -626,6 +626,34 @@
 			'overtaking',
 			'technical defects'
 		],
+		'<i class="fa-solid fa-person me-2"></i> Person': [
+			'pedestrian',
+			'other passengers (even in the sidecar of the motorcycle)',
+			'a passenger in the front seat next to the driver or a passenger (passenger) on a motorcycle, bicycle',
+			'passenger in the back seat',
+			'unknown',
+			'driver'
+		],
+		'<i class="fa-solid fa-person-half-dress me-2"></i> Sex': [
+			'man',
+			'woman',
+			'boy (up to 15 yo)',
+			'girl (up to 15 yo)',
+			'unknown'
+		],
+		'<i class="fa-solid fa-image-portrait me-2"></i> Age Group': [
+			'0-6',
+			'7-11',
+			'12-15',
+			'16-18',
+			'19-24',
+			'25-32',
+			'33-44',
+			'45-60',
+			'61-70',
+			'71+',
+			'unknown'
+		],
 		'<i class="fa fa-beer me-2"></i> Alcohol': [
 			'DUI - blood alcohol content < 0,24‰',
 			'DUI - blood alcohol content < 0,5‰ & >= 0,24‰',
@@ -648,7 +676,29 @@
 			'motor vehicle driver',
 			'driver of a non-motor vehicle'
 		],
-		'<i class="fa-solid fa-road-circle-exclamation me-2"></i> Road Condition': [
+		'<i class="fa-solid fa-person-cane me-2"></i> Person Condition': [
+			'good - no adverse circumstances were detected',
+			'physical indisposition (illness, nausea, reduced mobility, etc.)',
+			'invalid',
+			'others',
+			'illness, injury, etc.',
+			'inattention, distractibility',
+			'unknown',
+			'under the influence of alcohol, blood alcohol content of 1 ‰ or more',
+			'under the influence of alcohol, blood alcohol content up to 0.99 ‰',
+			'under the influence of drugs, narcotics',
+			'suicide attempt, suicide',
+			'tired, fell asleep, sudden physical indisposition',
+			'the driver died while driving (heart attack, etc.)',
+		],
+		'<i class="fa-solid fa-person-falling-burst me-2"></i> Consequence': [
+			'without injury',
+			'minor injury',
+			'major injury',
+			'death',
+			'unknown'
+		],
+	'<i class="fa-solid fa-road-circle-exclamation me-2"></i> Road Condition': [
 			'different state of the road surface at the time of accidents',
 			'mud on the road',
 			'ice on the road - untreated',
@@ -710,6 +760,28 @@
 			'2nd class roads',
 			'3rd class roads',
 			'road junction (crossroad controlled in specific areas)'
+		],
+		'<i class="fa fa-truck-plane me-2"></i> Vehicle Type': [
+			'bus',
+			'pedestrian',
+			'other motor vehicle (agricultural, forestry, construction machinery, etc.)',
+			'other non-motor vehicle',
+			'other vehicle type',
+			'bicycle',
+			'small motorcycle (up to 50 cc)',
+			'moped',
+			'motorcycle (including sidecars, scooters, etc.)',
+			'unknown, driver left the scene',
+			'truck (including multicar, truck crane, tanker, etc.)',
+			'truck with semi-trailer',
+			'truck with trailer',
+			'car with without trailer',
+			'car with trailer',
+			'carriage, horse riding',
+			'tractor (also with trailer)',
+			'tram',
+			'trolley',
+			'train'
 		]
 
 	}

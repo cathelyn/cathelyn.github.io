@@ -44,7 +44,8 @@ class PruneClusterFilter {
                 markers.forEach(marker => {
                     let matched = false;
                     for (let tag of this._filtersPerCat[category]) {
-                        matched = marker.data.tags[category].includes(tag)
+                        console.log(category);
+                        matched = marker.data.tags[category].includes(tag);
                         if (matched) {
                             break;
                         }
