@@ -66,24 +66,63 @@ function generateFilterControl() {
         // accordionBodyWrapper.classList.add('accordion-body');
         // accordionBodyWrapper.classList.add('bg-light');
 
-        filterCategories[cat].forEach(value => {
-            let buttonOption = document.createElement('button');
-            buttonOption.type = 'button';
-            buttonOption.dataset.bsToggle = 'button';
-            // buttonOption.classList.add('list-group-item');
-            buttonOption.classList.add('list-group-item-action');
-            buttonOption.classList.add('mt-2');
-            buttonOption.classList.add('btn');
-            buttonOption.classList.add('btn-secondary');
-            buttonOption.classList.add('fs-7');
-            buttonOption.addEventListener('click', function() {
-                pruneFilter.handleTagSelection(this.innerText, this.parentNode.parentNode.parentNode.firstElementChild.getAttribute('data-name'));
-            },false);
-            buttonOption.appendChild(document.createTextNode(value));
-            accordionBodyWrapper.appendChild(buttonOption);
-        })
+        // only non-slider selections
+        if (index < 16) {
+            filterCategories[cat].forEach(value => {
+                let buttonOption = document.createElement('button');
+                buttonOption.type = 'button';
+                buttonOption.dataset.bsToggle = 'button';
+                // buttonOption.classList.add('list-group-item');
+                buttonOption.classList.add('list-group-item-action');
+                buttonOption.classList.add('mt-2');
+                buttonOption.classList.add('btn');
+                buttonOption.classList.add('btn-secondary');
+                buttonOption.classList.add('fs-7');
+                buttonOption.addEventListener('click', function() {
+                    pruneFilter.handleTagSelection(this.innerText, this.parentNode.parentNode.parentNode.firstElementChild.getAttribute('data-name'));
+                },false);
+                buttonOption.appendChild(document.createTextNode(value));
+                accordionBodyWrapper.appendChild(buttonOption);
+            })
+        } else if (index === 16) {
+            // material damage
+        } else {
+            let minVal = filterCategories[cat][0];
+            let maxVal = filterCategories[cat][1];
+            let inputSlider = document.createElement('input');
+            inputSlider.type = "text";
+            inputSlider.id = "slider_" + index;
+            inputSlider.name = "inputSlider";
+            inputSlider.dataset.sliderMin = minVal.toString();
+            inputSlider.dataset.sliderMax = maxVal.toString();
+            inputSlider.dataset.sliderStep = "1";
+            inputSlider.dataset.sliderValue = "[" + minVal + "," + maxVal + "]";
+            accordionBodyWrapper.appendChild(inputSlider);
+        }
         divCategoryOptions.appendChild(accordionBodyWrapper);
         accordionItemWrapper.appendChild(divCategoryOptions);
-    })
+
+    }
+    )
     outputEl.appendChild(divMain);
+
+    let sliderCat17 = new Slider("#slider_17", {});
+    sliderCat17.on('slideStop', function (sliderValue) {
+        console.log(sliderValue);
+        pruneFilter.handleTagSelection(sliderValue, "cat_17");
+    });
+
+    let sliderCat18 = new Slider("#slider_18", {});
+    sliderCat18.on('slideStop', function (sliderValue) {
+        console.log(sliderValue);
+        pruneFilter.handleTagSelection(sliderValue, "cat_18");
+    });
+    let sliderCat19 = new Slider("#slider_19", {});
+    sliderCat19.on('slideStop', function (sliderValue) {
+        console.log(sliderValue);
+        pruneFilter.handleTagSelection(sliderValue, "cat_19");
+    });
+
+
 }
+

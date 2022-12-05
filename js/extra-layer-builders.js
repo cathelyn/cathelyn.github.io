@@ -35,9 +35,9 @@ function addStreetSlopes() {
                 return {color: selectedColor, fillColor: selectedColor}
             }
         }).addTo(layer_obj);
-        shp.once("data:loaded", function() {
-            console.log("Finished loading " + pathname)
-        });
+        // shp.once("data:loaded", function() {
+        //     console.log("Finished loading " + pathname)
+        // });
     }
 }
 
@@ -47,9 +47,9 @@ function addPedestrianCrossings() {
             return {color: 'black', fillColor: 'black'}
         }
     }).addTo(pedestrianCrossingsLayer);
-    shp.once("data:loaded", function() {
-        console.log("Finished loading sources/shapefiles/pedestrian_crossings/Pedestrian_crossings.zip")
-    });
+    // shp.once("data:loaded", function() {
+    //     console.log("Finished loading sources/shapefiles/pedestrian_crossings/Pedestrian_crossings.zip")
+    // });
 }
 
 
@@ -64,8 +64,8 @@ function addBikeInfrastructure() {
                 return {color: cyclingInfraColors[index], fillColor: cyclingInfraColors[index]}
             }
         }).addTo(layer_obj);
-        shp.once("data:loaded", function() {
-            console.log("Finished loading "+pathname)
-        });
+        // shp.once("data:loaded", function() {
+        //     console.log("Finished loading "+pathname)
+        // });
     }
 }

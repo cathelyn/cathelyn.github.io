@@ -14,6 +14,8 @@
 	<link rel="stylesheet" href="css/leaflet-sidebar.css" />
 	<!--	<link rel="stylesheet" href="css/leaflet-tag-filter-button.css" />-->
 	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/css/bootstrap-slider.css" integrity="sha512-SZgE3m1he0aEF3tIxxnz/3mXu/u/wlMNxQSnE0Cni9j/O8Gs+TjM9tm1NX34nRQ7GiLwUEzwuE3Wv2FLz2667w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/css/bootstrap-slider.min.css" integrity="sha512-3q8fi8M0VS+X/3n64Ndpp6Bit7oXSiyCnzmlx6IDBLGlY5euFySyJ46RUlqIVs0DPCGOypqP8IRk/EyPvU28mQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<link rel="stylesheet" type="text/css" href="scss/custom.css" />
 
 	<!-- FontAwesome-->
@@ -39,6 +41,9 @@
 	<script src="js/catiline.js"></script>
 	<!--	Bootstrap -->
 	<script src="bootstrap/dist/js/bootstrap.js"></script>
+	<!--	Bootstrap slider plugin -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.min.js" integrity="sha512-f0VlzJbcEB6KiW8ZVtL+5HWPDyW1+nJEjguZ5IVnSQkvZbwBt2RfCBY0CBO1PsMAqxxrG4Di6TfsCPP3ZRwKpA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js" integrity="sha512-tCkLWlSXiiMsUaDl5+8bqwpGXXh0zZsgzX6pB9IQCZH+8iwXRYfcCpdxl/owoM6U4ap7QZDW4kw7djQUiQ4G2A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<!--	Custom functions	-->
 	<script src="js/filtering.js"></script>
 	<script src="js/utilities.js"></script>
@@ -607,7 +612,7 @@
 	// let filterCategories = []
 
 	const filterCategories =  {
-		'<i class="fa-solid fa-car me-2"></i> Collision With': [
+		'<i class="fa-solid fa-car fa-fw me-2"></i> Collision With': [
 			'crash',
 			'collision with a pedestrian',
 			'collision with an animal',
@@ -618,7 +623,7 @@
 			'collision with parked vehicle',
 			'other'
 		],
-		'<i class="fa-solid fa-circle-question me-2"></i> Cause': [
+		'<i class="fa-solid fa-circle-question fa-fw me-2"></i> Cause': [
 			'improper driving style',
 			'others',
 			'speed adjustment',
@@ -627,7 +632,7 @@
 			'overtaking',
 			'technical defects'
 		],
-		'<i class="fa-solid fa-person me-2"></i> Person': [
+		'<i class="fa-solid fa-person fa-fw me-2"></i> Person': [
 			'pedestrian',
 			'other passengers (even in the sidecar of the motorcycle)',
 			'a passenger in the front seat next to the driver or a passenger (passenger) on a motorcycle, bicycle',
@@ -635,14 +640,14 @@
 			'unknown',
 			'driver'
 		],
-		'<i class="fa-solid fa-person-half-dress me-2"></i> Sex': [
+		'<i class="fa-solid fa-person-half-dress fa-fw me-2"></i> Sex': [
 			'man',
 			'woman',
 			'boy (up to 15 yo)',
 			'girl (up to 15 yo)',
 			'unknown'
 		],
-		'<i class="fa-solid fa-image-portrait me-2"></i> Age Group': [
+		'<i class="fa-solid fa-image-portrait fa-fw me-2"></i> Age Group': [
 			'0-6',
 			'7-11',
 			'12-15',
@@ -655,7 +660,7 @@
 			'71+',
 			'unknown'
 		],
-		'<i class="fa fa-beer me-2"></i> Alcohol': [
+		'<i class="fa fa-beer fa-fw me-2"></i> Alcohol': [
 			'DUI - blood alcohol content < 0,24‰',
 			'DUI - blood alcohol content < 0,5‰ & >= 0,24‰',
 			'DUI - blood alcohol content < 0,8‰ & >= 0,5‰',
@@ -667,7 +672,7 @@
 			'DUI - alcohol and drugs',
 			'DUI - drugs'
 		],
-		'<i class="fa-solid fa-person-circle-question me-2"></i> Caused By': [
+		'<i class="fa-solid fa-person-circle-question fa-fw me-2"></i> Caused By': [
 			'pedestrian',
 			'other',
 			'another road user',
@@ -677,7 +682,7 @@
 			'motor vehicle driver',
 			'driver of a non-motor vehicle'
 		],
-		'<i class="fa-solid fa-person-cane me-2"></i> Person Condition': [
+		'<i class="fa-solid fa-person-cane fa-fw me-2"></i> Person Condition': [
 			'good - no adverse circumstances were detected',
 			'physical indisposition (illness, nausea, reduced mobility, etc.)',
 			'invalid',
@@ -692,14 +697,14 @@
 			'tired, fell asleep, sudden physical indisposition',
 			'the driver died while driving (heart attack, etc.)',
 		],
-		'<i class="fa-solid fa-person-falling-burst me-2"></i> Consequence': [
+		'<i class="fa-solid fa-person-falling-burst fa-fw me-2"></i> Consequence': [
 			'without injury',
 			'minor injury',
 			'major injury',
 			'death',
 			'unknown'
 		],
-		'<i class="fa-solid fa-road-circle-exclamation me-2"></i> Road Condition': [
+		'<i class="fa-solid fa-road-circle-exclamation fa-fw me-2"></i> Road Condition': [
 			'different state of the road surface at the time of accidents',
 			'mud on the road',
 			'ice on the road - untreated',
@@ -710,7 +715,7 @@
 			'dry surface, dirty (sand, dust, leaves, gravel etc.)',
 			'continuous snow layer, slush'
 		],
-		'<i class="fa-solid fa-cloud me-2"></i> Weather Condition': [
+		'<i class="fa-solid fa-cloud fa-fw me-2"></i> Weather Condition': [
 			'rain',
 			'different difficult weather conditions',
 			'fog',
@@ -720,7 +725,7 @@
 			'snowfall',
 			'frost, icicles are formed'
 		],
-		'<i class="fa-solid fa-smog me-2"></i> Visibility': [
+		'<i class="fa-solid fa-smog fa-fw me-2"></i> Visibility': [
 			'at night - without public lighting, visibility unimpaired due to weather conditions',
 			'at night - without public lighting, visibility impaired due to weather conditions (fog, rain, snowfall etc.)',
 			'at night - with public lighting, visibility unimpaired due to weather conditions',
@@ -729,7 +734,7 @@
 			'during the day, reduced visibility (dawn, dusk)',
 			'during the day, poor visibility due to weather conditions (fog, snow, rain, etc.)'
 		],
-		'<i class="fa-solid fa-eye me-2"></i> View Condition': [
+		'<i class="fa-solid fa-eye fa-fw me-2"></i> View Condition': [
 			'good view',
 			'bad view - other reason',
 			'view blocked by a stationary vehicle',
@@ -738,7 +743,7 @@
 			'bad view - due to vegetation - temporary (grass, grain etc.)',
 			'bad view - due to vegetation - permanent (trees, bushes, etc.)'
 		],
-		'<i class="fa-solid fa-location-pin me-2"></i> Location': [
+		'<i class="fa-solid fa-location-pin fa-fw me-2"></i> Location': [
 			'bridge, overpass, underpass, tunnel',
 			'parking lot adjacent to the road',
 			'pedestrain crossing',
@@ -751,7 +756,7 @@
 			'railway crossing secured',
 			'none of the above'
 		],
-		'<i class="fa fa-road me-2"></i> Road Type': [
+		'<i class="fa fa-road fa-fw me-2"></i> Road Type': [
 			'highway',
 			'local road',
 			'controlled road (in specific areas)',
@@ -762,7 +767,7 @@
 			'3rd class roads',
 			'road junction (crossroad controlled in specific areas)'
 		],
-		'<i class="fa fa-truck-plane me-2"></i> Vehicle Type': [
+		'<i class="fa fa-truck-plane fa-fw me-2"></i> Vehicle Type': [
 			'bus',
 			'pedestrian',
 			'other motor vehicle (agricultural, forestry, construction machinery, etc.)',
@@ -783,10 +788,14 @@
 			'tram',
 			'trolley',
 			'train'
-		]
-
+		],
+		'<i class="fa-solid fa-coins fa-fw me-2"></i> Material Damage Price': [0, 5360000],
+		'<i class="fa-solid fa-user-injured fa-fw me-2"></i> Number of Minor Injuries': [0, 29],
+		'<i class="fa-solid fa-truck-medical fa-fw me-2"></i> Number of Major Injuries': [0, 14],
+		'<i class="fa-solid fa-skull-crossbones fa-fw me-2"></i> Number of Casualties': [0, 3]
 	}
 	generateFilterControl();
+
 
 </script>
 </body>

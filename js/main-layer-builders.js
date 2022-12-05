@@ -12,8 +12,6 @@ function addAccident(dataset, markersArray, category)
         markersArray.map(marker => {marker.filtered = false})
     } else {
 
-        let color = categoriesColors[category];
-
         console.log("Building markers anew - category " + category);
         dataset.forEach(value => {
             let marker = new PruneCluster.Marker(
@@ -40,7 +38,12 @@ function addAccident(dataset, markersArray, category)
                 'cat_12': value.view_condition,
                 'cat_13': value.accident_place,
                 'cat_14': value.road_type,
-                'cat_15': value.vehicle_type
+                'cat_15': value.vehicle_type,
+                // slider categories below
+                'cat_16': value.material_damage_price,
+                'cat_17': value.no_injured_minor,
+                'cat_18': value.no_injured_major,
+                'cat_19': value.no_casualties
             }
 
             marker.data.icon = fontAwesomeMapMarkerIcon();
