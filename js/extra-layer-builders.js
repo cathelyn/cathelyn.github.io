@@ -37,13 +37,6 @@ function addStreetSlopes() {
 
 function addPedestrianCrossings() {
     let shp = new L.Shapefile('sources/shapefiles/pedestrian_crossings/Pedestrian_crossings.zip', {
-        onEachFeature: function(feature, layer) {
-            layer.bindPopup(Object.keys(feature.properties).map(function(k) {
-                return k + ": " + feature.properties[k];
-            }).join("<br />"), {
-                maxHeight: 200
-            });
-        },
         style: function (feature) {
             return {color: 'black', fillColor: 'black'}
         }
