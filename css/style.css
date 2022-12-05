@@ -1,11 +1,11 @@
 :root {
-    --yellow: #EDA909;
+    --yellow: rgba(255,193,25,0.8);
     --teal: #8CE0EB;
-    --green: #73926C;
     --gray: #D2CCB1;
     --red: rgba(255,75,0,0.8);
-    --violet: rgba(160,61,229,0.8);
-    --blue: rgba(3,170,234,0.8);
+    --violet: rgba(187, 32, 138, 0.6);
+    --green: rgba(0, 138, 58, 0.6);
+    --blue: rgba(3, 170, 234, 0.6);
     --black: #000;
     --white-transparent: rgba(255, 255, 255, 0.8);
 }
@@ -27,20 +27,14 @@ html, body {
     line-height: 40px;
 }
 
-.red {
-    color: var(--red);
-}
-
-.violet {
+.color_cat_0 {
     color: var(--violet);
 }
-
-.blue {
-    color: var(--blue);
+.color_cat_1 {
+    color: var(--green);
 }
-
-.black {
-    color: var(--black);
+.color_cat_2 {
+    color: var(--blue);
 }
 
 /*#dates h2 {*/

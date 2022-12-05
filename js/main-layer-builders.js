@@ -12,17 +12,7 @@ function addAccident(dataset, markersArray, category)
         markersArray.map(marker => {marker.filtered = false})
     } else {
 
-        let color = "black";
-        if (category === 0) {
-            color = "red";
-        }
-        else if (category === 1) {
-            color = "violet";
-        }
-        else if (category === 2) {
-            color = "blue";
-        }
-
+        let color = categoriesColors[category];
 
         console.log("Building markers anew - category " + category);
         dataset.forEach(value => {
@@ -54,7 +44,7 @@ function addAccident(dataset, markersArray, category)
             }
 
             marker.data.icon = fontAwesomeMapMarkerIcon();
-            marker.data.icon.options.className = "MapMarkerIcon " + color;
+            marker.data.icon.options.className = "MapMarkerIcon color_cat_" + category;
             let keys = Object.keys(value);
             let info = "";
             for (let i = 0; i < keys.length; i++) {

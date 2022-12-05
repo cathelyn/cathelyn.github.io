@@ -1,3 +1,10 @@
+const cyclingInfraColors = [
+    '#a662a8', '#664972', '#463c57', '#6e8da9', '#91bcdd', '#567d99', '#395e77', '#305662', '#264d4d', '#315c45', '#8a9a65', '#b6b975', '#b65d54', '#b60033', '#98062d', '#800022'
+]
+
+const streetSlopesColors = ['#fd151b', '#ffb30f', '#849324', '#437f97']
+
+
 function addPublicTransStops(value) {
     L.circle([value.split(",")[0], value.split(",")[1]], {
         stroke: false,
@@ -18,14 +25,13 @@ function addStreetLights(value) {
 }
 
 function addStreetSlopes() {
-    let colors = ['red', 'orange', 'blue', 'green']
     for (let [pathname, layer_obj] of Object.entries(streetSlopeSourceFiles)){
         let shp = new L.Shapefile('sources/shapefiles/street_slopes/' + pathname, {
             onEachFeature: function(feature, layer) {
                 layer.bindPopup("Slope: " + Math.round(feature.properties['slope']) + "%");
             },
             style: function (feature) {
-                let selectedColor = colors[Object.keys(streetSlopeSourceFiles).indexOf(pathname)];
+                let selectedColor = streetSlopesColors[Object.keys(streetSlopeSourceFiles).indexOf(pathname)];
                 return {color: selectedColor, fillColor: selectedColor}
             }
         }).addTo(layer_obj);
@@ -48,14 +54,14 @@ function addPedestrianCrossings() {
 
 
 function addBikeInfrastructure() {
-    for (let [pathname, layer_obj] of Object.entries(cyclingInfraSourceFiles)){
+
+    for (let [index, [pathname, layer_obj]] of Object.entries(cyclingInfraSourceFiles).entries()){
         let shp = new L.Shapefile('sources/shapefiles/cycling_measures/' + pathname, {
             onEachFeature: function(feature, layer) {
-                layer.bindPopup(Object.keys(feature.properties).map(function(k) {
-                    return k + ": " + feature.properties[k];
-                }).join("<br />"), {
-                    maxHeight: 200
-                });
+                layer.bindPopup("Type: " + feature.properties['type'] + "<br>Length: " + Math.round(feature.properties['length']) + "m");
+            },
+            style: function (feature) {
+                return {color: cyclingInfraColors[index], fillColor: cyclingInfraColors[index]}
             }
         }).addTo(layer_obj);
         shp.once("data:loaded", function() {

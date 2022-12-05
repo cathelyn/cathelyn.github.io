@@ -71,10 +71,6 @@
 			<li><a href="#dates" role="tab"><i class="fa-solid fa-calendar-days"></i></a></li>
 			<li ><a href="#filter" role="tab"><i class="fa-solid fa-filter"></i></a></li>
 		</ul>
-
-		<ul role="tablist">
-			<li><a href="#settings" role="tab"><i class="fa fa-gear"></i></a></li>
-		</ul>
 	</div>
 
 	<!-- Tab panes -->
@@ -82,7 +78,7 @@
 		<div class="sidebar-pane" id="home">
 			<h1 class="sidebar-header">
 				BRNO ACCIDENT DATA VISUALIZATION
-				<span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+				<span class="sidebar-close"><i class="fa-solid fa-angle-left"></i></span>
 			</h1>
 			<hr>
 			<div>
@@ -92,7 +88,7 @@
 		</div>
 
 		<div class="sidebar-pane" id="layers">
-			<h1 class="sidebar-header">LAYERS SELECTION<span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+			<h1 class="sidebar-header">LAYERS SELECTION<span class="sidebar-close"><i class="fa-solid fa-angle-left"></i></span>
 			</h1>
 			<script>
 				function toggleGroupOnManualSelection() {
@@ -166,15 +162,20 @@
 						const ulNestedGroup = document.createElement('ul');
 						ulNestedGroup.classList.add('ps-1');
 						liGroup.appendChild(ulNestedGroup);
-						Object.keys(overlaysGrouped[group]).forEach(layerName => {
+						Object.keys(overlaysGrouped[group]).forEach((layerName, index) => {
 							const liLayer = document.createElement('li');
 							liLayer.classList.add('overlayLayer');
 							liLayer.classList.add('mb-2');
 							liLayer.classList.add('px-2');
 							liLayer.classList.add('layer-item');
 							liLayer.innerHTML = layerName;
+							let colorBadge = document.createElement("span");
+							colorBadge.classList.add("badge");
+							colorBadge.classList.add("float-end");
+							colorBadge.innerHTML = "";
+							liLayer.appendChild(colorBadge);
 							["click", "change"].forEach(event => liLayer.addEventListener(event, function() {
-										if (layerName.toString().includes("Traffic accidents")) {
+								if (layerName.toString().includes("Traffic accidents")) {
 											toggleTrafficAccidents(this);
 											return;
 										} else if (layerName.toString().includes("Bike accidents")){
@@ -186,9 +187,18 @@
 										}
 										if (!this.classList.contains("enabled")) {
 											this.classList.add("enabled");
+											if (group.toString().includes("Cycling")) {
+												colorBadge.innerText = "■";
+												colorBadge.style.color = cyclingInfraColors[index];
+											}
+											if (group.toString().includes("slopes")) {
+												colorBadge.innerText = "■";
+												colorBadge.style.color = streetSlopesColors[3 - index];
+											}
 											map.addLayer(overlaysGrouped[group][layerName]);
 										} else if (this.classList.contains("enabled")) {
 											this.classList.remove("enabled")
+											colorBadge.innerHTML = "";
 											map.removeLayer(overlaysGrouped[group][layerName]);
 										}
 									})
@@ -208,7 +218,7 @@
 		</div>
 
 		<div class="sidebar-pane" id="dates">
-			<h1 class="sidebar-header">DATE SELECTOR<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+			<h1 class="sidebar-header">DATE SELECTOR<span class="sidebar-close"><i class="fa-solid fa-angle-left"></i></span></h1>
 			<hr>
 			<script>
 				function activate_date_selector() {
@@ -368,18 +378,13 @@
 
 
 		<div class="sidebar-pane" id="filter">
-			<h1 class="sidebar-header">FILTERS<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+			<h1 class="sidebar-header">FILTERS<span class="sidebar-close"><i class="fa-solid fa-angle-left"></i></span></h1>
 			<div id="filters">
 
 			</div>
 
 		</div>
 
-
-
-		<div class="sidebar-pane" id="settings">
-			<h1 class="sidebar-header">Settings<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
-		</div>
 	</div>
 </div>
 
@@ -388,7 +393,12 @@
 
 <script>
 	// CONSTANTS
-	const categoriesColors = ['rgba(255,75,0,0.6)', 'rgba(160,61,229,0.6)', 'rgba(3,170,234,0.6)'];
+	// const categoriesColors = ['rgba(187,32,138,0.8)', 'rgba(255,193,25,0.8)', 'rgba(3,170,234,0.8)'];
+	const categoriesColors = [
+		getComputedStyle(document.documentElement).getPropertyValue('--violet'),
+		getComputedStyle(document.documentElement).getPropertyValue('--green'),
+		getComputedStyle(document.documentElement).getPropertyValue('--blue')
+	];
 	const pi2 = Math.PI * 2;
 
 	// categories configuration
@@ -436,9 +446,9 @@
 
 	const overlaysGrouped = {
 		"Accidents" : {
-			"<span id='traffic_accidents'><i class='fa fa-map-marker fa-fw red'></i> Traffic accidents</span>": accidentsCluster,
-			"<span id='bike_accidents'><i class='fa fa-map-marker fa-fw violet'></i> Bike accidents</span>": accidentsCluster,
-			"<span id='pedestrian_accidents'><i class='fa fa-map-marker fa-fw blue'></i> Pedestrian accidents</span>": accidentsCluster,
+			"<span id='traffic_accidents'><i class='fa fa-map-marker fa-fw color_cat_0'></i> Traffic accidents</span>": accidentsCluster,
+			"<span id='bike_accidents'><i class='fa fa-map-marker fa-fw color_cat_1'></i> Bike accidents</span>": accidentsCluster,
+			"<span id='pedestrian_accidents'><i class='fa fa-map-marker fa-fw color_cat_2'></i> Pedestrian accidents</span>": accidentsCluster,
 		}, "Architecture": {
 			"<i class='fa-regular fa-lightbulb fa-fw'></i> Street lights": streetLightsLayer,
 			"<i class='fa-solid fa-bus fa-fw'></i> Public Transport Stops": publicTransportStopsLayer,
@@ -689,7 +699,7 @@
 			'death',
 			'unknown'
 		],
-	'<i class="fa-solid fa-road-circle-exclamation me-2"></i> Road Condition': [
+		'<i class="fa-solid fa-road-circle-exclamation me-2"></i> Road Condition': [
 			'different state of the road surface at the time of accidents',
 			'mud on the road',
 			'ice on the road - untreated',
