@@ -39,20 +39,35 @@ function addAccident(dataset, markersArray, category)
                 'cat_13': value.accident_place,
                 'cat_14': value.road_type,
                 'cat_15': value.vehicle_type,
+                'cat_16': value.accident_circumstances,
                 // slider categories below
-                'cat_16': value.material_damage_price,
-                'cat_17': value.no_injured_minor,
-                'cat_18': value.no_injured_major,
-                'cat_19': value.no_casualties
+                'cat_17': value.material_damage_price,
+                'cat_18': value.no_injured_minor,
+                'cat_19': value.no_injured_major,
+                'cat_20': value.no_casualties
             }
 
             marker.data.icon = fontAwesomeMapMarkerIcon();
             marker.data.icon.options.className = "MapMarkerIcon color_cat_" + category;
+            let doNotShow = ['point_x', 'point_y', 'main_cause', 'alcohol_offender', 'driver_circumstances', 'person', 'person_circumstances', 'age_group', 'sex']
             let keys = Object.keys(value);
-            let info = "";
-            for (let i = 0; i < keys.length; i++) {
-                info += keys[i] + ": " + value[keys[i]] + "<br>"
+            let info = "<table class='table table-striped table-sm'><tbody>";
+            for (let [key, val] of Object.entries(value)){
+                if (!doNotShow.includes(key)){
+                    if (key === "material_damage_price"){
+                        let czkCzechLocale = Intl.NumberFormat('cs');
+                        val = czkCzechLocale.format(val) + " CZK";
+                    }
+                    info += "<tr><td><b>" + key.replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase()) + "</b></td><td>" + val + "</td></tr>";
+                }
             }
+            info += "</tdbody></table>";
+
+            // for (let i = 0; i < keys.length; i++) {
+            //     if (!doNotShow.includes(keys[i])) {
+            //         info += keys[i].replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase()) + ": " + value[keys[i]] + "<br>"
+            //     }
+            // }
 
             marker.data.popup = info;
 

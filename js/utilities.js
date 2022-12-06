@@ -67,7 +67,7 @@ function generateFilterControl() {
         // accordionBodyWrapper.classList.add('bg-light');
 
         // only non-slider selections
-        if (index < 16) {
+        if (index < 17) {
             filterCategories[cat].forEach(value => {
                 let buttonOption = document.createElement('button');
                 buttonOption.type = 'button';
@@ -84,7 +84,7 @@ function generateFilterControl() {
                 buttonOption.appendChild(document.createTextNode(value));
                 accordionBodyWrapper.appendChild(buttonOption);
             })
-        } else if (index === 16) {
+        } else if (index === 17) {
             // material damage
         } else {
             let minVal = filterCategories[cat][0];
@@ -106,18 +106,18 @@ function generateFilterControl() {
     )
     outputEl.appendChild(divMain);
 
-    let sliderCat17 = new Slider("#slider_17", {});
+    let sliderCat17 = new Slider("#slider_18", {});
     sliderCat17.on('slideStop', function (sliderValue) {
         console.log(sliderValue);
         pruneFilter.handleTagSelection(sliderValue, "cat_17");
     });
 
-    let sliderCat18 = new Slider("#slider_18", {});
+    let sliderCat18 = new Slider("#slider_19", {});
     sliderCat18.on('slideStop', function (sliderValue) {
         console.log(sliderValue);
         pruneFilter.handleTagSelection(sliderValue, "cat_18");
     });
-    let sliderCat19 = new Slider("#slider_19", {});
+    let sliderCat19 = new Slider("#slider_20", {});
     sliderCat19.on('slideStop', function (sliderValue) {
         console.log(sliderValue);
         pruneFilter.handleTagSelection(sliderValue, "cat_19");

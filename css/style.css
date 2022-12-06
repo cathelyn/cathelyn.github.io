@@ -131,7 +131,9 @@ button.applyBtn, button.applyBtn:hover {
 }
 
 
-
+div.leaflet-popup-content {
+    width: 400px !important;
+}
 
 
 
