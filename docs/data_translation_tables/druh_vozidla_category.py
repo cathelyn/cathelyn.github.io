@@ -12,7 +12,7 @@ druh_vozidla_category = {
     'nákladní automobil (včetně multikáry, autojeřábu, cisterny atd.)': 'truck (including multicar, truck crane, tanker, etc.)',
     'nákladní automobil s návěsem': 'truck with semi-trailer',
     'nákladní automobil s přívěsem': 'truck with trailer',
-    'osobní automobil bez přívěsu': 'car with without trailer',
+    'osobní automobil bez přívěsu': 'car without trailer',
     'osobní automobil s přívěsem': 'car with trailer',
     'povoz, jízda na koni': 'carriage, horse riding',
     'traktor (i s přívěsem)': 'tractor (also with trailer)',
