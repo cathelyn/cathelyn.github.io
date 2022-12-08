@@ -1,10 +1,6 @@
 function toggleGroupOnManualSelection() {
     let checkbox = this.parentNode.parentNode.firstElementChild;
-    if (Array.from(this.parentNode.children).every(el => el.classList.contains('enabled'))) {
-        checkbox.checked = true;
-    } else {
-        checkbox.checked = false;
-    }
+    checkbox.checked = Array.from(this.parentNode.children).every(el => el.classList.contains('enabled'));
 
 }
 

@@ -12,12 +12,21 @@ const filterCategories =  {
     ],
     '<i class="fa-solid fa-circle-question fa-fw me-2"></i> Cause': [
         'improper driving style',
-        'others',
         'speed adjustment',
-        'violation of traffic signs or rules',
-        'giving way',
+        'violation of traffic signs or rules - red light',
+        'violation of traffic signs or rules - sign Give Way or STOP',
+        'violation of traffic signs or rules - others',
+        'safe distance',
+        'giving way - others',
+        'giving way - turning tram',
+        'giving way - pedestrian',
+        'giving way - when turning or backing',
+        'giving way - others',
+        'giving way - turning left',
+        'giving way - queueing',
         'overtaking',
-        'technical defects'
+        'technical defects',
+        'others'
     ],
     '<i class="fa-solid fa-person fa-fw me-2"></i> Person': [
         'pedestrian',
@@ -176,7 +185,7 @@ const filterCategories =  {
         'trolley',
         'train'
     ],
-    '<i class="fa fa-road fa-fw me-2"></i> Pedestrian circumstances': [
+    '<i class="fa fa-person-walking fa-fw me-2"></i> Pedestrian circumstances': [
         'jaywalking (20 meters or more from the crossing)',
         'walking, standing on the pavement',
         'crossing at a designated crossing point',
@@ -191,9 +200,9 @@ const filterCategories =  {
         'unknown'
     ],
     '<i class="fa-solid fa-coins fa-fw me-2"></i> Material Damage Price': [0, 5360000],
-    '<i class="fa-solid fa-user-injured fa-fw me-2"></i> Number of Minor Injuries': [0, 29],
-    '<i class="fa-solid fa-truck-medical fa-fw me-2"></i> Number of Major Injuries': [0, 14],
-    '<i class="fa-solid fa-skull-crossbones fa-fw me-2"></i> Number of Casualties': [0, 3]
+    '<i class="fa-solid fa-user-injured fa-fw me-2"></i> Minor Injuries': [0, 29],
+    '<i class="fa-solid fa-truck-medical fa-fw me-2"></i> Major Injuries': [0, 14],
+    '<i class="fa-solid fa-skull-crossbones fa-fw me-2"></i> Casualties': [0, 3]
 }
 
 function generateFilterControl() {
@@ -208,7 +217,20 @@ function generateFilterControl() {
             let accordionItemWrapper = document.createElement('div');
             // accordionItemWrapper.classList.add('accordion-item');
 
+
             // category switcher button
+
+            let clearBadge = document.createElement('span');
+            clearBadge.classList.add("badge");
+            clearBadge.classList.add("badge-danger");
+            clearBadge.classList.add("position-absolute");
+            clearBadge.classList.add("top-50");
+            clearBadge.classList.add("end-0");
+            clearBadge.classList.add("me-4");
+            clearBadge.classList.add("translate-middle");
+            clearBadge.classList.add("rounded-pill");
+            clearBadge.innerText = "";
+
             let buttonCategory = document.createElement('button');
             buttonCategory.type = 'button';
             buttonCategory.dataset.bsToggle = 'collapse';
@@ -226,6 +248,14 @@ function generateFilterControl() {
             buttonCategory.classList.add('fs-7');
             buttonCategory.classList.add('text-uppercase');
             buttonCategory.innerHTML = cat;
+
+            clearBadge.addEventListener('click', function (event) {
+                event.stopImmediatePropagation();
+
+            })
+
+            buttonCategory.appendChild(clearBadge);
+
             accordionItemWrapper.appendChild(buttonCategory);
 
             let dividerHr = document.createElement('hr');
@@ -258,6 +288,7 @@ function generateFilterControl() {
                     buttonOption.classList.add('btn-secondary');
                     buttonOption.classList.add('fs-7');
                     buttonOption.addEventListener('click', function() {
+                        console.log(this.parentNode.parentNode.parentNode.firstElementChild.getElementsByTagName("span")[0].innerText = "Reset");
                         pruneFilter.handleTagSelection(this.innerText, this.parentNode.parentNode.parentNode.firstElementChild.getAttribute('data-name'));
                     },false);
                     buttonOption.appendChild(document.createTextNode(value));
@@ -268,6 +299,18 @@ function generateFilterControl() {
             } else {
                 let minVal = filterCategories[cat][0];
                 let maxVal = filterCategories[cat][1];
+
+                let minValText = document.createElement("span");
+                minValText.classList.add("me-4");
+                minValText.classList.add("fs-7");
+                minValText.classList.add("text-light");
+                minValText.innerText = minVal;
+                let maxValText = document.createElement("span");
+                maxValText.classList.add("ms-4");
+                maxValText.classList.add("fs-7");
+                maxValText.classList.add("text-light");
+                maxValText.innerText = maxVal;
+
                 let inputSlider = document.createElement('input');
                 inputSlider.type = "text";
                 inputSlider.id = "slider_" + index;
@@ -276,7 +319,12 @@ function generateFilterControl() {
                 inputSlider.dataset.sliderMax = maxVal.toString();
                 inputSlider.dataset.sliderStep = "1";
                 inputSlider.dataset.sliderValue = "[" + minVal + "," + maxVal + "]";
+
+                accordionBodyWrapper.classList.add("pt-3");
+
+                accordionBodyWrapper.appendChild(minValText);
                 accordionBodyWrapper.appendChild(inputSlider);
+                accordionBodyWrapper.appendChild(maxValText);
             }
             divCategoryOptions.appendChild(accordionBodyWrapper);
             accordionItemWrapper.appendChild(divCategoryOptions);
@@ -285,23 +333,19 @@ function generateFilterControl() {
     )
     outputEl.appendChild(divMain);
 
-    let sliderCat17 = new Slider("#slider_18", {});
-    sliderCat17.on('slideStop', function (sliderValue) {
-        console.log(sliderValue);
-        pruneFilter.handleTagSelection(sliderValue, "cat_17");
-    });
-
-    let sliderCat18 = new Slider("#slider_19", {});
+    let sliderCat18 = new Slider("#slider_18", {});
     sliderCat18.on('slideStop', function (sliderValue) {
-        console.log(sliderValue);
         pruneFilter.handleTagSelection(sliderValue, "cat_18");
     });
-    let sliderCat19 = new Slider("#slider_20", {});
+
+    let sliderCat19 = new Slider("#slider_19", {});
     sliderCat19.on('slideStop', function (sliderValue) {
-        console.log(sliderValue);
         pruneFilter.handleTagSelection(sliderValue, "cat_19");
     });
-
+    let sliderCat20 = new Slider("#slider_20", {});
+    sliderCat20.on('slideStop', function (sliderValue) {
+        pruneFilter.handleTagSelection(sliderValue, "cat_20");
+    });
 
 }
 
@@ -311,10 +355,7 @@ class PruneClusterFilter {
         this.layer = pruneClusterLayer;
         this._filtersPerCat = {};
         this._hiddenPerCat = {};
-    }
-
-    _isArray(checkedObject) {
-        return checkedObject.constructor === Array;
+        this._rangeCats = ['cat_18', 'cat_19', 'cat_20'];
     }
 
     filter() {
@@ -331,7 +372,7 @@ class PruneClusterFilter {
             if (Object.keys(this._hiddenPerCat).includes(category)) {
                 this._hiddenPerCat[category].forEach((marker, index) => {
                     for (let tag of this._filtersPerCat[category]) {
-                        if (this._isArray(tag)) {
+                        if (this._rangeCats.includes(category)) {
                             if (marker.data.tags[category] >= tag[0] && marker.data.tags[category] <= tag[1]){
                                 this.layer.RegisterMarker(marker);
                                 toBeRemovedFromHiddenMarkers.push(index);
@@ -361,7 +402,7 @@ class PruneClusterFilter {
                 markers.forEach(marker => {
                     let matched = false;
                     for (let tag of this._filtersPerCat[category]) {
-                        if (this._isArray(tag)) {
+                        if (this._rangeCats.includes(category)) {
                             matched = marker.data.tags[category] >= tag[0] && marker.data.tags[category] <= tag[1];
                         } else {
                             matched = marker.data.tags[category].includes(tag);
@@ -392,18 +433,22 @@ class PruneClusterFilter {
 
     handleTagSelection(tag, category) {
         let matched_cat = this._filtersPerCat[category];
-        if (matched_cat){  // the category already has some tag active
-            if (!matched_cat.includes(tag)) {
-                matched_cat.push(tag); // if it isn't activated, save it as active
-            } else {
-                matched_cat.splice(matched_cat.indexOf(tag), 1); // otherwise remove it
-                // if this was the last tag, remove whole category
-                if (matched_cat.length === 0){
-                    delete this._filtersPerCat[category];
-                }
-            }
-        } else { // new category has been activated
+        if (this._rangeCats.includes(category)){
             this._filtersPerCat[category] = [tag];
+        }else {
+            if (matched_cat){  // the category already has some tag active
+                if (!matched_cat.includes(tag)) {
+                    matched_cat.push(tag); // if it isn't activated, save it as active
+                } else {
+                    matched_cat.splice(matched_cat.indexOf(tag), 1); // otherwise remove it
+                    // if this was the last tag, remove whole category
+                    if (matched_cat.length === 0){
+                        delete this._filtersPerCat[category];
+                    }
+                }
+            } else { // new category has been activated
+                this._filtersPerCat[category] = [tag];
+            }
         }
         return this.filter();
     }

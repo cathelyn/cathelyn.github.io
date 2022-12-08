@@ -1,20 +1,27 @@
 // create date filter
 function DateRangeFilter(startDate, endDate) {
-    trafficAccidentMarkers.map(marker => marker.filtered = true);
-    let traffic_matching = trafficAccidentMarkers.filter(marker => marker.date >= startDate && marker.date <= endDate)
-    console.log("Found " + traffic_matching.length + " matching entries in pedestrian_accidents")
-    traffic_matching.map(marker => marker.filtered = false);
+    let enabled = document.getElementById('traffic_accidents').parentElement.classList.contains("enabled");
+    if (enabled) {
+        trafficAccidentMarkers.map(marker => marker.filtered = true);
+        let traffic_matching = trafficAccidentMarkers.filter(
+            marker => marker.date >= startDate && marker.date <= endDate
+        )
+        traffic_matching.map(marker => marker.filtered = false);
+    }
 
-    bikeAccidentMarkers.map(marker => marker.filtered = true);
-    let bike_matching = bikeAccidentMarkers.filter(marker => marker.date >= startDate && marker.date <= endDate)
-    console.log("Found " + bike_matching.length + " matching entries in pedestrian_accidents")
-    bike_matching.map(marker => marker.filtered = false);
+    enabled = document.getElementById('bike_accidents').parentElement.classList.contains("enabled");
+    if (enabled) {
+        bikeAccidentMarkers.map(marker => marker.filtered = true);
+        let bike_matching = bikeAccidentMarkers.filter(marker => marker.date >= startDate && marker.date <= endDate)
+        bike_matching.map(marker => marker.filtered = false);
+    }
 
-    pedestrianAccidentMarkers.map(marker => marker.filtered = true);
-    let ped_matching = pedestrianAccidentMarkers.filter(marker => marker.date >= startDate && marker.date <= endDate)
-    console.log("Found " + ped_matching.length + " matching entries in pedestrian_accidents")
-    ped_matching.map(marker => marker.filtered = false);
-
+    enabled = document.getElementById('pedestrian_accidents').parentElement.classList.contains("enabled");
+    if (enabled) {
+        pedestrianAccidentMarkers.map(marker => marker.filtered = true);
+        let ped_matching = pedestrianAccidentMarkers.filter(marker => marker.date >= startDate && marker.date <= endDate)
+        ped_matching.map(marker => marker.filtered = false);
+    }
     accidentsCluster.ProcessView();
 }
 
@@ -31,30 +38,41 @@ function DateCustomSelect() {
     let weekday_el = document.getElementById('weekday')
     let weekday_sel = weekday_el.parentNode.firstElementChild.firstElementChild.checked;
 
+    let day_night_el = document.getElementById("daynight");
+    let day_night_sel = day_night_el.parentNode.firstElementChild.firstElementChild.checked;
+
     let all_markers = [trafficAccidentMarkers, bikeAccidentMarkers, pedestrianAccidentMarkers]
 
     // disable all markers
     all_markers.forEach(removeMarkerSet);
 
-    let filtered_set = trafficAccidentMarkers.concat(bikeAccidentMarkers).concat(pedestrianAccidentMarkers);
+    let filtered_set = []
+
+    if (document.getElementById('traffic_accidents').parentElement.classList.contains("enabled")) {
+        filtered_set.push(...trafficAccidentMarkers);
+    }
+    if (document.getElementById('bike_accidents').parentElement.classList.contains("enabled")) {
+        filtered_set.push(...bikeAccidentMarkers);
+    }
+    if (document.getElementById('pedestrian_accidents').parentElement.classList.contains("enabled")) {
+        filtered_set.push(...pedestrianAccidentMarkers);
+    }
 
     if (year_sel){
-        filtered_set = filtered_set.filter(value => value.date.getFullYear().toString() === year_el.selectedOptions[0].value
-        )
+        filtered_set = filtered_set.filter(value =>  Array.from(year_el.selectedOptions).some(x => x.value === value.date.getFullYear().toString()));
     }
     if (month_sel) {
-        filtered_set = filtered_set.filter(value => value.date.getMonth().toString() === month_el.selectedOptions[0].value
-        )
+        filtered_set = filtered_set.filter(value =>  Array.from(month_el.selectedOptions).some(x => x.value === value.date.getMonth().toString()));
     }
     if (day_sel) {
-        filtered_set =filtered_set.filter(value => value.date.getDate().toString() === day_el.selectedOptions[0].value
-        )
+        filtered_set = filtered_set.filter(value =>  Array.from(day_el.selectedOptions).some(x => x.value === value.date.getDate().toString()));
     }
     if (weekday_sel) {
-        filtered_set = filtered_set.filter(value => value.date.getDay().toString() === weekday_el.selectedOptions[0].value
-        )
+        filtered_set = filtered_set.filter(value =>  Array.from(weekday_el.selectedOptions).some(x => x.value === value.date.getDay().toString()));
     }
-    console.log(filtered_set.length + " markers selected");
+    if (day_night_sel) {
+        filtered_set = filtered_set.filter(value =>  Array.from(day_night_el.selectedOptions).some(x => x.value === value.day_night));
+    }
     filtered_set.map(marker => marker.filtered = false);
     accidentsCluster.ProcessView();
 }

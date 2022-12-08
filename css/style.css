@@ -135,5 +135,14 @@ div.leaflet-popup-content {
     width: 400px !important;
 }
 
+div.slider-handle {
+    background-image: unset !important;
+    background-color: var(--bs-primary) !important;
+}
+
+div.slider-selection {
+    background-image: unset !important;
+    background-color: var(--bs-secondary) !important;
+}
 
 

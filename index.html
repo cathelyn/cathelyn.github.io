@@ -128,11 +128,45 @@
 				<script>
 					$('input[name="dates"]').daterangepicker({
 								opens: 'right',
-								startDate: "01/01/2010",
-								endDate: "12/31/2021",
+								startDate: "2010-01-01",
+								endDate: "2021-12-31",
 								showDropdowns: true,
 								minYear: 2010,
 								maxYear: 2021,
+								locale: {
+									"format": "YYYY-MM-DD",
+									"separator": " - ",
+									"applyLabel": "Apply",
+									"cancelLabel": "Cancel",
+									"fromLabel": "From",
+									"toLabel": "To",
+									"customRangeLabel": "Custom",
+									"weekLabel": "W",
+									"daysOfWeek": [
+										"Su",
+										"Mo",
+										"Tu",
+										"We",
+										"Th",
+										"Fr",
+										"Sa"
+									],
+									"monthNames": [
+										"January",
+										"February",
+										"March",
+										"April",
+										"May",
+										"June",
+										"July",
+										"August",
+										"September",
+										"October",
+										"November",
+										"December"
+									],
+									"firstDay": 1
+								},
 							},
 							function(start, end, label) {
 								DateRangeFilter(start, end);
@@ -252,8 +286,8 @@
 					<span class="input-group-text col-lg-5">Day / Night</span>
 
 					<select class="form-select col-lg-6" multiple id="daynight">
-						<option value="Day">Day</option>
-						<option value="Night">Night</option>
+						<option value="day">Day</option>
+						<option value="night">Night</option>
 					</select>
 				</div>
 				<div>
@@ -489,6 +523,9 @@
 
 	// sidebar
 	L.control.sidebar('sidebar').addTo(map);
+
+	//scale
+	L.control.scale().addTo(map);
 
 	generateFilterControl();
 

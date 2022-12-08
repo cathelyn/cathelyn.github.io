@@ -19,6 +19,7 @@ function addAccident(dataset, markersArray, category)
                 value.point_x
             );
             marker.date = new Date(value.datetime);
+            marker.day_night = value.day_night;
             marker.filtered = true;
             marker.category = category;
 
