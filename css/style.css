@@ -28,13 +28,13 @@ html, body {
 }
 
 .color_cat_0 {
-    color: var(--violet);
+    color: var(--violet) !important;
 }
 .color_cat_1 {
-    color: var(--green);
+    color: var(--green) !important;
 }
 .color_cat_2 {
-    color: var(--blue);
+    color: var(--blue) !important;
 }
 
 /*#dates h2 {*/
@@ -131,7 +131,7 @@ button.applyBtn, button.applyBtn:hover {
 
 
 div.leaflet-popup-content {
-    width: 400px !important;
+    max-width: 400px !important;
 }
 
 div.slider-handle {

@@ -7,12 +7,14 @@ const streetSlopesColors = ['#fd151b', '#ffb30f', '#849324', '#437f97']
 
 function addPublicTransStops(value) {
     L.circle([value.split(",")[0], value.split(",")[1]], {
-        stroke: false,
-        fillColor: '#000000',
-        fillOpacity: 0.7,
+        stroke: true,
+        color: '#000000',
+        fill: false,
         radius: 2,
-    }).addTo(publicTransportStopsLayer).bindPopup(value.split(",")[2]);
+    }).addTo(publicTransportStopsLayer).bindPopup(((value.split(",")).slice(2)).toString().replaceAll('"', ''));
 }
+
+
 
 function addStreetLights(value) {
     // TODO: Make this faster (probably run in the bg on startup or use CircleMarker)

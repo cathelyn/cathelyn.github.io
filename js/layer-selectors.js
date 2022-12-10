@@ -69,33 +69,70 @@ function generateOverlaysControl() {
             const liLayer = document.createElement('li');
             liLayer.classList.add('overlayLayer');
             liLayer.classList.add('mb-2');
-            liLayer.classList.add('px-2');
+            liLayer.classList.add('ps-2');
+            liLayer.classList.add('pe-5');
             liLayer.classList.add('layer-item');
+            liLayer.classList.add('position-relative');
             liLayer.innerHTML = layerName;
             let colorBadge = document.createElement("span");
             colorBadge.classList.add("badge");
-            colorBadge.classList.add("float-end");
+            colorBadge.classList.add("position-absolute");
+            colorBadge.classList.add("top-50");
+            colorBadge.classList.add("end-0");
+            colorBadge.classList.add("translate-middle");
+            colorBadge.classList.add("align-top");
+            colorBadge.classList.add("fs-6");
             colorBadge.innerHTML = "";
             liLayer.appendChild(colorBadge);
             ["click", "change"].forEach(event => liLayer.addEventListener(event, function() {
                     if (layerName.toString().includes("Traffic accidents")) {
                         toggleTrafficAccidents(this);
+                        if (this.classList.contains("enabled")) {
+                            colorBadge.innerHTML = "<i class='fa-solid fa-circle'></i>"
+                            colorBadge.classList.add("color_cat_0");
+                        } else {
+                            colorBadge.innerHTML = "";
+                        }
                         return;
                     } else if (layerName.toString().includes("Bike accidents")){
                         toggleBikeAccidents(this);
+                        if (this.classList.contains("enabled")) {
+                            colorBadge.innerHTML = "<i class='fa-solid fa-circle'></i>"
+                            colorBadge.classList.add("color_cat_1");
+                        } else {
+                            colorBadge.innerHTML = "";
+                        }
                         return;
                     } else if (layerName.toString().includes("Pedestrian accidents")) {
                         togglePedestrianAccidents(this);
+                        if (this.classList.contains("enabled")) {
+                            colorBadge.innerHTML = "<i class='fa-solid fa-circle'></i>"
+                            colorBadge.classList.add("color_cat_2");
+                        } else {
+                            colorBadge.innerHTML = "";
+                        }
                         return;
                     }
                     if (!this.classList.contains("enabled")) {
                         this.classList.add("enabled");
+                        if (layerName.toString().includes("Street Lights")) {
+                            colorBadge.innerHTML = "<i class='fa-solid fa-circle'></i>";
+                            colorBadge.style.color = "#ffac00";
+                        }
+                        if (layerName.toString().includes("Public Transport Stops")) {
+                            colorBadge.innerHTML = "<i class='fa-regular fa-circle'></i>";
+                            colorBadge.style.color = "black";
+                        }
+                        if (layerName.toString().includes("Pedestrian Crossings")) {
+                            colorBadge.innerHTML ="<i class='fa-solid fa-square'></i>";
+                            colorBadge.style.color = "black";
+                        }
                         if (group.toString().includes("Cycling")) {
-                            colorBadge.innerText = "■";
+                            colorBadge.innerHTML = "<i class='fa-solid fa-square'></i>"
                             colorBadge.style.color = cyclingInfraColors[index];
                         }
                         if (group.toString().includes("slopes")) {
-                            colorBadge.innerText = "■";
+                            colorBadge.innerHTML = "<i class='fa-solid fa-square'></i>"
                             colorBadge.style.color = streetSlopesColors[3 - index];
                         }
                         map.addLayer(overlaysGrouped[group][layerName]);
