@@ -295,7 +295,112 @@ function generateFilterControl() {
                     accordionBodyWrapper.appendChild(buttonOption);
                 })
             } else if (index === 17) {
-                // material damage
+                let damagePriceForm = document.createElement("form");
+                damagePriceForm.noValidate = true;
+                damagePriceForm.classList.add("needs-validation");
+                damagePriceForm.classList.add("mt-3");
+
+                let inputRowDivFrom = document.createElement("div");
+                inputRowDivFrom.classList.add("input-group");
+                let inputRowDivTo = document.createElement("div");
+                inputRowDivTo.classList.add("input-group");
+
+                let fromLabel = document.createElement("span");
+                fromLabel.classList.add("input-group-text");
+                fromLabel.classList.add("col-2");
+                fromLabel.innerText = "From";
+
+                let toLabel = document.createElement("span");
+                toLabel.classList.add("input-group-text");
+                toLabel.classList.add("col-2");
+                toLabel.innerText = "To";
+
+                let currencySpan = document.createElement("span");
+                currencySpan.classList.add("input-group-text");
+                currencySpan.innerText = "CZK";
+
+                let inputIntFrom = document.createElement("input");
+                inputIntFrom.classList.add("form-control");
+                inputIntFrom.ariaLabel = "Material Damage Price in CZK - min value";
+                inputIntFrom.type = "number";
+                inputIntFrom.id = "materialDamageFrom";
+                inputIntFrom.name = "materialDamageFrom";
+                let min = filterCategories[cat][0];
+                let max = filterCategories[cat][1];
+                inputIntFrom.min = min;
+                inputIntFrom.max = max;
+                inputIntFrom.step = "1";
+                inputIntFrom.value = "0";
+
+                let inputIntTo = document.createElement("input");
+                inputIntTo.classList.add("form-control");
+                inputIntTo.ariaLabel = "Material Damage Price in CZK - max value";
+                inputIntTo.type = "number";
+                inputIntTo.id = "materialDamageTo";
+                inputIntTo.name = "materialDamageTo";
+                inputIntTo.min = min;
+                inputIntTo.max = max;
+                inputIntTo.step = "1";
+                inputIntTo.value = max;
+
+                let divInvalidFeedbackFrom = document.createElement("div");
+                divInvalidFeedbackFrom.classList.add("invalid-feedback");
+
+                let divInvalidFeedbackTo = document.createElement("div");
+                divInvalidFeedbackTo.classList.add("invalid-feedback");
+
+                inputRowDivFrom.appendChild(fromLabel);
+                inputRowDivFrom.appendChild(currencySpan);
+                inputRowDivFrom.appendChild(inputIntFrom);
+                inputRowDivFrom.appendChild(divInvalidFeedbackFrom);
+                damagePriceForm.appendChild(inputRowDivFrom)
+
+                inputRowDivTo.appendChild(toLabel);
+                inputRowDivTo.appendChild(currencySpan.cloneNode(true));
+                inputRowDivTo.appendChild(inputIntTo);
+                inputRowDivTo.appendChild(divInvalidFeedbackTo);
+                damagePriceForm.appendChild(inputRowDivTo);
+
+                let submitButton = document.createElement("button");
+                submitButton.type = "button";
+                submitButton.classList.add("btn");
+                submitButton.classList.add("btn-outline-secondary");
+                submitButton.classList.add("mt-3");
+                submitButton.innerText = "Filter";
+
+                submitButton.addEventListener("click", function (event) {
+                    let damagePriceInputFrom = document.getElementById("materialDamageFrom");
+                    let damagePriceInputTo = document.getElementById("materialDamageTo");
+                    damagePriceInputFrom.max = damagePriceInputTo.value;
+                    damagePriceInputTo.min = damagePriceInputFrom.value;
+                    if (damagePriceInputFrom.checkValidity() && damagePriceInputTo.checkValidity()) {
+                        inputIntFrom.classList.remove("is-invalid");
+                        inputIntFrom.classList.add("is-valid");
+                        inputIntTo.classList.remove("is-invalid");
+                        inputIntTo.classList.add("is-valid");
+
+                        pruneFilter.handleTagSelection([damagePriceInputFrom.value, damagePriceInputTo.value], "cat_17");
+                    } else {
+                        event.preventDefault();
+
+                        let czkCzechLocale = Intl.NumberFormat('cs');
+                        if (!damagePriceInputFrom.checkValidity()) {
+                            inputIntFrom.classList.remove("is-valid");
+                            inputIntFrom.classList.add("is-invalid");
+                            divInvalidFeedbackFrom.innerText = "A value in range " + czkCzechLocale.format(min) + " and " + czkCzechLocale.format(damagePriceInputTo.value) + " is required.";
+                        }
+                        if (!damagePriceInputTo.checkValidity()) {
+                            inputIntTo.classList.remove("is-valid");
+                            inputIntTo.classList.add("is-invalid");
+                            divInvalidFeedbackTo.innerText = "A value in range " + czkCzechLocale.format(damagePriceInputFrom.value) + " and " + czkCzechLocale.format(max) + " is required.";
+                        }
+
+                    }
+                })
+
+
+                damagePriceForm.appendChild(submitButton);
+                accordionBodyWrapper.appendChild(damagePriceForm);
             } else {
                 let minVal = filterCategories[cat][0];
                 let maxVal = filterCategories[cat][1];
@@ -311,7 +416,7 @@ function generateFilterControl() {
                 maxValText.classList.add("text-light");
                 maxValText.innerText = maxVal;
 
-                let inputSlider = document.createElement('input');
+                let inputSlider = document.createElement("input");
                 inputSlider.type = "text";
                 inputSlider.id = "slider_" + index;
                 inputSlider.name = "inputSlider";
@@ -355,10 +460,11 @@ class PruneClusterFilter {
         this.layer = pruneClusterLayer;
         this._filtersPerCat = {};
         this._hiddenPerCat = {};
-        this._rangeCats = ['cat_18', 'cat_19', 'cat_20'];
+        this._rangeCats = ['cat_17', 'cat_18', 'cat_19', 'cat_20'];
     }
 
     filter() {
+        console.log(this._filtersPerCat);
         Object.keys(this._hiddenPerCat).forEach(key => {
             if (!Object.keys(this._filtersPerCat).includes(key)) {
                 this.layer.RegisterMarkers(this._hiddenPerCat[key]);
