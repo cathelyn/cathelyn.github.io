@@ -298,29 +298,34 @@ function generateFilterControl() {
                 let damagePriceForm = document.createElement("form");
                 damagePriceForm.noValidate = true;
                 damagePriceForm.classList.add("needs-validation");
-                damagePriceForm.classList.add("mt-3");
 
                 let inputRowDivFrom = document.createElement("div");
                 inputRowDivFrom.classList.add("input-group");
+                inputRowDivFrom.classList.add("mt-2");
                 let inputRowDivTo = document.createElement("div");
                 inputRowDivTo.classList.add("input-group");
+                inputRowDivTo.classList.add("mt-2");
 
                 let fromLabel = document.createElement("span");
                 fromLabel.classList.add("input-group-text");
                 fromLabel.classList.add("col-2");
+                fromLabel.classList.add("fs-7");
                 fromLabel.innerText = "From";
 
                 let toLabel = document.createElement("span");
                 toLabel.classList.add("input-group-text");
                 toLabel.classList.add("col-2");
+                toLabel.classList.add("fs-7");
                 toLabel.innerText = "To";
 
                 let currencySpan = document.createElement("span");
                 currencySpan.classList.add("input-group-text");
+                currencySpan.classList.add("fs-7");
                 currencySpan.innerText = "CZK";
 
                 let inputIntFrom = document.createElement("input");
                 inputIntFrom.classList.add("form-control");
+                inputIntFrom.classList.add("fs-7");
                 inputIntFrom.ariaLabel = "Material Damage Price in CZK - min value";
                 inputIntFrom.type = "number";
                 inputIntFrom.id = "materialDamageFrom";
@@ -334,6 +339,7 @@ function generateFilterControl() {
 
                 let inputIntTo = document.createElement("input");
                 inputIntTo.classList.add("form-control");
+                inputIntTo.classList.add("fs-7");
                 inputIntTo.ariaLabel = "Material Damage Price in CZK - max value";
                 inputIntTo.type = "number";
                 inputIntTo.id = "materialDamageTo";
@@ -364,8 +370,11 @@ function generateFilterControl() {
                 let submitButton = document.createElement("button");
                 submitButton.type = "button";
                 submitButton.classList.add("btn");
-                submitButton.classList.add("btn-outline-secondary");
-                submitButton.classList.add("mt-3");
+                submitButton.classList.add("btn-primary");
+                submitButton.classList.add("text-light");
+                submitButton.classList.add("mt-2");
+                submitButton.classList.add("fs-7");
+
                 submitButton.innerText = "Filter";
 
                 submitButton.addEventListener("click", function (event) {

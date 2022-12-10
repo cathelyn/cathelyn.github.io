@@ -4,6 +4,8 @@ $secondary: rgba(251, 209, 182, 0.85);
 $dark: rgba(108, 117, 125, 0.8);
 $light: #f8f9fa;
 
+//$gray-700: #495057;
+
 $font-size-base:              1rem;
 $font-size-sm:                $font-size-base * .875;
 $h1-font-size:                $font-size-base * 2.5;
@@ -29,22 +31,19 @@ $accordion-icon-color: $light;
 $accordion-button-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$accordion-icon-color}' ><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'  stroke-width='5px'/></svg>");
 $accordion-button-active-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$accordion-icon-color}'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e ");
 
+$input-btn-focus-box-shadow: unset !important;
+$btn-active-box-shadow: unset !important;
+$btn-box-shadow: unset !important;
 
-.accordion-button {
-  background-color: transparent;
-  color: var(--bs-light);
-}
+$form-feedback-valid-color: $primary;
 
+$input-select-color: $primary;
 
-//.accordion-button::after {
-//  -webkit-text-stroke: 5px $accordion-icon-color;
-//  font-weight: bold;
+//.accordion-button {
+//  background-color: transparent;
+//  color: var(--bs-light);
 //}
 
-.accordion-button {
-  background-color: transparent;
-  color: var(--bs-light);
-}
 
 .accordion-button:focus {
   box-shadow: unset !important;
@@ -57,16 +56,16 @@ $accordion-button-active-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.
   padding: 0 1.25rem !important;
 }
 
-.sidebar-header {
-
-}
+//.sidebar-header {
+//
+//}
 .btn-dark:hover {
   background-color: unset !important;
 }
 
-.btn {
-
-}
+//.btn {
+//
+//}
 
 .btn-light {
   color: $secondary !important;
@@ -111,6 +110,9 @@ hr:not([size]) {
   padding: 0 !important;
 }
 
+//.text-gray-700 {
+//  color: $gray-700 !important;
+//}
 
 
 @import "../bootstrap/scss/bootstrap";

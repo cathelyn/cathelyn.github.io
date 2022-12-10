@@ -88,9 +88,8 @@ li.overlayLayer.enabled {
     color: var(--bs-light) !important;
 }
 
-#filter {
-    /*padding: 10px 0;*/
-    /*background-color: var(--bs-dark);*/
+#date_range {
+    padding-left: .5rem;
 }
 
 hr.catDivider {
@@ -146,3 +145,6 @@ div.slider-selection {
 }
 
 
+option:checked, option:focus, option:focus-within, option:active, option:target, option:visited {
+    background-color: var(--bs-primary) !important;
+}

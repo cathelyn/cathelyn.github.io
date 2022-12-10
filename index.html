@@ -103,194 +103,192 @@
 		<div class="sidebar-pane" id="dates">
 			<h1 class="sidebar-header">DATE SELECTOR<span class="sidebar-close"><i class="fa-solid fa-angle-left"></i></span></h1>
 			<hr>
-			<script>
-				function activate_date_selector() {
-					let range_selector = document.getElementById('date_range_selector').checked;
-					if (range_selector) {
-						document.getElementById('custom_date_selector_form').classList.add("collapse");
-						document.getElementById('date_range_selector_form').classList.remove("collapse");
-					} else {
-						document.getElementById('custom_date_selector_form').classList.remove("collapse");
-						document.getElementById('date_range_selector_form').classList.add("collapse");
-					}
-				}
-			</script>
-			<div class="d-grid gap-2 my-3">
-				<input type="radio" class="btn-check " name="options-outlined" id="date_range_selector" autocomplete="off" onclick="activate_date_selector()" checked>
-				<label class="btn btn-outline-secondary " for="date_range_selector">Date range</label>
-			</div>
-
-			<div id="date_range_selector_form" class="collapse">
-				<input id="date_range" type="text" name="dates" class=col-12 aria-label="Date Range selector"/>
-				<script>
-					$('input[name="dates"]').daterangepicker({
-								opens: 'right',
-								startDate: "2010-01-01",
-								endDate: "2021-12-31",
-								showDropdowns: true,
-								minYear: 2010,
-								maxYear: 2021,
-								locale: {
-									"format": "YYYY-MM-DD",
-									"separator": " - ",
-									"applyLabel": "Apply",
-									"cancelLabel": "Cancel",
-									"fromLabel": "From",
-									"toLabel": "To",
-									"customRangeLabel": "Custom",
-									"weekLabel": "W",
-									"daysOfWeek": [
-										"Su",
-										"Mo",
-										"Tu",
-										"We",
-										"Th",
-										"Fr",
-										"Sa"
-									],
-									"monthNames": [
-										"January",
-										"February",
-										"March",
-										"April",
-										"May",
-										"June",
-										"July",
-										"August",
-										"September",
-										"October",
-										"November",
-										"December"
-									],
-									"firstDay": 1
-								},
-							},
-							function(start, end, label) {
-								DateRangeFilter(start, end);
-							}
-					);
-				</script>
-			</div>
-			<hr>
-			<div class="d-grid gap-2 col-5 my-3">
-				<input type="radio" class="btn-check" name="options-outlined" id="custom_date_selector" onclick="activate_date_selector()" autocomplete="off" >
-				<label class="btn btn-outline-secondary" for="custom_date_selector">Custom date</label>
-			</div>
-
-			<div id="custom_date_selector_form" class="collapse" >
-				<div class="input-group row-container">
-					<div class="input-group-text col-lg-1">
-						<input type="checkbox" name="fields" aria-label="Checkbox for selecting Year filter">
-					</div>
-					<span class="input-group-text col-lg-5">Year</span>
-					<select class="form-select form-control col-lg-6" multiple id="year" aria-label="Year selector">
-						<option value=2010>2010</option>
-						<option value=2011>2011</option>
-						<option value=2012>2012</option>
-						<option value=2013>2013</option>
-						<option value=2014>2014</option>
-						<option value=2015>2015</option>
-						<option value=2016>2016</option>
-						<option value=2017>2017</option>
-						<option value=2018>2018</option>
-						<option value=2019>2019</option>
-						<option value=2020>2020</option>
-						<option value=2021>2021</option>
-					</select>
-				</div>
-				<div class="input-group row-container">
-					<div class="input-group-text col-lg-1">
-						<input type="checkbox" name="fields" aria-label="Checkbox for selecting Month filter">
-					</div>
-					<span class="input-group-text col-lg-5">Month</span>
-
-					<select class="form-select form-control col-lg-6" multiple id="month">
-						<option value=0>January</option>
-						<option value=1>February</option>
-						<option value=2>March</option>
-						<option value=3>April</option>
-						<option value=4>May</option>
-						<option value=5>June</option>
-						<option value=6>July</option>
-						<option value=7>August</option>
-						<option value=8>September</option>
-						<option value=9>October</option>
-						<option value=10>November</option>
-						<option value=11>December</option>
-					</select>
-				</div>
-
-				<div class="input-group row-container">
-					<div class="input-group-text col-lg-1">
-						<input type="checkbox" name="fields" aria-label="Checkbox for selecting Day filter">
-					</div>
-					<span class="input-group-text col-lg-5">Day</span>
-
-					<select class="form-select form-control col-lg-6" multiple id="day" >
-						<option value=1>1</option>
-						<option value=2>2</option>
-						<option value=3>3</option>
-						<option value=4>4</option>
-						<option value=5>5</option>
-						<option value=6>6</option>
-						<option value=7>7</option>
-						<option value=8>8</option>
-						<option value=9>9</option>
-						<option value=10>10</option>
-						<option value=11>11</option>
-						<option value=12>12</option>
-						<option value=13>13</option>
-						<option value=14>14</option>
-						<option value=15>15</option>
-						<option value=16>16</option>
-						<option value=17>17</option>
-						<option value=18>18</option>
-						<option value=19>19</option>
-						<option value=20>20</option>
-						<option value=21>21</option>
-						<option value=22>22</option>
-						<option value=23>23</option>
-						<option value=24>24</option>
-						<option value=25>25</option>
-						<option value=26>26</option>
-						<option value=27>27</option>
-						<option value=28>28</option>
-						<option value=29>29</option>
-						<option value=30>30</option>
-						<option value=31>31</option>
-					</select>
-				</div>
-				<div class="input-group row-container">
-					<div class="input-group-text col-lg-1">
-						<input type="checkbox" name="fields" aria-label="Checkbox for selecting Day of the week filter">
-					</div>
-					<span class="input-group-text col-lg-5">Day of the week</span>
-
-					<select class="form-select col-lg-6" multiple id="weekday">
-						<option value=1>Monday</option>
-						<option value=2>Tuesday</option>
-						<option value=3>Wednesday</option>
-						<option value=4>Thursday</option>
-						<option value=5>Friday</option>
-						<option value=6>Saturday</option>
-						<option value=7>Sunday</option>
-					</select>
-				</div>
-				<div class="input-group row-container">
-					<div class="input-group-text col-lg-1">
-						<input type="checkbox" name="fields" aria-label="Checkbox for selecting Time of the day filter">
-					</div>
-					<span class="input-group-text col-lg-5">Day / Night</span>
-
-					<select class="form-select col-lg-6" multiple id="daynight">
-						<option value="day">Day</option>
-						<option value="night">Night</option>
-					</select>
-				</div>
+			<div class="accordion accordion-flush" id="dateAccordionParent">
 				<div>
-					<button type="submit" class="btn btn-outline-primary" onclick="DateCustomSelect()">Filter</button>
+					<button class="btn btn-dark accordion-button filter-button collapsed text-uppercase fs-7" type="button" data-bs-toggle="collapse" data-bs-target="#date_range_container" aria-expanded="false" aria-controls="flush-collapseOne">
+						Date Range Selector
+					</button>
+
+					<div id="date_range_container" class="list-group accordion-collapse collapse" data-bs-parent="#dateAccordionParent">
+						<div class="mt-2">
+							<input id="date_range" type="text" name="dates" class="col-12 fs-7" aria-label="Date Range selector"/>
+							<script>
+								$('input[name="dates"]').daterangepicker({
+											opens: 'right',
+											startDate: "2010-01-01",
+											endDate: "2021-12-31",
+											showDropdowns: true,
+											minYear: 2010,
+											maxYear: 2021,
+											locale: {
+												"format": "YYYY-MM-DD",
+												"separator": " - ",
+												"applyLabel": "Apply",
+												"cancelLabel": "Cancel",
+												"fromLabel": "From",
+												"toLabel": "To",
+												"customRangeLabel": "Custom",
+												"weekLabel": "W",
+												"daysOfWeek": [
+													"Su",
+													"Mo",
+													"Tu",
+													"We",
+													"Th",
+													"Fr",
+													"Sa"
+												],
+												"monthNames": [
+													"January",
+													"February",
+													"March",
+													"April",
+													"May",
+													"June",
+													"July",
+													"August",
+													"September",
+													"October",
+													"November",
+													"December"
+												],
+												"firstDay": 1
+											},
+										},
+										function(start, end, label) {
+											DateRangeFilter(start, end);
+										}
+								);
+							</script>
+						</div>
+					</div>
+				</div>
+				<hr class="catDivider">
+				<div>
+					<button class="btn btn-dark accordion-button filter-button collapsed text-uppercase fs-7" type="button" data-bs-toggle="collapse" data-bs-target="#custom_date_container" aria-expanded="false" aria-controls="flush-collapseOne">
+						Custom Date Selector
+					</button>
+
+					<div id="custom_date_container" class="list-group accordion-collapse collapse" data-bs-parent="#dateAccordionParent">
+						<div>
+							<div class="input-group row-container mt-2">
+								<div class="form-check form-switch  col-lg-1">
+									<input class="form-check-input" type="checkbox" name="fields" aria-label="Checkbox for selecting Year filter">
+								</div>
+								<span class="text-light col-lg-4 fs-7">Year</span>
+								<select class="form-select form-control col-lg-7 fs-7 rounded" multiple id="year" aria-label="Year selector">
+									<option value=2010>2010</option>
+									<option value=2011>2011</option>
+									<option value=2012>2012</option>
+									<option value=2013>2013</option>
+									<option value=2014>2014</option>
+									<option value=2015>2015</option>
+									<option value=2016>2016</option>
+									<option value=2017>2017</option>
+									<option value=2018>2018</option>
+									<option value=2019>2019</option>
+									<option value=2020>2020</option>
+									<option value=2021>2021</option>
+								</select>
+							</div>
+							<div class="input-group row-container mt-2">
+								<div class="form-check form-switch col-lg-1">
+									<input class="form-check-input" type="checkbox" name="fields" aria-label="Checkbox for selecting Month filter">
+								</div>
+								<span class="text-light col-lg-4 fs-7">Month</span>
+
+								<select class="form-select form-control col-lg-7 fs-7 rounded" multiple id="month">
+									<option value=0>January</option>
+									<option value=1>February</option>
+									<option value=2>March</option>
+									<option value=3>April</option>
+									<option value=4>May</option>
+									<option value=5>June</option>
+									<option value=6>July</option>
+									<option value=7>August</option>
+									<option value=8>September</option>
+									<option value=9>October</option>
+									<option value=10>November</option>
+									<option value=11>December</option>
+								</select>
+							</div>
+							<div class="input-group row-container mt-2">
+								<div class="form-check form-switch col-lg-1">
+									<input class="form-check-input" type="checkbox" name="fields" aria-label="Checkbox for selecting Day filter">
+								</div>
+								<span class="text-light col-lg-4 fs-7">Day</span>
+
+								<select class="form-select form-control col-lg-7 fs-7 rounded" multiple id="day" >
+									<option value=1>1</option>
+									<option value=2>2</option>
+									<option value=3>3</option>
+									<option value=4>4</option>
+									<option value=5>5</option>
+									<option value=6>6</option>
+									<option value=7>7</option>
+									<option value=8>8</option>
+									<option value=9>9</option>
+									<option value=10>10</option>
+									<option value=11>11</option>
+									<option value=12>12</option>
+									<option value=13>13</option>
+									<option value=14>14</option>
+									<option value=15>15</option>
+									<option value=16>16</option>
+									<option value=17>17</option>
+									<option value=18>18</option>
+									<option value=19>19</option>
+									<option value=20>20</option>
+									<option value=21>21</option>
+									<option value=22>22</option>
+									<option value=23>23</option>
+									<option value=24>24</option>
+									<option value=25>25</option>
+									<option value=26>26</option>
+									<option value=27>27</option>
+									<option value=28>28</option>
+									<option value=29>29</option>
+									<option value=30>30</option>
+									<option value=31>31</option>
+								</select>
+							</div>
+							<div class="input-group row-container mt-2">
+								<div class="form-check form-switch col-lg-1">
+									<input class="form-check-input" type="checkbox" name="fields" aria-label="Checkbox for selecting Day of the week filter">
+								</div>
+								<span class="text-light col-lg-4 fs-7">Day of the week</span>
+
+								<select class="form-select col-lg-7 fs-7 rounded" multiple id="weekday">
+									<option value=1>Monday</option>
+									<option value=2>Tuesday</option>
+									<option value=3>Wednesday</option>
+									<option value=4>Thursday</option>
+									<option value=5>Friday</option>
+									<option value=6>Saturday</option>
+									<option value=7>Sunday</option>
+								</select>
+							</div>
+							<div class="input-group row-container mt-2">
+								<div class="form-check form-switch col-lg-1">
+									<input class="form-check-input" type="checkbox" name="fields" aria-label="Checkbox for selecting Time of the day filter">
+								</div>
+								<span class="text-light col-lg-4 fs-7">Day / Night</span>
+
+								<select class="form-select col-lg-7 fs-7 rounded" multiple id="daynight">
+									<option value="day">Day</option>
+									<option value="night">Night</option>
+								</select>
+							</div>
+							<div>
+								<button type="submit" class="btn btn-primary text-light mt-2 fs-7" onclick="DateCustomSelect()">Filter</button>
+							</div>
+
+						</div>
+					</div>
 				</div>
 			</div>
+
+
 		</div>
 
 
