@@ -1,7 +1,10 @@
 // create date filter
-function DateRangeFilter(startDate, endDate) {
+function DateRangeFilter(startDate, endDate, reset=false) {
     let enabled = document.getElementById('traffic_accidents').parentElement.classList.contains("enabled");
-    if (enabled) {
+    if (reset && enabled) {
+        addTrafficAccidents();
+    }
+    if (enabled && !reset) {
         trafficAccidentMarkers.map(marker => marker.filtered = true);
         let traffic_matching = trafficAccidentMarkers.filter(
             marker => marker.date >= startDate && marker.date <= endDate
@@ -10,14 +13,20 @@ function DateRangeFilter(startDate, endDate) {
     }
 
     enabled = document.getElementById('bike_accidents').parentElement.classList.contains("enabled");
-    if (enabled) {
+    if (reset && enabled) {
+        addBikeAccidents();
+    }
+    if (enabled && !reset) {
         bikeAccidentMarkers.map(marker => marker.filtered = true);
         let bike_matching = bikeAccidentMarkers.filter(marker => marker.date >= startDate && marker.date <= endDate)
         bike_matching.map(marker => marker.filtered = false);
     }
 
     enabled = document.getElementById('pedestrian_accidents').parentElement.classList.contains("enabled");
-    if (enabled) {
+    if (reset && enabled) {
+        addPedestrianAccidents();
+    }
+    if (enabled && !reset) {
         pedestrianAccidentMarkers.map(marker => marker.filtered = true);
         let ped_matching = pedestrianAccidentMarkers.filter(marker => marker.date >= startDate && marker.date <= endDate)
         ped_matching.map(marker => marker.filtered = false);
@@ -25,7 +34,7 @@ function DateRangeFilter(startDate, endDate) {
     accidentsCluster.ProcessView();
 }
 
-function DateCustomSelect() {
+function DateCustomSelect(reset=false) {
     let year_el = document.getElementById('year');
     let year_sel = year_el.parentNode.firstElementChild.firstElementChild.checked;
 
@@ -43,18 +52,37 @@ function DateCustomSelect() {
 
     let all_markers = [trafficAccidentMarkers, bikeAccidentMarkers, pedestrianAccidentMarkers]
 
-    // disable all markers
-    all_markers.forEach(removeMarkerSet);
+    if (!reset){
+        // disable all markers
+        all_markers.forEach(removeMarkerSet);
+    }
 
     let filtered_set = []
+    let trafficEnabled = document.getElementById('traffic_accidents').parentElement.classList.contains("enabled");
+    let bikeEnabled = document.getElementById('bike_accidents').parentElement.classList.contains("enabled");
+    let pedestrianEnabled = document.getElementById('pedestrian_accidents').parentElement.classList.contains("enabled");
 
-    if (document.getElementById('traffic_accidents').parentElement.classList.contains("enabled")) {
+    if (reset) {
+        if (trafficEnabled){
+            addTrafficAccidents();
+        }
+        if (bikeEnabled){
+            addBikeAccidents();
+        }
+        if (pedestrianEnabled){
+            addPedestrianAccidents();
+        }
+        accidentsCluster.ProcessView();
+        return
+    }
+
+    if (trafficEnabled) {
         filtered_set.push(...trafficAccidentMarkers);
     }
-    if (document.getElementById('bike_accidents').parentElement.classList.contains("enabled")) {
+    if (bikeEnabled) {
         filtered_set.push(...bikeAccidentMarkers);
     }
-    if (document.getElementById('pedestrian_accidents').parentElement.classList.contains("enabled")) {
+    if (pedestrianEnabled) {
         filtered_set.push(...pedestrianAccidentMarkers);
     }
 

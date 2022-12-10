@@ -118,6 +118,7 @@
 											startDate: "2010-01-01",
 											endDate: "2021-12-31",
 											showDropdowns: true,
+											linkedCalendars: false,
 											minYear: 2010,
 											maxYear: 2021,
 											locale: {
@@ -159,6 +160,36 @@
 											DateRangeFilter(start, end);
 										}
 								);
+
+								let dateRangeInputEl = document.getElementById("date_range");
+
+								let clearBadge = document.createElement('span');
+								clearBadge.classList.add("badge");
+								clearBadge.classList.add("badge-danger");
+								clearBadge.classList.add("position-absolute");
+								clearBadge.classList.add("top-50");
+								clearBadge.classList.add("end-0");
+								clearBadge.classList.add("me-4");
+								clearBadge.classList.add("translate-middle");
+								clearBadge.classList.add("rounded-pill");
+								clearBadge.innerText = "";
+
+								dateRangeInputEl.parentElement.parentElement.previousElementSibling.appendChild(clearBadge);
+
+								$('#date_range').on('apply.daterangepicker', function(ev, picker) {
+									clearBadge.innerText = "Reset";
+								});
+
+								clearBadge.addEventListener("click", function (event) {
+									event.stopImmediatePropagation();
+									let $date_range = $('#date_range');
+									$date_range.data('daterangepicker').setStartDate("2010-01-01")
+									$date_range.data('daterangepicker').setEndDate("2021-12-31");
+									clearBadge.innerText = "";
+									DateRangeFilter(undefined, undefined, true); // trigger special reset event
+								})
+
+
 							</script>
 						</div>
 					</div>
@@ -285,9 +316,40 @@
 
 						</div>
 					</div>
+					<script>
+						let clearBadge_customDateSelector = clearBadge.cloneNode(true)
+						customDateContainer = document.getElementById("custom_date_container");
+						customDateContainer.previousElementSibling.appendChild(clearBadge_customDateSelector);
+
+						Array.from(customDateContainer.getElementsByTagName("input")).forEach(checkbox => {
+							checkbox.addEventListener("change", function (){
+								clearBadge_customDateSelector.innerText = "Reset";
+							})
+						})
+
+						Array.from(customDateContainer.getElementsByTagName("select")).forEach(checkbox => {
+							checkbox.addEventListener("change", function (){
+								clearBadge_customDateSelector.innerText = "Reset";
+							})
+						})
+
+						clearBadge_customDateSelector.addEventListener("click", function (event) {
+									event.stopImmediatePropagation();
+									Array.from(customDateContainer.getElementsByTagName("input")).forEach(checkbox => {
+										checkbox.checked = false;
+									})
+									Array.from(customDateContainer.getElementsByTagName("select")).forEach(selector => {
+										Array.from(selector.selectedOptions).forEach(option => {
+											option.selected = false;
+										});
+									})
+									clearBadge_customDateSelector.innerText = "";
+									DateCustomSelect(true);
+								}
+						)
+					</script>
 				</div>
 			</div>
-
 
 		</div>
 

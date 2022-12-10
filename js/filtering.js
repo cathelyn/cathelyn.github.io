@@ -249,11 +249,6 @@ function generateFilterControl() {
             buttonCategory.classList.add('text-uppercase');
             buttonCategory.innerHTML = cat;
 
-            clearBadge.addEventListener('click', function (event) {
-                event.stopImmediatePropagation();
-
-            })
-
             buttonCategory.appendChild(clearBadge);
 
             accordionItemWrapper.appendChild(buttonCategory);
@@ -277,6 +272,18 @@ function generateFilterControl() {
 
             // only non-slider selections
             if (index < 17) {
+                clearBadge.addEventListener('click', function (event) {
+                    event.stopImmediatePropagation();
+                    let catOptions = this.parentElement.nextElementSibling.getElementsByTagName("button");
+                    Array.from(catOptions).forEach(option => {
+                        if (option.classList.contains("active")) {
+                            option.classList.remove("active");
+                        }
+                    })
+                    // trigger special handler
+                    pruneFilter.handleTagSelection('_reset', this.parentElement.getAttribute('data-name'));
+                    this.innerText = "";
+                })
                 filterCategories[cat].forEach(value => {
                     let buttonOption = document.createElement('button');
                     buttonOption.type = 'button';
@@ -288,16 +295,18 @@ function generateFilterControl() {
                     buttonOption.classList.add('btn-secondary');
                     buttonOption.classList.add('fs-7');
                     buttonOption.addEventListener('click', function() {
-                        console.log(this.parentNode.parentNode.parentNode.firstElementChild.getElementsByTagName("span")[0].innerText = "Reset");
+                        this.parentNode.parentNode.parentNode.firstElementChild.getElementsByTagName("span")[0].innerText = "Reset";
                         pruneFilter.handleTagSelection(this.innerText, this.parentNode.parentNode.parentNode.firstElementChild.getAttribute('data-name'));
                     },false);
                     buttonOption.appendChild(document.createTextNode(value));
                     accordionBodyWrapper.appendChild(buttonOption);
                 })
-            } else if (index === 17) {
+            } else if (index === 17) { // material damage price
                 let damagePriceForm = document.createElement("form");
                 damagePriceForm.noValidate = true;
                 damagePriceForm.classList.add("needs-validation");
+
+                buttonCategory.appendChild(clearBadge);
 
                 let inputRowDivFrom = document.createElement("div");
                 inputRowDivFrom.classList.add("input-group");
@@ -407,10 +416,29 @@ function generateFilterControl() {
                     }
                 })
 
+                inputIntFrom.addEventListener("change", function () {
+                    clearBadge.innerText = "Reset";
+                })
+
+                inputIntTo.addEventListener("change", function () {
+                    clearBadge.innerText = "Reset";
+                })
+
+                clearBadge.addEventListener("click", function (event) {
+                    event.stopImmediatePropagation();
+                    inputIntFrom.value = min;
+                    inputIntTo.value = max;
+                    this.innerText = "";
+                    pruneFilter.handleTagSelection("_reset", "cat_17");
+                })
 
                 damagePriceForm.appendChild(submitButton);
                 accordionBodyWrapper.appendChild(damagePriceForm);
-            } else {
+
+
+
+
+            } else { // sliders
                 let minVal = filterCategories[cat][0];
                 let maxVal = filterCategories[cat][1];
 
@@ -424,6 +452,8 @@ function generateFilterControl() {
                 maxValText.classList.add("fs-7");
                 maxValText.classList.add("text-light");
                 maxValText.innerText = maxVal;
+
+                buttonCategory.appendChild(clearBadge.cloneNode(true));
 
                 let inputSlider = document.createElement("input");
                 inputSlider.type = "text";
@@ -446,20 +476,47 @@ function generateFilterControl() {
         }
     )
     outputEl.appendChild(divMain);
-
+    let resetCat18 = document.getElementById("divCategory_18").previousElementSibling.getElementsByTagName("span")[0];
     let sliderCat18 = new Slider("#slider_18", {});
     sliderCat18.on('slideStop', function (sliderValue) {
+        resetCat18.innerText = "Reset";
         pruneFilter.handleTagSelection(sliderValue, "cat_18");
     });
+    resetCat18.addEventListener('click', function (event) {
+        event.stopImmediatePropagation();
+        sliderCat18.refresh();
+        // trigger special handler
+        pruneFilter.handleTagSelection('_reset', "cat_18");
+        this.innerText = "";
+    })
 
+    let resetCat19 = document.getElementById("divCategory_19").previousElementSibling.getElementsByTagName("span")[0];
     let sliderCat19 = new Slider("#slider_19", {});
     sliderCat19.on('slideStop', function (sliderValue) {
+        resetCat19.innerText = "Reset";
         pruneFilter.handleTagSelection(sliderValue, "cat_19");
     });
+    resetCat19.addEventListener('click', function (event) {
+        event.stopImmediatePropagation();
+        sliderCat19.refresh();
+        // trigger special handler
+        pruneFilter.handleTagSelection('_reset', "cat_19");
+        this.innerText = "";
+    })
+
+    let resetCat20 = document.getElementById("divCategory_20").previousElementSibling.getElementsByTagName("span")[0];
     let sliderCat20 = new Slider("#slider_20", {});
     sliderCat20.on('slideStop', function (sliderValue) {
+        resetCat20.innerText = "Reset";
         pruneFilter.handleTagSelection(sliderValue, "cat_20");
     });
+    resetCat20.addEventListener('click', function (event) {
+        event.stopImmediatePropagation();
+        sliderCat20.refresh();
+        // trigger special handler
+        pruneFilter.handleTagSelection('_reset', "cat_20");
+        this.innerText = "";
+    })
 
 }
 
@@ -547,7 +604,15 @@ class PruneClusterFilter {
 
 
     handleTagSelection(tag, category) {
+
         let matched_cat = this._filtersPerCat[category];
+
+        // clear whole category if reset was triggered
+        if (tag === "_reset") {
+            delete this._filtersPerCat[category];
+            return this.filter()
+        }
+
         if (this._rangeCats.includes(category)){
             this._filtersPerCat[category] = [tag];
         }else {
