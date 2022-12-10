@@ -203,11 +203,11 @@
 					<div id="custom_date_container" class="list-group accordion-collapse collapse" data-bs-parent="#dateAccordionParent">
 						<div>
 							<div class="input-group row-container mt-2">
-								<div class="form-check form-switch  col-lg-1">
+								<div class="form-check form-switch  col-1">
 									<input class="form-check-input" type="checkbox" name="fields" aria-label="Checkbox for selecting Year filter">
 								</div>
-								<span class="text-light col-lg-4 fs-7">Year</span>
-								<select class="form-select form-control col-lg-7 fs-7 rounded" multiple id="year" aria-label="Year selector">
+								<span class="text-light col-4 fs-7">Year</span>
+								<select class="form-select form-control col-7 fs-7 rounded" multiple id="year" aria-label="Year selector">
 									<option value=2010>2010</option>
 									<option value=2011>2011</option>
 									<option value=2012>2012</option>
@@ -223,12 +223,12 @@
 								</select>
 							</div>
 							<div class="input-group row-container mt-2">
-								<div class="form-check form-switch col-lg-1">
+								<div class="form-check form-switch col-1">
 									<input class="form-check-input" type="checkbox" name="fields" aria-label="Checkbox for selecting Month filter">
 								</div>
-								<span class="text-light col-lg-4 fs-7">Month</span>
+								<span class="text-light col-4 fs-7">Month</span>
 
-								<select class="form-select form-control col-lg-7 fs-7 rounded" multiple id="month">
+								<select class="form-select form-control col-7 fs-7 rounded" multiple id="month">
 									<option value=0>January</option>
 									<option value=1>February</option>
 									<option value=2>March</option>
@@ -244,12 +244,12 @@
 								</select>
 							</div>
 							<div class="input-group row-container mt-2">
-								<div class="form-check form-switch col-lg-1">
+								<div class="form-check form-switch col-1">
 									<input class="form-check-input" type="checkbox" name="fields" aria-label="Checkbox for selecting Day filter">
 								</div>
-								<span class="text-light col-lg-4 fs-7">Day</span>
+								<span class="text-light col-4 fs-7">Day</span>
 
-								<select class="form-select form-control col-lg-7 fs-7 rounded" multiple id="day" >
+								<select class="form-select form-control col-7 fs-7 rounded" multiple id="day" >
 									<option value=1>1</option>
 									<option value=2>2</option>
 									<option value=3>3</option>
@@ -284,12 +284,12 @@
 								</select>
 							</div>
 							<div class="input-group row-container mt-2">
-								<div class="form-check form-switch col-lg-1">
+								<div class="form-check form-switch col-1">
 									<input class="form-check-input" type="checkbox" name="fields" aria-label="Checkbox for selecting Day of the week filter">
 								</div>
-								<span class="text-light col-lg-4 fs-7">Day of the week</span>
+								<span class="text-light col-4 fs-7">Day of the week</span>
 
-								<select class="form-select col-lg-7 fs-7 rounded" multiple id="weekday">
+								<select class="form-select col-7 fs-7 rounded" multiple id="weekday">
 									<option value=1>Monday</option>
 									<option value=2>Tuesday</option>
 									<option value=3>Wednesday</option>
@@ -300,12 +300,12 @@
 								</select>
 							</div>
 							<div class="input-group row-container mt-2">
-								<div class="form-check form-switch col-lg-1">
+								<div class="form-check form-switch col-1">
 									<input class="form-check-input" type="checkbox" name="fields" aria-label="Checkbox for selecting Time of the day filter">
 								</div>
-								<span class="text-light col-lg-4 fs-7">Day / Night</span>
+								<span class="text-light col-4 fs-7">Day / Night</span>
 
-								<select class="form-select col-lg-7 fs-7 rounded" multiple id="daynight">
+								<select class="form-select col-7 fs-7 rounded" multiple id="daynight">
 									<option value="day">Day</option>
 									<option value="night">Night</option>
 								</select>
@@ -566,7 +566,9 @@
 		"Carto": CartoDB_Positron,
 		"OpenStreetMap": OSM,
 		"Stamen TonerLite": Stamen_TonerLite,
-		"Cyclo OpenStreetMap": CyclOSM}
+		"Esri WorldImagery": Esri_WorldImagery,
+		"Cyclo OpenStreetMap (<a target='_blank' href='https://www.cyclosm.org/legend.html'>Legend</a>)": CyclOSM}
+
 
 	generateOverlaysControl();
 
