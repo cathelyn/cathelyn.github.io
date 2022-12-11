@@ -199,7 +199,7 @@ const filterCategories =  {
         'other situation',
         'unknown'
     ],
-    '<i class="fa-solid fa-coins fa-fw me-2"></i> Material Damage Price': [0, 5360000],
+    '<i class="fa-solid fa-coins fa-fw me-2"></i> Material Damage Price': [0, 220637300],
     '<i class="fa-solid fa-user-injured fa-fw me-2"></i> Minor Injuries': [0, 29],
     '<i class="fa-solid fa-truck-medical fa-fw me-2"></i> Major Injuries': [0, 14],
     '<i class="fa-solid fa-skull-crossbones fa-fw me-2"></i> Casualties': [0, 3]
@@ -527,7 +527,7 @@ class PruneClusterFilter {
         this._filtersPerCat = {};
         this._hiddenPerCat = {};
         this._rangeCats = ['cat_17', 'cat_18', 'cat_19', 'cat_20'];
-        this._listCats = ['cat_3'];
+        this._listCats = ['cat_3', 'cat_4', 'cat_8', 'cat_2', 'cat_7', 'cat_15'];
     }
 
     filter() {
