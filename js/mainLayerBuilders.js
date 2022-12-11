@@ -8,11 +8,9 @@ function addAccident(dataset, markersArray, category)
  */
 {
     if (markersArray.length > 0){
-        console.log("Registering " + markersArray.length + " markers");
         markersArray.map(marker => {marker.filtered = false})
     } else {
 
-        console.log("Building markers anew - category " + category);
         dataset.forEach(value => {
             let marker = new PruneCluster.Marker(
                 value.point_y,

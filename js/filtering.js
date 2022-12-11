@@ -531,7 +531,6 @@ class PruneClusterFilter {
     }
 
     filter() {
-        console.log(this._filtersPerCat);
         Object.keys(this._hiddenPerCat).forEach(key => {
             if (!Object.keys(this._filtersPerCat).includes(key)) {
                 this.layer.RegisterMarkers(this._hiddenPerCat[key]);
