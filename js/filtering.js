@@ -210,12 +210,10 @@ function generateFilterControl() {
     let outputEl = document.getElementById('filters');
     let divMain = document.createElement('div');
     divMain.classList.add('accordion');
-    // divMain.classList.add('list-group')
 
     //replace with one dict with all categories
     Object.keys(filterCategories).forEach((cat, index) => {
             let accordionItemWrapper = document.createElement('div');
-            // accordionItemWrapper.classList.add('accordion-item');
 
 
             // category switcher button
@@ -237,8 +235,6 @@ function generateFilterControl() {
             buttonCategory.dataset.bsTarget = '#divCategory_' + index.toString();
             buttonCategory.dataset.name = 'cat_' + index.toString();
             buttonCategory.ariaExpanded = 'false';
-            // buttonCategory.classList.add('list-group-item');
-            // buttonCategory.classList.add('list-group-item-action');
             buttonCategory.classList.add('btn');
             buttonCategory.classList.add('btn-dark');
             buttonCategory.classList.add('accordion-button');
@@ -267,8 +263,6 @@ function generateFilterControl() {
             divCategoryOptions.id = "divCategory_" + index.toString();
 
             let accordionBodyWrapper = document.createElement('div');
-            // accordionBodyWrapper.classList.add('accordion-body');
-            // accordionBodyWrapper.classList.add('bg-light');
 
             // only non-slider selections
             if (index < 17) {
@@ -288,7 +282,6 @@ function generateFilterControl() {
                     let buttonOption = document.createElement('button');
                     buttonOption.type = 'button';
                     buttonOption.dataset.bsToggle = 'button';
-                    // buttonOption.classList.add('list-group-item');
                     buttonOption.classList.add('list-group-item-action');
                     buttonOption.classList.add('mt-2');
                     buttonOption.classList.add('btn');
