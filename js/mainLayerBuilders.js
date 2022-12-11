@@ -62,11 +62,6 @@ function addAccident(dataset, markersArray, category)
             }
             info += "</tdbody></table>";
 
-            // for (let i = 0; i < keys.length; i++) {
-            //     if (!doNotShow.includes(keys[i])) {
-            //         info += keys[i].replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase()) + ": " + value[keys[i]] + "<br>"
-            //     }
-            // }
 
             marker.data.popup = info;
 

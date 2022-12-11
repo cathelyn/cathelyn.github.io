@@ -82,6 +82,7 @@ function generateOverlaysControl() {
             colorBadge.classList.add("translate-middle");
             colorBadge.classList.add("align-top");
             colorBadge.classList.add("fs-6");
+            colorBadge.classList.add("text-outline-light");
             colorBadge.innerHTML = "";
             liLayer.appendChild(colorBadge);
             ["click", "change"].forEach(event => liLayer.addEventListener(event, function() {
@@ -122,6 +123,7 @@ function generateOverlaysControl() {
                         if (layerName.toString().includes("Public Transport Stops")) {
                             colorBadge.innerHTML = "<i class='fa-regular fa-circle'></i>";
                             colorBadge.style.color = "black";
+                            colorBadge.classList.remove("text-outline-light")
                         }
                         if (layerName.toString().includes("Pedestrian Crossings")) {
                             colorBadge.innerHTML ="<i class='fa-solid fa-square'></i>";
