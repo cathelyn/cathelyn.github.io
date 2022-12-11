@@ -50,7 +50,7 @@ function addAccident(dataset, markersArray, category)
 
             marker.data.icon = fontAwesomeMapMarkerIcon();
             marker.data.icon.options.className = "MapMarkerIcon color_cat_" + category;
-            let doNotShow = ['point_x', 'point_y', 'main_cause', 'alcohol_offender', 'driver_circumstances', 'person', 'person_circumstances', 'age_group', 'sex']
+            let doNotShow = ['point_x', 'point_y', 'main_cause', 'alcohol_offender', 'driver_circumstances', 'person', 'person_circumstances', 'age_group']
             let keys = Object.keys(value);
             let info = "<table class='table table-striped table-sm'><tbody>";
             for (let [key, val] of Object.entries(value)){

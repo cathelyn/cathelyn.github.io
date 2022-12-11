@@ -527,9 +527,11 @@ class PruneClusterFilter {
         this._filtersPerCat = {};
         this._hiddenPerCat = {};
         this._rangeCats = ['cat_17', 'cat_18', 'cat_19', 'cat_20'];
+        this._listCats = ['cat_3'];
     }
 
     filter() {
+        console.log(this._filtersPerCat);
         Object.keys(this._hiddenPerCat).forEach(key => {
             if (!Object.keys(this._filtersPerCat).includes(key)) {
                 this.layer.RegisterMarkers(this._hiddenPerCat[key]);
@@ -549,7 +551,13 @@ class PruneClusterFilter {
                                 toBeRemovedFromHiddenMarkers.push(index);
                                 break;
                             }
-                        } else {
+                        } else if (this._listCats.includes(category)) {
+                            marker.data.tags[category].includes(tag)
+                            this.layer.RegisterMarker(marker);
+                            toBeRemovedFromHiddenMarkers.push(index);
+                            break;
+                        }
+                        else {
                             if (marker.data.tags[category] === tag) {
                                 // register the matching marker back to the layer
                                 this.layer.RegisterMarker(marker);
@@ -575,7 +583,10 @@ class PruneClusterFilter {
                     for (let tag of this._filtersPerCat[category]) {
                         if (this._rangeCats.includes(category)) {
                             matched = marker.data.tags[category] >= tag[0] && marker.data.tags[category] <= tag[1];
-                        } else {
+                        } else if (this._listCats.includes(category)) {
+                            matched = marker.data.tags[category].includes(tag);
+                        }
+                        else {
                             matched = marker.data.tags[category]  === tag;
 
                         }
