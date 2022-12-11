@@ -142,7 +142,7 @@ const filterCategories =  {
     '<i class="fa-solid fa-location-pin fa-fw me-2"></i> Location': [
         'bridge, overpass, underpass, tunnel',
         'parking lot adjacent to the road',
-        'pedestrain crossing',
+        'pedestrian crossing',
         'near a pedestrian crossing (within 20 m)',
         'exit from the parking lot, forest path, etc.',
         'tram, bus, trolleybus stop with a boarding island',

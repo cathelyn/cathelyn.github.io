@@ -28,11 +28,11 @@ function addStreetLights(value) {
 
 function addStreetSlopes() {
     for (let [pathname, layer_obj] of Object.entries(streetSlopeSourceFiles)){
-        let shp = new L.Shapefile('sources/shapefiles/street_slopes/' + pathname, {
+        new L.Shapefile('sources/shapefiles/street_slopes/' + pathname, {
             onEachFeature: function(feature, layer) {
                 layer.bindPopup("Slope: " + Math.round(feature.properties['slope']) + "%");
             },
-            style: function (feature) {
+            style: function () {
                 let selectedColor = streetSlopesColors[Object.keys(streetSlopeSourceFiles).indexOf(pathname)];
                 return {color: selectedColor, fillColor: selectedColor}
             }
@@ -41,8 +41,8 @@ function addStreetSlopes() {
 }
 
 function addPedestrianCrossings() {
-    let shp = new L.Shapefile('sources/shapefiles/pedestrian_crossings/Pedestrian_crossings.zip', {
-        style: function (feature) {
+    new L.Shapefile('sources/shapefiles/pedestrian_crossings/Pedestrian_crossings.zip', {
+        style: function () {
             return {color: 'black', fillColor: 'black'}
         }
     }).addTo(pedestrianCrossingsLayer);
@@ -52,11 +52,11 @@ function addPedestrianCrossings() {
 function addBikeInfrastructure() {
 
     for (let [index, [pathname, layer_obj]] of Object.entries(cyclingInfraSourceFiles).entries()){
-        let shp = new L.Shapefile('sources/shapefiles/cycling_measures/' + pathname, {
+        new L.Shapefile('sources/shapefiles/cycling_measures/' + pathname, {
             onEachFeature: function(feature, layer) {
                 layer.bindPopup("Type: " + feature.properties['type'] + "<br>Length: " + Math.round(feature.properties['length']) + "m");
             },
-            style: function (feature) {
+            style: function () {
                 return {color: cyclingInfraColors[index], fillColor: cyclingInfraColors[index]}
             }
         }).addTo(layer_obj);

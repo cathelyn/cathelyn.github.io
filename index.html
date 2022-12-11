@@ -42,7 +42,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.min.js" integrity="sha512-f0VlzJbcEB6KiW8ZVtL+5HWPDyW1+nJEjguZ5IVnSQkvZbwBt2RfCBY0CBO1PsMAqxxrG4Di6TfsCPP3ZRwKpA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js" integrity="sha512-tCkLWlSXiiMsUaDl5+8bqwpGXXh0zZsgzX6pB9IQCZH+8iwXRYfcCpdxl/owoM6U4ap7QZDW4kw7djQUiQ4G2A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<!--	Constants -->
-	<script src="js/baseMaps.js"></script>
+	<script src="js/constants.js"></script>
 	<!--	Custom functions	-->
 	<script src="js/filtering.js"></script>
 	<script src="js/utilities.js"></script>
@@ -85,7 +85,6 @@
 			<div>
 				<p class="text-light">Map visualizes various kinds of accidents that happened in Brno. It is possible to turn on and off traffic, pedestrian and bike accidents in the layers section. Except of that, it is possible to select various architectural surroundings of the traffic lanes, cycling infrastructure and street slopes. In the date section it is possible to select accidents according to date, date range or just choose custom date, and in the filter section it is possible to select accidents according to various criteria. The selection is visualized by aggregation into the clusters, if there are more accidents in the same locations. </p>
 			</div>
-
 		</div>
 
 		<div class="sidebar-pane" id="layers">
@@ -94,7 +93,6 @@
 			<div id="layer_selector">
 
 			</div>
-
 		</div>
 
 		<div class="sidebar-pane" id="dates">
@@ -153,7 +151,7 @@
 												"firstDay": 1
 											},
 										},
-										function(start, end, label) {
+										function(start, end) {
 											DateRangeFilter(start, end);
 										}
 								);
@@ -173,7 +171,7 @@
 
 								dateRangeInputEl.parentElement.parentElement.previousElementSibling.appendChild(clearBadge);
 
-								$('#date_range').on('apply.daterangepicker', function(ev, picker) {
+								$('#date_range').on('apply.daterangepicker', function() {
 									clearBadge.innerText = "Reset";
 								});
 
@@ -196,7 +194,6 @@
 					<button class="btn btn-dark accordion-button filter-button collapsed text-uppercase fs-7" type="button" data-bs-toggle="collapse" data-bs-target="#custom_date_container" aria-expanded="false" aria-controls="flush-collapseOne">
 						Custom Date Selector
 					</button>
-
 					<div id="custom_date_container" class="list-group accordion-collapse collapse" data-bs-parent="#dateAccordionParent">
 						<div>
 							<div class="input-group row-container mt-2">
@@ -225,7 +222,7 @@
 								</div>
 								<span class="text-light col-4 fs-7">Month</span>
 
-								<select class="form-select form-control col-7 fs-7 rounded" multiple id="month">
+								<select class="form-select form-control col-7 fs-7 rounded" multiple id="month" aria-label="Month selector">
 									<option value=0>January</option>
 									<option value=1>February</option>
 									<option value=2>March</option>
@@ -246,7 +243,7 @@
 								</div>
 								<span class="text-light col-4 fs-7">Day</span>
 
-								<select class="form-select form-control col-7 fs-7 rounded" multiple id="day" >
+								<select class="form-select form-control col-7 fs-7 rounded" multiple id="day" aria-label="Day Selector" >
 									<option value=1>1</option>
 									<option value=2>2</option>
 									<option value=3>3</option>
@@ -286,7 +283,7 @@
 								</div>
 								<span class="text-light col-4 fs-7">Day of the week</span>
 
-								<select class="form-select col-7 fs-7 rounded" multiple id="weekday">
+								<select class="form-select col-7 fs-7 rounded" multiple id="weekday" aria-label="Weekday Selector">
 									<option value=1>Monday</option>
 									<option value=2>Tuesday</option>
 									<option value=3>Wednesday</option>
@@ -302,7 +299,7 @@
 								</div>
 								<span class="text-light col-4 fs-7">Day / Night</span>
 
-								<select class="form-select col-7 fs-7 rounded" multiple id="daynight">
+								<select class="form-select col-7 fs-7 rounded" multiple id="daynight" aria-label="Day Night Selector">
 									<option value="day">Day</option>
 									<option value="night">Night</option>
 								</select>
@@ -347,18 +344,13 @@
 					</script>
 				</div>
 			</div>
-
 		</div>
-
 
 		<div class="sidebar-pane" id="filter">
 			<h1 class="sidebar-header">FILTERS<span class="sidebar-close"><i class="fa-solid fa-angle-left"></i></span></h1>
 			<div id="filters">
-
 			</div>
-
 		</div>
-
 	</div>
 </div>
 
@@ -366,57 +358,14 @@
 <div id="map" class="sidebar-map" style="width: 100vw; height: 100vh;"></div>
 
 <script>
-	// CONSTANTS
-	// const categoriesColors = ['rgba(187,32,138,0.8)', 'rgba(255,193,25,0.8)', 'rgba(3,170,234,0.8)'];
-	const categoriesColors = [
-		getComputedStyle(document.documentElement).getPropertyValue('--violet'),
-		getComputedStyle(document.documentElement).getPropertyValue('--green'),
-		getComputedStyle(document.documentElement).getPropertyValue('--blue')
-	];
-	const pi2 = Math.PI * 2;
-
-	// categories configuration
-	const trafficCategory = 0
-	const bikeCategory = 1
-	const pedestrianCategory = 2
-	// END CONSTANTS
-
 	// START LAYER SETUP
 	// main clustering layer
-	let accidentsCluster = new PruneClusterForLeaflet(160);
+	const accidentsCluster = new PruneClusterForLeaflet(160);
 
 	// other info layers
 	let pedestrianCrossingsLayer = L.layerGroup();
 	let publicTransportStopsLayer = L.layerGroup();
 	let streetLightsLayer = L.layerGroup();
-
-	// cycling infrastructure
-	let cyclingInfraSourceFiles = {
-		'BicycleCrossing.shp.zip': L.layerGroup(),
-		'BikePath.shp.zip': L.layerGroup(),
-		'BikePathInTheOppositeDirection(Lane).shp.zip': L.layerGroup(),
-		'CyclistsRidingInTheOppositeDirection.shp.zip': L.layerGroup(),
-		'DedicatedBicycleLane.shp.zip': L.layerGroup(),
-		'EntryAllowedForCyclists.shp.zip': L.layerGroup(),
-		'MarkedCorridorForCyclists.shp.zip': L.layerGroup(),
-		'NoEntryForAllMotorVehicles.shp.zip': L.layerGroup(),
-		'Others.shp.zip': L.layerGroup(),
-		'PathForPedestriansAndCyclists(Separated).shp.zip': L.layerGroup(),
-		'PathForPedestriansAndCyclists(Unseparated).shp.zip': L.layerGroup(),
-		'PedestrianPathWithCyclistsAllowed.shp.zip': L.layerGroup(),
-		'ProhibitedEntryForCyclists.shp.zip': L.layerGroup(),
-		'ProtectiveLaneForCyclists.shp.zip': L.layerGroup(),
-		'ReservedLaneForTaxi_Bicycle_Bus.shp.zip': L.layerGroup(),
-		'TheSectionWasCanceled.shp.zip': L.layerGroup()
-	}
-
-	// street slopes
-	let streetSlopeSourceFiles = {
-		'Extreme.shp.zip': L.layerGroup(),
-		'Dangerous.shp.zip': L.layerGroup(),
-		'Medium.shp.zip': L.layerGroup(),
-		'Min.shp.zip': L.layerGroup()
-	}
 
 	const overlaysGrouped = {
 		"Accidents" : {
@@ -427,7 +376,7 @@
 			"<i class='fa-regular fa-lightbulb fa-fw'></i> Street Lights": streetLightsLayer,
 			"<i class='fa-solid fa-bus fa-fw'></i> Public Transport Stops": publicTransportStopsLayer,
 			"<i class='fa-solid fa-person-walking fa-fw'></i> Pedestrian Crossings": pedestrianCrossingsLayer,
-		}, "Cycling infrastrucure": {
+		}, "Cycling infrastructure": {
 			"<i class='fa-solid fa-bicycle fa-fw'></i> Bicycle Crossing": cyclingInfraSourceFiles["BicycleCrossing.shp.zip"],
 			"<i class='fa-solid fa-bicycle fa-fw'></i> Bicycle Path": cyclingInfraSourceFiles["BikePath.shp.zip"],
 			"<i class='fa-solid fa-bicycle fa-fw'></i> Separate Line for Taxi, Bicycle, Bus": cyclingInfraSourceFiles["ReservedLaneForTaxi_Bicycle_Bus.shp.zip"],
@@ -529,8 +478,6 @@
 
 	// END ICON (MARKER) GENERATOR
 
-	// START MARKER GENERATOR FROM DATA
-
 	// markers storage for quick adding - deleting
 	let trafficAccidentMarkers = [];
 	let bikeAccidentMarkers = [];
@@ -584,8 +531,6 @@
 	L.control.scale().addTo(map);
 
 	generateFilterControl();
-
-
 </script>
 </body>
 </html>

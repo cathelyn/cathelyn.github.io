@@ -1,7 +1,7 @@
 misto_nehody_category = {
     'most, nadjezd, podjezd, tunel': 'bridge, overpass, underpass, tunnel',
     'parkoviště přiléhající ke komunikaci': 'parking lot adjacent to the road',
-    'přechod pro chodce': 'pedestrain crossing',
+    'přechod pro chodce': 'pedestrian crossing',
     'v blízkosti přechodu pro chodce (do vzdálenosti 20 m)': 'near a pedestrian crossing (within 20 m)',
     'výjezd z parkoviště, lesní cesty apod. (pol.36=7,8)': 'exit from the parking lot, forest path, etc.',
     'zastávka autobusu, trolejbusu, tramvaje s\xa0nástup. ostrůvkem': 'tram, bus, trolleybus stop with a boarding island',

@@ -11883,10 +11883,8 @@ LRUCache.prototype.set = function (key, value, maxAge) {
 LRUCache.prototype.has = function (key) {
   if (!hOP(this._cache, key)) return false
   var hit = this._cache[key]
-  if (isStale(this, hit)) {
-    return false
-  }
-  return true
+  return !isStale(this, hit);
+
 }
 
 LRUCache.prototype.get = function (key) {
