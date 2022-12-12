@@ -6,6 +6,8 @@
   color: var(--bs-light) !important;
   background-color: transparent !important;
   padding: 0 1.25rem !important; }
+  .accordion-button:not(.collapsed) {
+    box-shadow: unset !important; }
 
 .btn-dark:hover {
   background-color: unset !important; }

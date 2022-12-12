@@ -10,11 +10,11 @@
     --white-transparent: rgba(255, 255, 255, 0.8);
 }
 
-
 html, body {
     height: 100%;
     margin: 0;
 }
+
 .leaflet-container {
     height: 400px;
     width: 600px;
@@ -30,9 +30,11 @@ html, body {
 .color_cat_0 {
     color: var(--violet) !important;
 }
+
 .color_cat_1 {
     color: var(--green) !important;
 }
+
 .color_cat_2 {
     color: var(--blue) !important;
 }
@@ -69,9 +71,8 @@ ul > .catDivider {
 .layer-item {
     background-color: var(--bs-secondary);
     color: var(--bs-gray-dark);
-
-
 }
+
 .layer-item:hover {
     background-color: var(--bs-secondary) !important;
 }
@@ -88,7 +89,6 @@ button.applyBtn, button.applyBtn:hover {
     color: var(--bs-light);
 }
 
-
 div.leaflet-popup-content {
     max-width: 400px !important;
 }
@@ -102,7 +102,6 @@ div.slider-selection {
     background-image: unset !important;
     background-color: var(--bs-secondary) !important;
 }
-
 
 option:checked, option:focus, option:focus-within, option:active, option:target, option:visited {
     background-color: var(--bs-primary) !important;

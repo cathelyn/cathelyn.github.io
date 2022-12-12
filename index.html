@@ -334,7 +334,6 @@
 
 						Array.from(customDateContainer.getElementsByTagName("select")).forEach(selector => {
 							selector.addEventListener("change", function (){
-								console.log(selector);
 								clearBadge_customDateSelector.innerText = "Reset";
 								if (selector.selectedOptions.length > 0) {
 									selector.parentElement.firstElementChild.firstElementChild.checked = true;  // check the group checkbox
