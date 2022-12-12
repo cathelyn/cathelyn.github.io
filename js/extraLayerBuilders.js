@@ -2,7 +2,7 @@ const cyclingInfraColors = [
     '#a662a8', '#664972', '#463c57', '#6e8da9', '#91bcdd', '#567d99', '#395e77', '#305662', '#264d4d', '#315c45', '#8a9a65', '#b6b975', '#b65d54', '#b60033', '#98062d', '#800022'
 ]
 
-const streetSlopesColors = ['#fd151b', '#ffb30f', '#849324', '#437f97']
+const streetSlopesColors = ['#fd151b', '#ffb30f', '#4c9600', '#437f97']
 
 
 function addPublicTransStops(value) {
