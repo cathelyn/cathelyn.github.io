@@ -21,10 +21,6 @@ const Stamen_TonerLite = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/
     ext: 'png',
 });
 
-const Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Katarína Bulková<br>Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-});
-
 const categoriesColors = [
     getComputedStyle(document.documentElement).getPropertyValue('--violet'),
     getComputedStyle(document.documentElement).getPropertyValue('--green'),
