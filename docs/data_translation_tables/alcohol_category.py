@@ -1,4 +1,4 @@
-alkohol_category = {
+alcohol_category = {
 
     'Ano, obsah alkoholu v krvi do 0,24 ‰': 'DUI - blood alcohol content < 0,24‰',
     'Ano, obsah alkoholu v krvi od 0,24‰ do 0,5‰': 'DUI - blood alcohol content < 0,5‰ & >= 0,24‰',

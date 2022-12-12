@@ -1,4 +1,4 @@
-stav_osoby_category = {
+person_condition_category = {
     'dobrý - žádné nepříznivé okolnosti nebyly zjištěny': 'good - no adverse circumstances were detected',
     'dobrý -žádné nepříznivé okolnosti nebyly zjiště': 'good - no adverse circumstances were detected',
 

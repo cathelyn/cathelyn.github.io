@@ -1,4 +1,4 @@
-povetrnostni_podm_category = {
+weather_category = {
     'déšť': 'rain',
     'jiné ztížené': 'different difficult weather conditions',
     'mlha': 'fog',

@@ -1,4 +1,4 @@
-srazka_category = {
+collision_with_category = {
     'havárie': 'crash',
 
     'srážka s chodcem': 'collision with a pedestrian',

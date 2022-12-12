@@ -1,4 +1,4 @@
-rozhled_category = {
+view_category = {
 'dobré': 'good view',
 'jiné špatn': 'bad view - other reason',
 'výhled zakryt stojícím vozidlem': 'view blocked by a stationary vehicle',

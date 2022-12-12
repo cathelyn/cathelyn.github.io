@@ -1,4 +1,4 @@
-nasledek_category = {
+consequence_category = {
     'bez zraněn': 'without injury',
     'bez zranění': 'without injury',
 

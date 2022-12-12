@@ -1,4 +1,4 @@
-misto_nehody_category = {
+accident_place_category = {
     'most, nadjezd, podjezd, tunel': 'bridge, overpass, underpass, tunnel',
     'parkoviště přiléhající ke komunikaci': 'parking lot adjacent to the road',
     'přechod pro chodce': 'pedestrian crossing',

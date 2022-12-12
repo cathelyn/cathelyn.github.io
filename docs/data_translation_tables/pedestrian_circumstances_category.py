@@ -1,4 +1,4 @@
-chodec_situace_category = {
+pedestrian_circumstances_category = {
     'přecházení mimo přechod (2O a více metrů od přechodu)': 'jaywalking (20 meters or more from the crossing)',
     'chůze, stání na chodníku': 'walking, standing on the pavement',
     'přecházení po vyznačeném přechodu': 'crossing at a designated crossing point',

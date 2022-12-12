@@ -1,4 +1,4 @@
-pohlavi_category = {
+sex_category = {
     'muž': 'man',
     'žena': 'woman',
     'chlapec (do 15 let)': 'boy (up to 15 yo)',

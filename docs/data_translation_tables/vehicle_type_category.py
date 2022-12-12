@@ -1,4 +1,4 @@
-druh_vozidla_category = {
+vehicle_type_category = {
     'autobus': 'bus',
     'chodec': 'pedestrian',
     'jiné motorové vozidlo (zemědělské, lesní, stavební stroje atd.)': 'other motor vehicle (agricultural, forestry, construction machinery, etc.)',

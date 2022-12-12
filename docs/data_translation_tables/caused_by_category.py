@@ -1,4 +1,4 @@
-zavineni_category = {
+caused_by_category = {
     'chodcem': 'pedestrian',
     'jiné zaviněn': 'other',
     'jiným účastníkem silničního provozu': 'another road user',

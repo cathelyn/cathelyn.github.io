@@ -1,4 +1,4 @@
-stav_vozovky_category = {
+road_condition_category = {
 'jiný stav povrchu vozovky v době nehod': 'different state of the road surface at the time of accidents',
 'na vozovce je bláto': 'mud on the road',
 'na vozovce je náledí, ujetý sníh - neposypané': 'ice on the road - untreated',

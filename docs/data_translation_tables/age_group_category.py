@@ -1,4 +1,4 @@
-vek_skupina_category = {
+age_group_category = {
     '0-6': '0-6',
     '7-11': '7-11',
     '12-15': '12-15',

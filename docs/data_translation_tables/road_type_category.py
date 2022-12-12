@@ -1,4 +1,4 @@
-druh_komun_category = {
+road_type_category = {
 'dálnice': 'highway',
 'komunikace místní': 'local road',
 'komunikace sledovaná (ve vybraných městech)': 'controlled road (in specific areas)',

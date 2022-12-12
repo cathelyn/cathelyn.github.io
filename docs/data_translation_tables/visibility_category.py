@@ -1,4 +1,4 @@
-viditelnost_category = {
+visibility_category = {
 'v noci - bez veřejného osvětlení, viditelnost nezhoršená vlivem povětrnostních podmínek': 'at night - without public lighting, visibility unimpaired due to weather conditions',
 'v noci - bez veřejného osvětlení, viditelnost zhoršená vlivem povětrnostních podmínek (mlha, déšť, sněžení apod.': 'at night - without public lighting, visibility impaired due to weather conditions (fog, rain, snowfall etc.)',
 'v noci - s veřejným osvětlením, viditelnost nezhoršená vlivem povětrnostních podmínek': 'at night - with public lighting, visibility unimpaired due to weather conditions',

@@ -1,4 +1,4 @@
-pricina_category = {
+cause_category = {
 # improper driving style
     'bezohledná, agresivní, neohleduplná jízda': 'improper driving style',
     'řidič se plně nevěnoval řízení vozidla': 'improper driving style',
