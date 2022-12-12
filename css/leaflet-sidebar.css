@@ -25,12 +25,6 @@
 {
   left: 0;
 }
-/*@media (min-width: 768px) {*/
-/*  .sidebar-left {*/
-/*    !*left: 10px;*!*/
-/*  }*/
-
-/*}*/
 
 .sidebar-right {
   right: 0; }
@@ -106,7 +100,6 @@
   right: 0;
   box-sizing: border-box;
   padding: 10px 20px;
-  /*background-color: var(--bs-dark);*/
 }
 
 .sidebar-pane.active {
@@ -122,14 +115,12 @@
     min-width: 420px; } }
 
 .sidebar-header {
-  /*margin: -10px -15px 0;*/
-  height: 40px;
-  /*padding: 0 20px;*/
+  /*height: 40px;*/
+  padding-right: 20px;
   line-height: 40px;
   font-size: 1.2rem;
   color: #fff;
   font-weight: bold;
-  /*background-color: var(--bs-primary);*/
 }
 .sidebar-right .sidebar-header {
   padding-left: 40px; }
@@ -171,7 +162,6 @@
   border-right: 2px solid rgba(0, 0, 0, 0.2); }
 @media (min-width: 768px) {
   .sidebar {
-    /*border-radius: 4px;*/
   }
   .sidebar.leaflet-touch {
     border-right: 1px solid rgba(204, 204, 204, 1); } }
@@ -192,8 +182,6 @@
 @media (min-width: 1200px) {
   .sidebar-left ~ .sidebar-map .leaflet-left {
     left: 470px; } }
-
-
 
 @media (min-width: 768px) {
   .sidebar-right ~ .sidebar-map .leaflet-right {

@@ -81,9 +81,15 @@
 				BRNO ACCIDENT DATA VISUALIZATION
 				<span class="sidebar-close"><i class="fa-solid fa-angle-left"></i></span>
 			</h1>
-			<hr>
+			<hr class="catDivider">
 			<div>
-				<p class="text-light">Map visualizes various kinds of accidents that happened in Brno. It is possible to turn on and off traffic, pedestrian and bike accidents in the layers section. Except of that, it is possible to select various architectural surroundings of the traffic lanes, cycling infrastructure and street slopes. In the date section it is possible to select accidents according to date, date range or just choose custom date, and in the filter section it is possible to select accidents according to various criteria. The selection is visualized by aggregation into the clusters, if there are more accidents in the same locations. </p>
+				<p class="text-light">
+					Map visualizes various kinds of accidents that happened in Brno between 2010 and 2021.<br>
+					It is possible to turn on and off traffic, pedestrian, and bike accidents in the layers section.<br>
+					Except of that, it is possible to select various architectural surroundings of the traffic lanes, cycling infrastructure and street slopes.<br>
+					In the date section it is possible to select accidents based on date, date range or just choose custom date,
+					and in the filter section it is possible to select accidents based on various criteria.<br>
+					The markers are aggregated into the clusters if there are more accidents in the same locations. </p>
 			</div>
 		</div>
 
@@ -318,12 +324,23 @@
 						Array.from(customDateContainer.getElementsByTagName("input")).forEach(checkbox => {
 							checkbox.addEventListener("change", function (){
 								clearBadge_customDateSelector.innerText = "Reset";
+								if (checkbox.checked) {
+									checkbox.parentElement.nextElementSibling.nextElementSibling.selectedIndex = 0;
+								} else {
+									checkbox.parentElement.nextElementSibling.nextElementSibling.selectedIndex = -1;
+								}
 							})
 						})
 
-						Array.from(customDateContainer.getElementsByTagName("select")).forEach(checkbox => {
-							checkbox.addEventListener("change", function (){
+						Array.from(customDateContainer.getElementsByTagName("select")).forEach(selector => {
+							selector.addEventListener("change", function (){
+								console.log(selector);
 								clearBadge_customDateSelector.innerText = "Reset";
+								if (selector.selectedOptions.length > 0) {
+									selector.parentElement.firstElementChild.firstElementChild.checked = true;  // check the group checkbox
+								} else if (selector.selectedOptions.length === 0){
+									selector.parentElement.firstElementChild.firstElementChild.checked = false;
+								}
 							})
 						})
 

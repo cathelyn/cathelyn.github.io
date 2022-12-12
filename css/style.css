@@ -59,7 +59,6 @@ hr.catDivider {
     color: var(--white-transparent);
     border-radius: 2px;
     border-color: var(--bs-white);
-
 }
 
 ul > .catDivider {
