@@ -17,7 +17,6 @@ function addPublicTransStops(value) {
 
 
 function addStreetLights(value) {
-    // TODO: Make this faster (probably run in the bg on startup or use CircleMarker)
     L.circle([value.split(",")[0], value.split(",")[1]], {
         stroke: false,
         fillColor: '#ffac00',
@@ -50,7 +49,6 @@ function addPedestrianCrossings() {
 
 
 function addBikeInfrastructure() {
-
     for (let [index, [pathname, layer_obj]] of Object.entries(cyclingInfraSourceFiles).entries()){
         new L.Shapefile('sources/shapefiles/cycling_measures/' + pathname, {
             onEachFeature: function(feature, layer) {

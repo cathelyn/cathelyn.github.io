@@ -67,7 +67,6 @@ function addAccident(dataset, markersArray, category)
 
             let short_info = "";
             for (let i = 0; i < keys.length; i++) {
-                // add something like total no of crashes
                  if (keys[i] === 'no_parties') {
                      short_info += "Total number of parties: " + value[keys[i]]  + "<br>"
                  }

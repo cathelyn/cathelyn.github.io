@@ -1,5 +1,8 @@
-// create date filter
 function DateRangeFilter(startDate, endDate, reset=false) {
+    /**
+     * Function to filter markers based on the startDate and endDate provided by range date selector
+     * reset {boolean} if true, will restore all filtered markers
+     */
     let enabled = document.getElementById('traffic_accidents').parentElement.classList.contains("enabled");
     if (reset && enabled) {
         addTrafficAccidents();
@@ -35,6 +38,10 @@ function DateRangeFilter(startDate, endDate, reset=false) {
 }
 
 function DateCustomSelect(reset=false) {
+    /**
+     * Function to filter markers based on the custom date selector
+     * reset {boolean} if true, will restore all filtered markers
+     */
     let year_el = document.getElementById('year');
     let year_sel = year_el.parentNode.firstElementChild.firstElementChild.checked;
 

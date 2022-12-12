@@ -20,7 +20,6 @@ function generateOverlaysControl() {
         liGroup.classList.add('form-switch');
         liGroup.classList.add('bg-transparent');
         liGroup.classList.add('mb-3');
-        // liGroup.innerHTML = group;
 
         const checkbox = document.createElement('input');
         checkbox.classList.add("form-check-input")

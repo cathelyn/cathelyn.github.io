@@ -515,6 +515,11 @@ function generateFilterControl() {
 
 
 class PruneClusterFilter {
+    /**
+     * Class used to filter markers based on tag data.
+     * The already hidden markers, active filters and category types are stored as attributes of this class.
+     * @param pruneClusterLayer layer to filter on
+     */
     constructor(pruneClusterLayer) {
         this.layer = pruneClusterLayer;
         this._filtersPerCat = {};
@@ -606,7 +611,6 @@ class PruneClusterFilter {
 
 
     handleTagSelection(tag, category) {
-
         let matched_cat = this._filtersPerCat[category];
 
         // clear whole category if reset was triggered
@@ -615,9 +619,9 @@ class PruneClusterFilter {
             return this.filter()
         }
 
-        if (this._rangeCats.includes(category)){
+        if (this._rangeCats.includes(category)) {
             this._filtersPerCat[category] = [tag];
-        }else {
+        } else {
             if (matched_cat){  // the category already has some tag active
                 if (!matched_cat.includes(tag)) {
                     matched_cat.push(tag); // if it isn't activated, save it as active
