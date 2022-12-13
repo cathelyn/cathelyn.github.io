@@ -8,4 +8,4 @@ The markers are aggregated into the clusters if there are more accidents in the 
 
 
 ## How to run:
-Simply open the `index.html` in a browser.
+Start a local web server and load `index.html`
