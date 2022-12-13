@@ -105,6 +105,7 @@ div.slider-selection {
 
 option:checked, option:focus, option:focus-within, option:active, option:target, option:visited {
     background-color: var(--bs-primary) !important;
+    color: var(--bs-light) !important;
 }
 
 .text-outline-light {
