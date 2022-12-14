@@ -6,8 +6,11 @@ Except of that, it is possible to select various architectural surroundings of t
 In the date section it is possible to select accidents based on date, date range or just choose custom date, and in the filter section it is possible to select accidents based on various criteria.
 The markers are aggregated into the clusters if there are more accidents in the same locations.
 
+## Where to find
 
-## How to run:
+The running application is available at [github](https://cathelyn.github.io/)
+
+## How to run locally
 Start a local web server and load `index.html`
 
 alternatively, you can just open the `index.html` file in your browser, however, CORS may prevent some layers from loading (since they are local files).
