@@ -9,3 +9,16 @@ The markers are aggregated into the clusters if there are more accidents in the 
 
 ## How to run:
 Start a local web server and load `index.html`
+
+alternatively, you can just open the `index.html` file in your browser, however, CORS may prevent some layers from loading (since they are local files).
+To circumvent, you may disable CORS check for file URI:
+
+**Firefox**
+- navigate to `about:config`
+- find `security.fileuri.strict_origin_policy`
+- set it to `false`
+- refresh the page
+
+**Chrome**
+
+For Chrome, follow this thread on [stackoverflow](https://stackoverflow.com/questions/6060786/file-url-cross-domain-issue-in-chrome-unexpected)
